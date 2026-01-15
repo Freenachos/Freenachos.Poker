@@ -190,10 +190,11 @@ export default function FreeNachosArticles() {
     }
   };
 
-// Nacho Animation - pause when modal is open
+// Nacho Animation
   useEffect(() => {
-    if (showLogin) return;
-    const handleMouseMove = (e) => setMousePos({ x: e.clientX, y: e.clientY });
+    const handleMouseMove = (e) => {
+      if (!showLogin) setMousePos({ x: e.clientX, y: e.clientY });
+    };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [showLogin]);
