@@ -25,5 +25,3 @@
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
   "exclude": ["node_modules"]
 }
-The key addition is "noImplicitAny": false. Commit and let it rebuild.
-
