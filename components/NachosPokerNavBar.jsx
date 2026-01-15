@@ -2,29 +2,53 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Calculator, LineChart, Users, DollarSign, FileText, Zap } from 'lucide-react';
+import { GraduationCap, FileText, Calculator, LineChart, Users, DollarSign, ExternalLink } from 'lucide-react';
 
 const NachosPokerNavBar = () => {
   const pathname = usePathname();
 
   const navItems = [
-    { href: '/', label: 'Home', icon: Home },
+    { href: '/', label: 'Mentorship Program', icon: GraduationCap, special: true },
+    { href: '/articles', label: 'Articles', icon: FileText },
     { href: '/variance', label: 'Variance', icon: Calculator },
     { href: '/winrate', label: 'Win Rate', icon: LineChart },
     { href: '/seat', label: 'Seat Selection', icon: Users },
     { href: '/profits', label: 'Profits', icon: DollarSign },
-    { href: '/bbj', label: 'BBJ', icon: Zap },
-    { href: '/articles', label: 'Articles', icon: FileText },
+    { href: 'https://www.nachospoker.com', label: 'CFP', icon: ExternalLink, external: true },
   ];
 
   const isActive = (href) => {
     if (href === '/') return pathname === '/';
+    if (href.startsWith('http')) return false;
     return pathname.startsWith(href);
   };
 
   return (
     <>
       <style>{`
+        @keyframes gradientShift {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+        
+        @keyframes subtleGlow {
+          0%, 100% {
+            box-shadow: 0 0 8px rgba(167, 139, 250, 0.4),
+                        0 0 16px rgba(236, 72, 153, 0.2);
+          }
+          50% {
+            box-shadow: 0 0 12px rgba(167, 139, 250, 0.6),
+                        0 0 24px rgba(236, 72, 153, 0.4);
+          }
+        }
+
         .nachospoker-navbar {
           background: rgba(255, 255, 255, 0.03);
           border: 1px solid rgba(255, 255, 255, 0.08);
@@ -98,6 +122,50 @@ const NachosPokerNavBar = () => {
           color: #FFB347;
           background: rgba(255, 179, 71, 0.15);
         }
+        
+        /* Special animated gradient button */
+        .nachospoker-nav-item.special-gradient {
+          background: linear-gradient(
+            90deg,
+            #8b5cf6,
+            #a855f7,
+            #d946ef,
+            #ec4899,
+            #d946ef,
+            #a855f7,
+            #8b5cf6
+          );
+          background-size: 300% 100%;
+          animation: gradientShift 4s ease infinite, subtleGlow 3s ease-in-out infinite;
+          color: white;
+          font-weight: 600;
+          border: none;
+        }
+        .nachospoker-nav-item.special-gradient:hover {
+          background: linear-gradient(
+            90deg,
+            #8b5cf6,
+            #a855f7,
+            #d946ef,
+            #ec4899,
+            #d946ef,
+            #a855f7,
+            #8b5cf6
+          );
+          background-size: 300% 100%;
+          animation: gradientShift 2s ease infinite, subtleGlow 1.5s ease-in-out infinite;
+          transform: scale(1.02);
+        }
+        
+        /* External link styling */
+        .nachospoker-nav-item.external-link {
+          border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .nachospoker-nav-item.external-link:hover {
+          border-color: rgba(255, 179, 71, 0.4);
+          color: #FFB347;
+        }
+        
         @media (max-width: 900px) {
           .nachospoker-nav-item {
             padding: 8px 10px;
@@ -105,6 +173,9 @@ const NachosPokerNavBar = () => {
           }
           .nachospoker-nav-item svg {
             display: none;
+          }
+          .nachospoker-nav-item.special-gradient svg {
+            display: block;
           }
         }
         @media (max-width: 600px) {
@@ -122,11 +193,11 @@ const NachosPokerNavBar = () => {
         {/* Logo & Brand */}
         <div className="nachospoker-navbar-brand">
           <div className="nachospoker-navbar-logo">
-            <img src="/logo.png" alt="NachosPoker" />
+            <img src="/logo.png" alt="Freenachos Poker" />
           </div>
           <div className="nachospoker-navbar-brand-text">
-            <span className="nachospoker-navbar-brand-name">NachosPoker</span>
-            <span className="nachospoker-navbar-brand-suffix">.App</span>
+            <span className="nachospoker-navbar-brand-name">Freenachos</span>
+            <span className="nachospoker-navbar-brand-suffix">.Poker</span>
           </div>
         </div>
         
@@ -134,11 +205,27 @@ const NachosPokerNavBar = () => {
         <div className="nachospoker-navbar-links">
           {navItems.map((item) => {
             const Icon = item.icon;
+            
+            if (item.external) {
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="nachospoker-nav-item external-link"
+                >
+                  <span>{item.label}</span>
+                  <Icon size={12} />
+                </a>
+              );
+            }
+            
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`nachospoker-nav-item ${isActive(item.href) ? 'active' : ''}`}
+                className={`nachospoker-nav-item ${item.special ? 'special-gradient' : ''} ${isActive(item.href) ? 'active' : ''}`}
               >
                 <Icon size={14} />
                 <span>{item.label}</span>
