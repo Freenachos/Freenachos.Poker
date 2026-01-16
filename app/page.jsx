@@ -245,6 +245,29 @@ The 3-month program consists of:
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
+  // Scroll Reveal Animation Observer
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px 0px -50px 0px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all elements with the 'reveal' class
+    const revealElements = document.querySelectorAll('.reveal');
+    revealElements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   const getEyeOffset = () => {
     if (!nachoRef.current) return { x: 0, y: 0 };
     const rect = nachoRef.current.getBoundingClientRect();
@@ -906,7 +929,22 @@ The 3-month program consists of:
   // ============================================
 
   return (
-    <div style={{minHeight: '100vh', background: '#121212', position: 'relative', overflow: 'hidden', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+    <div style={{minHeight: '100vh', background: '#0A0A0A', position: 'relative', overflow: 'hidden', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+      {/* Noise/Grain Texture Overlay */}
+      <div 
+        className="noise-overlay"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          zIndex: 9999,
+          opacity: 0.03
+        }}
+      />
+
       {/* Floating Nachos Background */}
       <div style={{position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1}}>
         {nachos.map(nacho => (
@@ -941,14 +979,31 @@ The 3-month program consists of:
       </div>
       
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
+        
+        /* Noise Texture Overlay */
+        .noise-overlay {
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* Scroll Reveal Animation */
+        .reveal {
+          opacity: 0;
+          transform: translateY(32px);
+          transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .reveal.visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
         
         @keyframes floatNacho {
           0%, 100% { transform: translate(0, 0) rotate(0deg); }
           50% { transform: translate(var(--moveX), var(--moveY)) rotate(180deg); }
         }
         @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(20px); }
+          from { opacity: 0; transform: translateY(30px); }
           to { opacity: 1; transform: translateY(0); }
         }
         @keyframes fadeIn {
@@ -971,9 +1026,17 @@ The 3-month program consists of:
           0% { background-position: -200% 0; }
           100% { background-position: 200% 0; }
         }
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+        @keyframes glowPulse {
+          0%, 100% { opacity: 0.6; }
+          50% { opacity: 1; }
+        }
         
         .glass-card {
-          background: rgba(24, 24, 24, 0.7);
+          background: rgba(18, 18, 18, 0.8);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
           border: 1px solid rgba(212, 175, 55, 0.1);
@@ -986,18 +1049,49 @@ The 3-month program consists of:
           box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
         .btn-hover {
-          transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+          transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
         }
         .btn-hover:hover:not(:disabled) {
-          transform: translateY(-2px);
+          transform: translateY(-4px);
         }
         .btn-hover:active:not(:disabled) {
-          transform: translateY(0);
+          transform: translateY(-2px);
+        }
+        
+        .cta-primary {
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .cta-primary::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+          transition: left 0.5s ease;
+        }
+        
+        .cta-primary:hover::before {
+          left: 100%;
         }
         
         .cta-primary:hover {
-          box-shadow: 0 8px 40px rgba(255, 153, 0, 0.6);
+          box-shadow: 0 0 20px rgba(255, 153, 0, 0.4), 0 10px 40px rgba(255, 153, 0, 0.3);
           background: #FFa31a;
+        }
+
+        /* Hero specific styles */
+        .hero-glow {
+          position: absolute;
+          width: 700px;
+          height: 700px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(212, 175, 55, 0.3) 0%, rgba(255, 153, 0, 0.15) 35%, transparent 70%);
+          filter: blur(120px);
+          animation: glowPulse 4s ease-in-out infinite;
         }
 
         .sticky-cta {
@@ -1250,172 +1344,194 @@ The 3-month program consists of:
         }
       `}</style>
 
-      <div style={{position: 'relative', zIndex: 2, maxWidth: '1200px', margin: '0 auto', padding: '20px'}}>
-        {/* Hero Section with Spark Border */}
-        <div 
-          className="spark-border"
+      <div style={{position: 'relative', zIndex: 2, maxWidth: '1400px', margin: '0 auto', padding: '0 24px'}}>
+        {/* Hero Section - Full Width, Immersive */}
+        <section 
+          className="hero-section-grid"
           style={{
-            marginBottom: '120px',
-            animation: 'fadeInUp 0.6s ease-out 0.1s both',
-            position: 'relative',
-            overflow: 'hidden'
+            minHeight: '90vh',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            alignItems: 'center',
+            gap: '60px',
+            paddingTop: '80px',
+            paddingBottom: '128px',
+            position: 'relative'
           }}
         >
+          {/* Left Column - Copy Stack */}
           <div 
-            className="hero-gradient"
-            style={{
-              padding: '80px 60px',
-              minHeight: '85vh',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '60px',
-              flexWrap: 'wrap',
-              boxSizing: 'border-box'
+            className="hero-copy"
+            style={{ 
+              animation: 'fadeInUp 0.8s ease-out 0.2s both',
+              position: 'relative',
+              zIndex: 2
             }}
           >
-            {/* Hero Shot - Large Professional Image (40-50% width) */}
-            <div style={{
-              flex: '0 0 45%',
-              maxWidth: '500px',
-              minWidth: '320px',
-              position: 'relative'
-            }}>
-              <div style={{
-                position: 'relative',
-                borderRadius: '24px',
-                overflow: 'hidden',
-                boxShadow: '0 30px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(212, 175, 55, 0.15)'
-              }}>
-                <img 
-                  src="https://i.gyazo.com/29d050f5ae90e22d873454337548a8e0.png"
-                  alt="Freenachos - High Stakes Poker Coach"
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    display: 'block'
-                  }}
-                />
-                {/* Subtle gradient overlay at bottom */}
-                <div style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  height: '100px',
-                  background: 'linear-gradient(to top, rgba(18,18,18,0.8) 0%, transparent 100%)',
-                  pointerEvents: 'none'
-                }} />
-              </div>
-              {/* Decorative accent - Luxury gold */}
-              <div style={{
-                position: 'absolute',
-                top: '-12px',
-                right: '-12px',
-                width: '80px',
-                height: '80px',
-                border: '3px solid rgba(212, 175, 55, 0.5)',
-                borderRadius: '16px',
-                pointerEvents: 'none'
-              }} />
-              <div style={{
-                position: 'absolute',
-                bottom: '-12px',
-                left: '-12px',
-                width: '60px',
-                height: '60px',
-                border: '3px solid rgba(212, 175, 55, 0.3)',
-                borderRadius: '12px',
-                pointerEvents: 'none'
-              }} />
-            </div>
-            
-            {/* Content */}
-            <div style={{ flex: 1, minWidth: '340px' }}>
-              <div style={{
+            {/* Badge */}
+            <div 
+              className="hero-badge"
+              style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '10px',
-                background: 'rgba(212, 175, 55, 0.12)',
-                border: '1px solid rgba(212, 175, 55, 0.35)',
-                borderRadius: '30px',
-                padding: '10px 20px',
-                marginBottom: '28px'
+                gap: '8px',
+                background: 'rgba(212, 175, 55, 0.05)',
+                border: '1px solid rgba(212, 175, 55, 0.2)',
+                borderRadius: '50px',
+                padding: '10px 18px',
+                marginBottom: '32px'
+              }}
+            >
+              <Users size={16} color="#D4AF37" />
+              <span style={{ 
+                fontSize: '13px', 
+                color: '#D4AF37', 
+                fontWeight: '500',
+                letterSpacing: '0.02em'
               }}>
-                <Users size={18} color="#D4AF37" />
-                <span style={{ fontSize: '14px', color: '#D4AF37', fontWeight: '600', letterSpacing: '0.02em' }}>
-                  Trusted by 200+ Winning Regs
-                </span>
-              </div>
-              
-              <h1 style={{
-                fontSize: '52px',
-                fontWeight: '800',
-                color: '#F0F0F0',
-                marginBottom: '24px',
-                lineHeight: 1.1,
-                letterSpacing: '-0.02em'
-              }}>
-                The High-Stakes<br />
-                <span style={{ color: '#D4AF37' }}>Mentorship Program</span>
-              </h1>
-              
-              <p style={{
-                fontSize: '18px',
-                color: 'rgba(240, 240, 240, 0.75)',
-                maxWidth: '520px',
-                lineHeight: 1.85,
-                marginBottom: '40px'
-              }}>
-                A data-driven system for serious players ready to crush mid and high stakes. Personalized strategy. Proven results. No fluff.
-              </p>
-              
-              <a 
-                href="https://calendly.com/freenachos/intro" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="btn-hover cta-primary"
-                style={{
-                  background: '#FF9900',
-                  color: '#0a0a0a',
-                  padding: '20px 44px',
-                  borderRadius: '14px',
-                  fontWeight: '700',
-                  fontSize: '17px',
-                  textDecoration: 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  boxShadow: '0 6px 30px rgba(255, 153, 0, 0.5)',
-                  letterSpacing: '0.01em'
-                }}
-              >
-                Apply for Mentorship <ArrowRight size={22} />
-              </a>
+                Trusted by 200+ Winning Regs
+              </span>
             </div>
+            
+            {/* Headline */}
+            <h1 style={{
+              fontSize: 'clamp(40px, 5vw, 60px)',
+              fontWeight: '800',
+              color: '#FFFFFF',
+              marginBottom: '28px',
+              lineHeight: 1.08,
+              letterSpacing: '-0.02em',
+              fontFamily: 'Manrope, Inter, sans-serif'
+            }}>
+              Master High-Stakes<br />
+              Theory & <span style={{ color: '#D4AF37' }}>Exploit the<br />Population</span>.
+            </h1>
+            
+            {/* Subhead */}
+            <p 
+              className="hero-subhead"
+              style={{
+                fontSize: '18px',
+                color: '#A1A1AA',
+                maxWidth: '520px',
+                lineHeight: 1.8,
+                marginBottom: '44px',
+                fontWeight: '400'
+              }}
+            >
+              Stop guessing. Start executing. The exact data-driven strategies I used to win at 1KNL+ and help my students generate <strong style={{ color: '#F0F0F0' }}>$5M+ in profits</strong>.
+            </p>
+            
+            {/* CTA Button */}
+            <a 
+              href="https://calendly.com/freenachos/intro" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="btn-hover cta-primary"
+              style={{
+                background: '#FF9900',
+                color: '#0a0a0a',
+                padding: '20px 40px',
+                borderRadius: '12px',
+                fontWeight: '700',
+                fontSize: '16px',
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '12px',
+                boxShadow: '0 4px 20px rgba(255, 153, 0, 0.3)',
+                letterSpacing: '0.01em'
+              }}
+            >
+              Apply for Mentorship <ArrowRight size={20} />
+            </a>
           </div>
           
-          {/* Background glow effect */}
-          <div style={{
-            position: 'absolute',
-            top: '50%',
-            left: '25%',
-            transform: 'translate(-50%, -50%)',
-            width: '600px',
-            height: '600px',
-            background: 'radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 60%)',
-            pointerEvents: 'none',
-            zIndex: -1
-          }} />
-        </div>
+          {/* Right Column - Hero Image with Halo */}
+          <div 
+            className="hero-image-container"
+            style={{ 
+              position: 'relative',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'flex-end',
+              animation: 'fadeInUp 0.8s ease-out 0.4s both'
+            }}
+          >
+            {/* Halo Glow Effect */}
+            <div 
+              className="hero-glow"
+              style={{
+                position: 'absolute',
+                bottom: '10%',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 0
+              }}
+            />
+            
+            {/* Secondary ambient glow */}
+            <div style={{
+              position: 'absolute',
+              bottom: '20%',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '400px',
+              height: '400px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(255, 153, 0, 0.15) 0%, transparent 60%)',
+              filter: 'blur(60px)',
+              zIndex: 0
+            }} />
+            
+            {/* Coach Image - Cutout */}
+            <img 
+              src="https://i.gyazo.com/ad823c265c17c21f61996bb3aa3283e2.png"
+              alt="Freenachos - High Stakes Poker Coach"
+              style={{
+                width: '100%',
+                maxWidth: '550px',
+                height: 'auto',
+                position: 'relative',
+                zIndex: 1,
+                animation: 'float 6s ease-in-out infinite'
+              }}
+            />
+          </div>
+          
+          {/* Responsive styles */}
+          <style>{`
+            @media (max-width: 1024px) {
+              .hero-section-grid {
+                grid-template-columns: 1fr !important;
+                text-align: center;
+                padding-top: 60px !important;
+                gap: 40px !important;
+              }
+              .hero-section-grid > .hero-copy {
+                order: 2;
+              }
+              .hero-section-grid > .hero-image-container {
+                order: 1;
+              }
+              .hero-section-grid .hero-subhead {
+                margin-left: auto;
+                margin-right: auto;
+              }
+              .hero-section-grid .hero-badge {
+                justify-content: center;
+              }
+            }
+          `}</style>
+        </section>
 
         {/* About Section */}
         <div 
-          className="glass-card"
+          className="glass-card reveal"
           style={{
-            borderRadius: '20px',
-            padding: '56px',
-            marginBottom: '60px',
-            animation: 'fadeInUp 0.6s ease-out 0.2s both'
+            borderRadius: '24px',
+            padding: '64px',
+            marginBottom: '96px'
           }}
         >
           {/* New Headline */}
@@ -1555,12 +1671,11 @@ The 3-month program consists of:
 
         {/* What You Get in the Mentorship Program Section */}
         <div 
-          className="glass-card"
+          className="glass-card reveal"
           style={{
-            borderRadius: '20px',
-            padding: '56px 48px',
-            marginBottom: '60px',
-            animation: 'fadeInUp 0.6s ease-out 0.25s both'
+            borderRadius: '24px',
+            padding: '72px 56px',
+            marginBottom: '96px'
           }}
         >
           <div style={{ textAlign: 'center', marginBottom: '56px' }}>
@@ -1629,12 +1744,11 @@ The 3-month program consists of:
 
         {/* Testimonials Section */}
         <div 
-          className="glass-card"
+          className="glass-card reveal"
           style={{
-            borderRadius: '20px',
-            padding: '48px',
-            marginBottom: '60px',
-            animation: 'fadeInUp 0.6s ease-out 0.3s both',
+            borderRadius: '24px',
+            padding: '64px',
+            marginBottom: '96px',
             overflow: 'hidden'
           }}
         >
@@ -1907,37 +2021,38 @@ The 3-month program consists of:
 
         {/* Pricing Section */}
         <div 
-          className="glass-card"
+          className="glass-card reveal"
           style={{
-            borderRadius: '20px',
-            padding: '48px',
-            marginBottom: '60px',
-            animation: 'fadeInUp 0.6s ease-out 0.35s both'
+            borderRadius: '24px',
+            padding: '72px 56px',
+            marginBottom: '96px'
           }}
         >
-          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
             <h2 style={{
-              fontSize: '32px',
+              fontSize: '36px',
               fontWeight: '800',
               color: '#F0F0F0',
-              marginBottom: '8px'
+              marginBottom: '12px',
+              letterSpacing: '-0.02em'
             }}>
-              Pricing
+              Investment
             </h2>
             <p style={{
-              color: 'rgba(240, 240, 240, 0.6)',
-              fontSize: '16px'
+              color: '#A1A1AA',
+              fontSize: '17px',
+              lineHeight: 1.8
             }}>
-              Get Started Now
+              Choose the commitment level that fits your goals
             </p>
           </div>
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '24px',
-            alignItems: 'center',
-            maxWidth: '1000px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '28px',
+            alignItems: 'stretch',
+            maxWidth: '1100px',
             margin: '0 auto'
           }}>
             {pricingPlans.map((plan, idx) => (
@@ -1948,39 +2063,39 @@ The 3-month program consists of:
 
         {/* You're a Good Fit If Section */}
         <div 
-          className="glass-card"
+          className="glass-card reveal"
           style={{
-            borderRadius: '20px',
-            padding: '48px',
-            marginBottom: '48px',
-            animation: 'fadeInUp 0.6s ease-out 0.4s both'
+            borderRadius: '24px',
+            padding: '72px 56px',
+            marginBottom: '96px'
           }}
         >
-          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
             <h2 style={{
-              fontSize: '32px',
+              fontSize: '36px',
               fontWeight: '800',
               color: '#F0F0F0',
-              marginBottom: '8px'
+              marginBottom: '12px',
+              letterSpacing: '-0.02em'
             }}>
-              Apply
+              Is This Right For You?
             </h2>
           </div>
 
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '60px',
-            maxWidth: '900px',
+            gap: '64px',
+            maxWidth: '950px',
             margin: '0 auto'
           }}>
             {/* Good Fit Column */}
             <div>
               <h3 style={{
-                fontSize: '24px',
+                fontSize: '22px',
                 fontWeight: '700',
                 color: '#F0F0F0',
-                marginBottom: '24px'
+                marginBottom: '28px'
               }}>
                 You're a good fit if:
               </h3>
@@ -2098,28 +2213,30 @@ The 3-month program consists of:
 
         {/* FAQ Section */}
         <div 
-          className="glass-card"
+          className="glass-card reveal"
           style={{
-            borderRadius: '20px',
-            padding: '48px',
-            marginBottom: '48px',
+            borderRadius: '24px',
+            padding: '72px 56px',
+            marginBottom: '96px',
             animation: 'fadeInUp 0.6s ease-out 0.45s both'
           }}
         >
-          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
             <h2 style={{
-              fontSize: '32px',
+              fontSize: '36px',
               fontWeight: '800',
               color: '#F0F0F0',
-              marginBottom: '8px'
+              marginBottom: '12px',
+              letterSpacing: '-0.02em'
             }}>
-              FAQ
+              Frequently Asked Questions
             </h2>
             <p style={{
-              color: 'rgba(255,255,255,0.5)',
-              fontSize: '15px'
+              color: '#A1A1AA',
+              fontSize: '17px',
+              lineHeight: 1.8
             }}>
-              Need answer? We've got you covered.
+              Everything you need to know about the mentorship
             </p>
           </div>
 
@@ -2144,13 +2261,12 @@ The 3-month program consists of:
 
         {/* YouTube Videos Section */}
         <div 
-          className="glass-card"
+          className="glass-card reveal"
           id="videos"
           style={{
-            borderRadius: '20px',
-            padding: '40px',
-            marginBottom: '48px',
-            animation: 'fadeInUp 0.6s ease-out 0.5s both'
+            borderRadius: '24px',
+            padding: '56px',
+            marginBottom: '96px'
           }}
         >
           <div className="section-title" style={{ marginBottom: '24px' }}>
@@ -2209,13 +2325,12 @@ The 3-month program consists of:
 
         {/* Tools Section */}
         <div 
-          className="glass-card"
+          className="glass-card reveal"
           id="tools"
           style={{
-            borderRadius: '20px',
-            padding: '40px',
-            marginBottom: '48px',
-            animation: 'fadeInUp 0.6s ease-out 0.55s both'
+            borderRadius: '24px',
+            padding: '56px',
+            marginBottom: '96px'
           }}
         >
           <div className="section-title" style={{ marginBottom: '24px' }}>
@@ -2251,12 +2366,11 @@ The 3-month program consists of:
 
         {/* Articles Section */}
         <div 
-          className="glass-card"
+          className="glass-card reveal"
           style={{
-            borderRadius: '20px',
-            padding: '40px',
-            marginBottom: '48px',
-            animation: 'fadeInUp 0.6s ease-out 0.6s both'
+            borderRadius: '24px',
+            padding: '56px',
+            marginBottom: '96px'
           }}
         >
           <div className="section-title" style={{ marginBottom: '24px' }}>
@@ -2292,18 +2406,18 @@ The 3-month program consists of:
 
         {/* Footer CTA */}
         <div 
-          className="spark-border"
+          className="spark-border reveal"
           style={{
-            padding: '64px 48px',
+            padding: '80px 56px',
             textAlign: 'center',
-            animation: 'fadeInUp 0.6s ease-out 0.65s both'
+            marginBottom: '64px'
           }}
         >
           <h2 style={{
-            fontSize: '32px',
+            fontSize: '36px',
             fontWeight: '800',
             color: '#F0F0F0',
-            marginBottom: '16px',
+            marginBottom: '20px',
             letterSpacing: '-0.01em'
           }}>
             Ready to Take Your Game to the Next Level?
