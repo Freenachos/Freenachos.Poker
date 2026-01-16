@@ -297,7 +297,7 @@ The 3-month program consists of:
       duration: 45 + Math.random() * 25,
       delay: Math.random() * 25,
       rotation: Math.random() * 360,
-      opacity: 0.15 + Math.random() * 0.2,
+      opacity: 0.20 + Math.random() * 0.2,
       moveX: Math.random() * 150 - 75,
       moveY: Math.random() * 150 - 75
     }));
@@ -1059,7 +1059,7 @@ The 3-month program consists of:
         }
         
         .glass-card {
-          background: rgba(18, 18, 18, 0.5);
+          background: rgba(18, 18, 18, 0.4);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
           border: 1px solid rgba(212, 175, 55, 0.15);
