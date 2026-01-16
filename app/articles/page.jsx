@@ -575,6 +575,17 @@ export default function FreeNachosArticles() {
   const notionTextareaRef = useRef(null);
   const textareaContentRef = useRef('');
   
+  // Restore textarea content after re-renders caused by uploadingImages state change
+  useEffect(() => {
+    if (showNotionPaste && notionTextareaRef.current && textareaContentRef.current) {
+      const currentValue = notionTextareaRef.current.value;
+      // Only restore if textarea was cleared but we have saved content
+      if (!currentValue && textareaContentRef.current) {
+        notionTextareaRef.current.value = textareaContentRef.current;
+      }
+    }
+  }, [uploadingImages, showNotionPaste]);
+  
   const [nachos, setNachos] = useState([]);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const nachoRef = useRef(null);
@@ -722,55 +733,75 @@ export default function FreeNachosArticles() {
     const items = Array.from(clipboardData.items);
     const imageItems = items.filter(item => item.type.startsWith('image/'));
     
-    if (imageItems.length > 0) {
-      e.preventDefault();
-      
-      const textarea = notionTextareaRef.current;
-      if (!textarea) return;
-      
-      // Capture these values BEFORE any state changes
-      const cursorPos = textarea.selectionStart;
-      const currentValue = textarea.value;
-      
-      // Store in ref so it survives re-renders
-      const savedContent = currentValue;
-      const savedCursor = cursorPos;
-      
-      setUploadingImages(true);
-      
-      try {
-        const newUrls = [];
-        for (const item of imageItems) {
-          const file = item.getAsFile();
-          if (file) {
-            const url = await storageApi.uploadImage(file);
-            newUrls.push(url);
-          }
+    if (imageItems.length === 0) {
+      // No images - let normal paste happen, but track content
+      setTimeout(() => {
+        if (notionTextareaRef.current) {
+          textareaContentRef.current = notionTextareaRef.current.value;
         }
-        setUploadedImages(prev => [...prev, ...newUrls]);
-        
-        // Insert image URLs at saved cursor position
-        const imageText = newUrls.map(url => `\n${url}\n`).join('');
-        const before = savedContent.slice(0, savedCursor);
-        const after = savedContent.slice(savedCursor);
-        const newContent = before + imageText + after;
-        
-        // Update textarea value directly using the ref
-        const currentTextarea = notionTextareaRef.current;
-        if (currentTextarea) {
-          currentTextarea.value = newContent;
-          textareaContentRef.current = newContent;
-          // Position cursor after inserted text
-          const newCursorPos = savedCursor + imageText.length;
-          currentTextarea.focus();
-          currentTextarea.setSelectionRange(newCursorPos, newCursorPos);
+      }, 0);
+      return;
+    }
+    
+    // Image paste detected
+    e.preventDefault();
+    
+    const textarea = notionTextareaRef.current;
+    if (!textarea) return;
+    
+    // CRITICAL: Capture content SYNCHRONOUSLY before ANY state changes
+    const savedContent = textarea.value || textareaContentRef.current || '';
+    const savedCursor = textarea.selectionStart || savedContent.length;
+    
+    // Store in ref as backup
+    const contentBackup = savedContent;
+    const cursorBackup = savedCursor;
+    
+    setUploadingImages(true);
+    
+    try {
+      const newUrls = [];
+      for (const item of imageItems) {
+        const file = item.getAsFile();
+        if (file) {
+          const url = await storageApi.uploadImage(file);
+          newUrls.push(url);
         }
-      } catch (err) {
-        console.error('Error uploading image:', err);
-        setError('Failed to upload image: ' + err.message);
-      } finally {
-        setUploadingImages(false);
       }
+      
+      setUploadedImages(prev => [...prev, ...newUrls]);
+      
+      // Build new content using SAVED values (not current textarea which may have been reset)
+      const imageText = newUrls.map(url => `\n${url}\n`).join('');
+      const before = contentBackup.slice(0, cursorBackup);
+      const after = contentBackup.slice(cursorBackup);
+      const newContent = before + imageText + after;
+      
+      // Apply to textarea
+      requestAnimationFrame(() => {
+        const ta = notionTextareaRef.current;
+        if (ta) {
+          ta.value = newContent;
+          textareaContentRef.current = newContent;
+          const newCursorPos = cursorBackup + imageText.length;
+          ta.focus();
+          ta.setSelectionRange(newCursorPos, newCursorPos);
+        }
+      });
+      
+    } catch (err) {
+      console.error('Error uploading image:', err);
+      setError('Failed to upload image: ' + err.message);
+      // Restore original content on error
+      requestAnimationFrame(() => {
+        const ta = notionTextareaRef.current;
+        if (ta) {
+          ta.value = contentBackup;
+          textareaContentRef.current = contentBackup;
+        }
+      });
+    } finally {
+      setUploadingImages(false);
     }
   };
   
@@ -1125,116 +1156,6 @@ export default function FreeNachosArticles() {
     );
   };
 
-  // Notion Paste Modal
-  const NotionPasteModal = () => (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
-      <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '1100px', height: '90vh', display: 'flex', flexDirection: 'column', border: '1px solid rgba(255, 179, 71, 0.3)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '44px', height: '44px', borderRadius: '10px', background: 'rgba(255, 179, 71, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <ClipboardPaste size={22} color="#FFB347" />
-            </div>
-            <div>
-              <h2 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', margin: 0 }}>Paste from Notion</h2>
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', margin: '4px 0 0' }}>Copy your Notion content and paste it here</p>
-            </div>
-          </div>
-          <button onClick={() => { 
-            setShowNotionPaste(false); 
-            setNotionContent(''); 
-            setUploadedImages([]); 
-            if (notionTextareaRef.current) notionTextareaRef.current.value = '';
-            textareaContentRef.current = '';
-          }} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '8px', padding: '8px', cursor: 'pointer' }}>
-            <X size={18} color="rgba(255,255,255,0.6)" />
-          </button>
-        </div>
-        
-        <div style={{ background: 'rgba(255, 179, 71, 0.1)', borderRadius: '8px', padding: '12px 16px', marginBottom: '16px', border: '1px solid rgba(255, 179, 71, 0.2)' }}>
-          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '13px', margin: 0, lineHeight: 1.6 }}>
-            <strong style={{ color: '#FFB347' }}>Supported:</strong> Headings, paragraphs, lists, code blocks, quotes, callouts, <strong>**bold**</strong>, <em>*italic*</em>
-            <br />
-            <strong style={{ color: '#FFB347' }}>Images:</strong> Paste images directly (auto-uploads) or paste image URLs on their own line
-          </p>
-        </div>
-        
-        {uploadingImages && (
-          <div style={{ background: 'rgba(59, 130, 246, 0.1)', borderRadius: '8px', padding: '12px 16px', marginBottom: '16px', border: '1px solid rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Loader size={16} className="spin" color="#60a5fa" />
-            <p style={{ color: '#60a5fa', fontSize: '13px', margin: 0 }}>Uploading image...</p>
-          </div>
-        )}
-        
-        {uploadedImages.length > 0 && !uploadingImages && (
-          <div style={{ background: 'rgba(34, 197, 94, 0.1)', borderRadius: '8px', padding: '12px 16px', marginBottom: '16px', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
-            <p style={{ color: '#22c55e', fontSize: '13px', margin: 0 }}>✓ {uploadedImages.length} image{uploadedImages.length > 1 ? 's' : ''} uploaded</p>
-          </div>
-        )}
-        
-        <textarea
-          ref={notionTextareaRef}
-          defaultValue=""
-          onInput={(e) => { textareaContentRef.current = e.target.value; }}
-          onPaste={handlePasteWithImages}
-          placeholder="Paste your Notion content here (Ctrl+V / Cmd+V)... You can also paste images directly!"
-          style={{
-            flex: 1,
-            minHeight: '200px',
-            width: '100%',
-            background: 'rgba(0,0,0,0.4)',
-            border: '1px solid rgba(255,255,255,0.15)',
-            borderRadius: '8px',
-            padding: '16px',
-            color: '#fff',
-            fontSize: '14px',
-            lineHeight: 1.6,
-            resize: 'none',
-            outline: 'none',
-            fontFamily: 'monospace'
-          }}
-          autoFocus
-        />
-        
-        <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-          <button 
-            onClick={() => { 
-              setShowNotionPaste(false); 
-              setNotionContent(''); 
-              setUploadedImages([]); 
-              if (notionTextareaRef.current) notionTextareaRef.current.value = '';
-              textareaContentRef.current = '';
-            }} 
-            style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '14px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}
-          >
-            Cancel
-          </button>
-          <button 
-            onClick={handleNotionPaste} 
-            disabled={uploadingImages}
-            style={{ 
-              flex: 2, 
-              background: !uploadingImages ? '#FFB347' : 'rgba(255, 179, 71, 0.3)', 
-              border: 'none', 
-              borderRadius: '8px', 
-              padding: '14px', 
-              color: !uploadingImages ? '#0a0a0a' : 'rgba(255,255,255,0.4)', 
-              fontSize: '14px', 
-              fontWeight: '600', 
-              cursor: !uploadingImages ? 'pointer' : 'not-allowed',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px'
-            }}
-          >
-            <Zap size={16} />
-            Parse & Import
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
   // Schedule Modal
   const ScheduleModal = () => {
     // Set default to tomorrow at 9:00 AM if not already set
@@ -1406,7 +1327,128 @@ export default function FreeNachosArticles() {
         </div>
       )}
       {showDeleteConfirm && <DeleteConfirmModal article={showDeleteConfirm} />}
-      {showNotionPaste && <NotionPasteModal />}
+      {showNotionPaste && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+          <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '1100px', height: '90vh', display: 'flex', flexDirection: 'column', border: '1px solid rgba(255, 179, 71, 0.3)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ width: '44px', height: '44px', borderRadius: '10px', background: 'rgba(255, 179, 71, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <ClipboardPaste size={22} color="#FFB347" />
+                </div>
+                <div>
+                  <h2 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', margin: 0 }}>Paste from Notion</h2>
+                  <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', margin: '4px 0 0' }}>Copy your Notion content and paste it here</p>
+                </div>
+              </div>
+              <button onClick={() => { 
+                setShowNotionPaste(false); 
+                setNotionContent(''); 
+                setUploadedImages([]); 
+                if (notionTextareaRef.current) notionTextareaRef.current.value = '';
+                textareaContentRef.current = '';
+              }} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '8px', padding: '8px', cursor: 'pointer' }}>
+                <X size={18} color="rgba(255,255,255,0.6)" />
+              </button>
+            </div>
+            
+            <div style={{ background: 'rgba(255, 179, 71, 0.1)', borderRadius: '8px', padding: '12px 16px', marginBottom: '16px', border: '1px solid rgba(255, 179, 71, 0.2)' }}>
+              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '13px', margin: 0, lineHeight: 1.6 }}>
+                <strong style={{ color: '#FFB347' }}>Supported:</strong> Headings, paragraphs, lists, code blocks, quotes, callouts, <strong>**bold**</strong>, <em>*italic*</em>
+                <br />
+                <strong style={{ color: '#FFB347' }}>Images:</strong> Paste images directly (auto-uploads) or paste image URLs on their own line
+              </p>
+            </div>
+            
+            <div style={{ 
+              background: 'rgba(59, 130, 246, 0.1)', 
+              borderRadius: '8px', 
+              padding: '12px 16px', 
+              marginBottom: '16px', 
+              border: '1px solid rgba(59, 130, 246, 0.2)', 
+              display: uploadingImages ? 'flex' : 'none', 
+              alignItems: 'center', 
+              gap: '10px' 
+            }}>
+              <Loader size={16} className="spin" color="#60a5fa" />
+              <p style={{ color: '#60a5fa', fontSize: '13px', margin: 0 }}>Uploading image...</p>
+            </div>
+            
+            <div style={{ 
+              background: 'rgba(34, 197, 94, 0.1)', 
+              borderRadius: '8px', 
+              padding: '12px 16px', 
+              marginBottom: '16px', 
+              border: '1px solid rgba(34, 197, 94, 0.2)',
+              display: (uploadedImages.length > 0 && !uploadingImages) ? 'block' : 'none'
+            }}>
+              <p style={{ color: '#22c55e', fontSize: '13px', margin: 0 }}>✓ {uploadedImages.length} image{uploadedImages.length > 1 ? 's' : ''} uploaded</p>
+            </div>
+            
+            <textarea
+              key="notion-textarea"
+              ref={notionTextareaRef}
+              defaultValue=""
+              onInput={(e) => { textareaContentRef.current = e.target.value; }}
+              onChange={(e) => { textareaContentRef.current = e.target.value; }}
+              onPaste={handlePasteWithImages}
+              placeholder="Paste your Notion content here (Ctrl+V / Cmd+V)... You can also paste images directly!"
+              style={{
+                flex: 1,
+                minHeight: '200px',
+                width: '100%',
+                background: 'rgba(0,0,0,0.4)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                borderRadius: '8px',
+                padding: '16px',
+                color: '#fff',
+                fontSize: '14px',
+                lineHeight: 1.6,
+                resize: 'none',
+                outline: 'none',
+                fontFamily: 'monospace'
+              }}
+              autoFocus
+            />
+            
+            <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
+              <button 
+                onClick={() => { 
+                  setShowNotionPaste(false); 
+                  setNotionContent(''); 
+                  setUploadedImages([]); 
+                  if (notionTextareaRef.current) notionTextareaRef.current.value = '';
+                  textareaContentRef.current = '';
+                }} 
+                style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '14px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleNotionPaste} 
+                disabled={uploadingImages}
+                style={{ 
+                  flex: 2, 
+                  background: !uploadingImages ? '#FFB347' : 'rgba(255, 179, 71, 0.3)', 
+                  border: 'none', 
+                  borderRadius: '8px', 
+                  padding: '14px', 
+                  color: !uploadingImages ? '#0a0a0a' : 'rgba(255,255,255,0.4)', 
+                  fontSize: '14px', 
+                  fontWeight: '600', 
+                  cursor: !uploadingImages ? 'pointer' : 'not-allowed',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}
+              >
+                <Zap size={16} />
+                Parse & Import
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {showScheduleModal && <ScheduleModal />}
 
       <div style={{position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1}}>
