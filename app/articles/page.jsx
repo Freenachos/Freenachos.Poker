@@ -573,6 +573,7 @@ export default function FreeNachosArticles() {
   const [uploadingImages, setUploadingImages] = useState(false);
   const [uploadedImages, setUploadedImages] = useState([]);
   const notionTextareaRef = useRef(null);
+  const textareaContentRef = useRef('');
   
   const [nachos, setNachos] = useState([]);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -724,10 +725,16 @@ export default function FreeNachosArticles() {
     if (imageItems.length > 0) {
       e.preventDefault();
       
-      // Store cursor position before upload
       const textarea = notionTextareaRef.current;
-      const cursorPos = textarea?.selectionStart || textarea?.value.length || 0;
-      const currentValue = textarea?.value || '';
+      if (!textarea) return;
+      
+      // Capture these values BEFORE any state changes
+      const cursorPos = textarea.selectionStart;
+      const currentValue = textarea.value;
+      
+      // Store in ref so it survives re-renders
+      const savedContent = currentValue;
+      const savedCursor = cursorPos;
       
       setUploadingImages(true);
       
@@ -742,19 +749,21 @@ export default function FreeNachosArticles() {
         }
         setUploadedImages(prev => [...prev, ...newUrls]);
         
-        // Insert image URLs at cursor position
+        // Insert image URLs at saved cursor position
         const imageText = newUrls.map(url => `\n${url}\n`).join('');
-        const before = currentValue.slice(0, cursorPos);
-        const after = currentValue.slice(cursorPos);
+        const before = savedContent.slice(0, savedCursor);
+        const after = savedContent.slice(savedCursor);
         const newContent = before + imageText + after;
         
-        // Update textarea value directly
-        if (textarea) {
-          textarea.value = newContent;
+        // Update textarea value directly using the ref
+        const currentTextarea = notionTextareaRef.current;
+        if (currentTextarea) {
+          currentTextarea.value = newContent;
+          textareaContentRef.current = newContent;
           // Position cursor after inserted text
-          const newCursorPos = cursorPos + imageText.length;
-          textarea.focus();
-          textarea.setSelectionRange(newCursorPos, newCursorPos);
+          const newCursorPos = savedCursor + imageText.length;
+          currentTextarea.focus();
+          currentTextarea.setSelectionRange(newCursorPos, newCursorPos);
         }
       } catch (err) {
         console.error('Error uploading image:', err);
@@ -767,7 +776,7 @@ export default function FreeNachosArticles() {
   
   // Notion paste handler
   const handleNotionPaste = () => {
-    const content = notionTextareaRef.current?.value || '';
+    const content = notionTextareaRef.current?.value || textareaContentRef.current || '';
     if (!content.trim()) return;
     
     const parsedBlocks = parseNotionContent(content);
@@ -796,6 +805,7 @@ export default function FreeNachosArticles() {
     });
     
     if (notionTextareaRef.current) notionTextareaRef.current.value = '';
+    textareaContentRef.current = '';
     setNotionContent('');
     setUploadedImages([]);
     setShowNotionPaste(false);
@@ -1134,6 +1144,7 @@ export default function FreeNachosArticles() {
             setNotionContent(''); 
             setUploadedImages([]); 
             if (notionTextareaRef.current) notionTextareaRef.current.value = '';
+            textareaContentRef.current = '';
           }} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '8px', padding: '8px', cursor: 'pointer' }}>
             <X size={18} color="rgba(255,255,255,0.6)" />
           </button>
@@ -1163,6 +1174,7 @@ export default function FreeNachosArticles() {
         <textarea
           ref={notionTextareaRef}
           defaultValue=""
+          onInput={(e) => { textareaContentRef.current = e.target.value; }}
           onPaste={handlePasteWithImages}
           placeholder="Paste your Notion content here (Ctrl+V / Cmd+V)... You can also paste images directly!"
           style={{
@@ -1190,6 +1202,7 @@ export default function FreeNachosArticles() {
               setNotionContent(''); 
               setUploadedImages([]); 
               if (notionTextareaRef.current) notionTextareaRef.current.value = '';
+              textareaContentRef.current = '';
             }} 
             style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '14px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}
           >
