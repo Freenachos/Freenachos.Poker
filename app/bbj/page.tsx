@@ -1,7 +1,27 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { ExternalLink, TrendingUp, BarChart3, Target, Zap, AlertTriangle, DollarSign, Activity, Percent, Calculator, Play, RefreshCw, Info, Database, LineChart } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { 
+  ExternalLink, 
+  TrendingUp, 
+  BarChart3, 
+  Target, 
+  Zap, 
+  AlertTriangle, 
+  DollarSign, 
+  Activity, 
+  Play, 
+  RefreshCw, 
+  Database, 
+  LineChart,
+  ChevronDown,
+  Trophy,
+  Users,
+  Clock,
+  Percent,
+  Calculator
+} from 'lucide-react';
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
 
 /**
@@ -38,12 +58,11 @@ interface EVResult {
   isProfitable: boolean;
   percentToBreakeven: number;
   poolNeeded: number;
-  // Actual payouts when BBJ hits (in $)
-  jackpotWinnerPayout: number;  // Bad Beat Winner (loser) - 10%
-  opponentPayout: number;       // Bad Beat Opponent (winner) - 3%
-  tableSharePayout: number;     // Rest of players - 0.8% each
-  totalPayoutAtStake: number;   // Total distributed at this stake
-  stakePoolSize: number;        // This stake's portion of total pool
+  jackpotWinnerPayout: number;
+  opponentPayout: number;
+  tableSharePayout: number;
+  totalPayoutAtStake: number;
+  stakePoolSize: number;
 }
 
 interface StakeOption {
@@ -75,7 +94,6 @@ interface SimulationTrial {
   totalPayout: number;
   feesPaid: number;
   netProfit: number;
-  // Timeline data for chart (sampled points)
   timeline: { hands: number; profit: number; }[];
 }
 
@@ -98,37 +116,34 @@ interface SimulationResults {
 // ============================================
 
 const BBJ_CONSTANTS: BBJConstants = {
-  handsPerBBJ: 67498,           // 42,118,396 / 624 BBJs
-  showdownsPerBBJ: 8962,        // 5,592,311 / 624 BBJs  
+  handsPerBBJ: 67498,
+  showdownsPerBBJ: 8962,
   avgPlayersPerTable: 5.96,
-  showdownRate: 0.1328,         // 13.28%
-  bbPer100Fees: 2.0831,         // Verified from $9.04M fees collected
-  feesPerBBJ_bb: 8378,          // 5,226,344 bb fees / 624 BBJs
+  showdownRate: 0.1328,
+  bbPer100Fees: 2.0831,
+  feesPerBBJ_bb: 8378,
   poolDivisor: 240.38,
-  breakevenPayout_bb: 1406,     // Exact: 2.0831 * 67498 / 100
-  breakevenPool_usd: 2017000,   // ~$2.02M total pool for break-even
+  breakevenPayout_bb: 1406,
+  breakevenPool_usd: 2017000,
   evDivisor: 240.38,
-  // Actual GGPoker distribution (% of stake-specific pool)
-  winnerSharePercent: 10,       // Bad Beat Winner (the LOSER with quads+)
-  loserSharePercent: 3,         // Bad Beat Opponent (the WINNER of the hand)
-  tableSharePercent: 0.8,       // Rest of players at table (each)
+  winnerSharePercent: 10,
+  loserSharePercent: 3,
+  tableSharePercent: 0.8,
 };
 
-// Stake pool percentages (of total pool) - derived from GGPoker screenshots
 const STAKE_POOL_PERCENTAGES: Record<string, number> = {
-  '10/20': 51.42,    // $1,120,957 of $2.18M
-  '5/10': 25.71,     // $560,478
-  '2/5': 12.86,      // $280,239  
-  '1/2': 5.14,       // $112,095
-  '0.50/1': 2.57,    // $56,050
-  '0.25/0.50': 1.29, // $28,025
-  '0.10/0.25': 0.64, // $14,012
-  '0.05/0.10': 0.26, // $5,605
-  '0.02/0.05': 0.13, // $2,802
-  '0.01/0.02': 0.05, // $1,121
+  '10/20': 51.42,
+  '5/10': 25.71,
+  '2/5': 12.86,
+  '1/2': 5.14,
+  '0.50/1': 2.57,
+  '0.25/0.50': 1.29,
+  '0.10/0.25': 0.64,
+  '0.05/0.10': 0.26,
+  '0.02/0.05': 0.13,
+  '0.01/0.02': 0.05,
 };
 
-// Stake options for dropdown
 const STAKE_OPTIONS: StakeOption[] = [
   { label: '$10/$20', value: '10/20', bbValue: 20, poolPercent: 51.42 },
   { label: '$5/$10', value: '5/10', bbValue: 10, poolPercent: 25.71 },
@@ -142,13 +157,11 @@ const STAKE_OPTIONS: StakeOption[] = [
   { label: '$0.01/$0.02', value: '0.01/0.02', bbValue: 0.02, poolPercent: 0.05 },
 ];
 
-// Probability breakdowns - 42.1M Hand Sample
 const PROBABILITY_DATA = {
   bbjPerHand: 1 / 67498,
   bbjPerShowdown: 1 / 8962,
   showdownRate: 0.1328,
   avgPlayers: 5.96,
-  // Sample composition
   totalHandsAnalyzed: 42118396,
   regularHands: 8186000,
   rushCashHands: 33932396,
@@ -157,22 +170,62 @@ const PROBABILITY_DATA = {
   duplicatesSkipped: 86311,
   totalFeesUSD: 9037553.51,
   totalFeesBB: 5226344.44,
-  // Player probabilities
   handsToSeeOneBBJ: 67498,
-  // To WIN the jackpot (be the bad beat loser with AAATT or better)
-  // 67,498 hands × (5.96 players / 2 involved) = ~201,184 hands to be involved
-  // Then 50% chance you're the loser = ~402,368 hands to WIN jackpot
-  handsToWinJackpot: Math.round(67498 * 5.96 / 2 * 2), // ~402,368
-  handsToBeOpponent: Math.round(67498 * 5.96 / 2 * 2), // ~402,368 (same odds)
-  handsToGetTableShare: Math.round(67498 * 5.96 / (5.96 - 2)), // ~101,583
+  handsToWinJackpot: Math.round(67498 * 5.96 / 2 * 2),
+  handsToBeOpponent: Math.round(67498 * 5.96 / 2 * 2),
+  handsToGetTableShare: Math.round(67498 * 5.96 / (5.96 - 2)),
   triggerHand: 'AAATT or better',
-  // EV Return data at different pool levels (per 1 bb of fees)
-  returnAt8000bb: 0.9552,   // -0.0934 bb/100 net
-  returnAt8500bb: 1.0149,   // +0.0310 bb/100 net
-  returnAt9000bb: 1.0746,   // +0.1553 bb/100 net
-  returnAt9500bb: 1.1343,   // +0.2797 bb/100 net
-  returnAt10000bb: 1.1940,  // +0.4040 bb/100 net
+  returnAt8000bb: 0.9552,
+  returnAt8500bb: 1.0149,
+  returnAt9000bb: 1.0746,
+  returnAt9500bb: 1.1343,
+  returnAt10000bb: 1.1940,
 };
+
+// ============================================
+// ANIMATION VARIANTS
+// ============================================
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+  }
+};
+
+const fadeIn = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1,
+    transition: { duration: 0.5, ease: 'easeOut' }
+  }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.1
+    }
+  }
+};
+
+const scaleIn = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { 
+    opacity: 1, 
+    scale: 1,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
+  }
+};
+
+// ============================================
+// COMPONENT
+// ============================================
 
 const BBJDashboard: React.FC = () => {
   // ============================================
@@ -193,59 +246,38 @@ const BBJDashboard: React.FC = () => {
   const nachoRef = useRef<SVGSVGElement>(null);
 
   // ============================================
-  // CALCULATION FUNCTIONS
+  // CALCULATION FUNCTIONS (UNCHANGED)
   // ============================================
 
   const calculateEV = (pool: number, stake: string = selectedStake): EVResult => {
-    const stakeOption = STAKE_OPTIONS.find(s => s.value === stake) || STAKE_OPTIONS[4]; // Default to 0.50/1
-    
-    // Calculate this stake's portion of the pool
+    const stakeOption = STAKE_OPTIONS.find(s => s.value === stake) || STAKE_OPTIONS[4];
     const stakePoolSize = pool * (stakeOption.poolPercent / 100);
-    
-    // Calculate payouts when BBJ hits (in USD)
-    // Total payout is ~17.8% of stake pool (10% + 3% + ~4.8% for table)
     const avgTablePlayers = BBJ_CONSTANTS.avgPlayersPerTable;
-    const otherPlayers = avgTablePlayers - 2; // ~3.79 players get table share
+    const otherPlayers = avgTablePlayers - 2;
     
-    const jackpotWinnerPayout = stakePoolSize * 0.10;  // 10% - Bad Beat Winner
-    const opponentPayout = stakePoolSize * 0.03;       // 3% - Bad Beat Opponent  
-    const tableSharePayout = stakePoolSize * 0.008;    // 0.8% each - Rest of players
+    const jackpotWinnerPayout = stakePoolSize * 0.10;
+    const opponentPayout = stakePoolSize * 0.03;
+    const tableSharePayout = stakePoolSize * 0.008;
     const totalPayoutAtStake = jackpotWinnerPayout + opponentPayout + (tableSharePayout * otherPlayers);
     
-    // Convert to BB for the selected stake
     const bbValue = stakeOption.bbValue;
     const jackpotWinnerBB = jackpotWinnerPayout / bbValue;
     const opponentBB = opponentPayout / bbValue;
     const tableShareBB = tableSharePayout / bbValue;
     
-    // Expected payout per BBJ at table (weighted by probability of each outcome)
-    // P(jackpot winner) = 1/5.79, P(opponent) = 1/5.79, P(table share) = 3.79/5.79
     const expectedPayoutPerBBJ = 
       (1 / avgTablePlayers) * jackpotWinnerBB +
       (1 / avgTablePlayers) * opponentBB +
       (otherPlayers / avgTablePlayers) * tableShareBB;
     
-    // Total payout in bb (for display)
     const payoutBB = totalPayoutAtStake / bbValue;
-    
-    // Calculate EV per 100 hands
-    // BBJ hits 1 in 101,940 hands, so expected payouts per 100 hands:
     const expectedPayoutPer100 = (100 / BBJ_CONSTANTS.handsPerBBJ) * expectedPayoutPerBBJ;
-    
-    // Net BB/100 = Expected payouts - Fees paid
     const netBBper100 = expectedPayoutPer100 - BBJ_CONSTANTS.bbPer100Fees;
-    
-    // Return ratio (for breakeven comparison)
     const returnRatio = expectedPayoutPer100 / BBJ_CONSTANTS.bbPer100Fees;
     
     const isProfitable = netBBper100 >= 0;
     const percentToBreakeven = returnRatio * 100;
     
-    // Calculate pool needed for breakeven
-    // At breakeven: expectedPayoutPer100 = bbPer100Fees
-    // This means we need: (100/101940) * expectedPayoutPerBBJ = 1.8042
-    // So expectedPayoutPerBBJ = 1.8042 * 101940 / 100 = 1838.94 bb
-    // Working backwards to find required pool...
     const breakevenExpectedPerBBJ = BBJ_CONSTANTS.bbPer100Fees * BBJ_CONSTANTS.handsPerBBJ / 100;
     const currentExpectedPerBBJ = expectedPayoutPerBBJ;
     const poolMultiplier = breakevenExpectedPerBBJ / currentExpectedPerBBJ;
@@ -269,47 +301,32 @@ const BBJDashboard: React.FC = () => {
   const calculateVariance = (hands: number, pool: number, stake: string = selectedStake): VarianceResult => {
     const stakeOption = STAKE_OPTIONS.find(s => s.value === stake) || STAKE_OPTIONS[4];
     const bbValue = stakeOption.bbValue;
-    
-    // Expected number of BBJs seen (Poisson lambda)
     const lambda = hands / BBJ_CONSTANTS.handsPerBBJ;
-    
-    // Total fees paid in bb
     const totalFeesPaid = (hands / 100) * BBJ_CONSTANTS.bbPer100Fees;
-    
-    // Calculate stake pool and payouts
     const stakePoolSize = pool * (stakeOption.poolPercent / 100);
     const avgTablePlayers = BBJ_CONSTANTS.avgPlayersPerTable;
     const otherPlayers = avgTablePlayers - 2;
     
-    // Payouts in BB
     const jackpotWinnerBB = (stakePoolSize * 0.10) / bbValue;
     const opponentBB = (stakePoolSize * 0.03) / bbValue;
     const tableShareBB = (stakePoolSize * 0.008) / bbValue;
     
-    // Expected payout per BBJ (weighted by probability)
     const expectedPayoutPerBBJ = 
       (1 / avgTablePlayers) * jackpotWinnerBB +
       (1 / avgTablePlayers) * opponentBB +
       (otherPlayers / avgTablePlayers) * tableShareBB;
     
-    // Expected total payouts
     const expectedPayouts = lambda * expectedPayoutPerBBJ;
-    
-    // Expected profit (EV)
     const expectedProfit = expectedPayouts - totalFeesPaid;
     
-    // Variance calculation
-    // When BBJ hits, variance comes from which role you get
     const varianceOfSingleBBJ = 
       (1 / avgTablePlayers) * Math.pow(jackpotWinnerBB - expectedPayoutPerBBJ, 2) +
       (1 / avgTablePlayers) * Math.pow(opponentBB - expectedPayoutPerBBJ, 2) +
       (otherPlayers / avgTablePlayers) * Math.pow(tableShareBB - expectedPayoutPerBBJ, 2);
     
-    // Total variance = E[N] * Var(X) + Var(N) * E[X]^2 (for compound Poisson)
     const totalVariance = lambda * varianceOfSingleBBJ + lambda * Math.pow(expectedPayoutPerBBJ, 2);
     const stdDeviation = Math.sqrt(totalVariance);
     
-    // Confidence intervals using normal approximation
     const z95 = 1.96;
     const z99 = 2.576;
     
@@ -323,11 +340,9 @@ const BBJDashboard: React.FC = () => {
       expectedProfit + z99 * stdDeviation
     ];
     
-    // Probability of profit
     const zScore = expectedProfit / (stdDeviation || 1);
     const probabilityOfProfit = 0.5 * (1 + erf(zScore / Math.sqrt(2)));
     
-    // Worst/Best case scenarios
     const worstCase1Percent = expectedProfit - 2.326 * stdDeviation;
     const bestCase1Percent = expectedProfit + 2.326 * stdDeviation;
     
@@ -345,7 +360,6 @@ const BBJDashboard: React.FC = () => {
     };
   };
 
-  // Error function approximation for normal CDF
   const erf = (x: number): number => {
     const a1 =  0.254829592;
     const a2 = -0.284496736;
@@ -367,12 +381,10 @@ const BBJDashboard: React.FC = () => {
     setIsCalculating(true);
     setSimulationProgress(0);
     
-    // Use requestAnimationFrame to not block UI
     requestAnimationFrame(() => {
       const result = calculateVariance(simulationHands, poolSize, selectedStake);
       setVarianceResult(result);
       
-      // Run Monte Carlo simulation
       runMonteCarloSimulation();
     });
   };
@@ -382,129 +394,88 @@ const BBJDashboard: React.FC = () => {
     const bbValue = stakeOption.bbValue;
     const stakePoolSize = poolSize * (stakeOption.poolPercent / 100);
     const avgTablePlayers = BBJ_CONSTANTS.avgPlayersPerTable;
+    const otherPlayers = avgTablePlayers - 2;
     
-    // Payouts in BB
     const jackpotWinnerBB = (stakePoolSize * 0.10) / bbValue;
     const opponentBB = (stakePoolSize * 0.03) / bbValue;
     const tableShareBB = (stakePoolSize * 0.008) / bbValue;
     
-    // Fee per hand in bb
-    const feePerHand = BBJ_CONSTANTS.bbPer100Fees / 100;
-    
-    // Probability per hand
-    const pBBJ = 1 / BBJ_CONSTANTS.handsPerBBJ;
+    const bbjProbability = 1 / BBJ_CONSTANTS.handsPerBBJ;
+    const feesPer100 = BBJ_CONSTANTS.bbPer100Fees;
     
     const trials: SimulationTrial[] = [];
-    const actualHandsPerTrial = simulationHands;
-    
-    // Number of sample points for the chart (per trial)
-    const samplePoints = 200;
-    const handsPerSample = Math.floor(actualHandsPerTrial / samplePoints);
-    
     let currentTrial = 0;
+    const batchSize = Math.max(1, Math.floor(numTrials / 20));
+    
+    const actualHandsPerTrial = simulationHands;
+    const timelinePoints = 50;
+    const handsPerPoint = Math.floor(actualHandsPerTrial / timelinePoints);
     
     const processBatch = () => {
-      const batchSize = Math.min(5, numTrials - currentTrial);
+      const batchEnd = Math.min(currentTrial + batchSize, numTrials);
       
-      for (let b = 0; b < batchSize; b++) {
-        const trialNum = currentTrial + b;
-        
-        // Generate BBJ hit times using inverse transform sampling
-        const bbjTimes: number[] = [];
-        let t = 0;
-        while (t < actualHandsPerTrial) {
-          // Time to next BBJ follows exponential distribution
-          const u = Math.random();
-          const timeTillNext = Math.floor(-Math.log(u) / pBBJ);
-          t += timeTillNext;
-          if (t < actualHandsPerTrial) {
-            bbjTimes.push(t);
-          }
-        }
-        
-        // Determine role for each BBJ
-        const bbjEvents: { hand: number; payout: number; type: string }[] = [];
+      for (let t = currentTrial; t < batchEnd; t++) {
+        let bbjsHit = 0;
         let jackpotWins = 0;
         let opponentWins = 0;
         let tableShares = 0;
+        let totalPayout = 0;
+        const timeline: { hands: number; profit: number; }[] = [];
+        let runningProfit = 0;
         
-        for (const bbjHand of bbjTimes) {
-          const roll = Math.random();
-          const pJackpot = 1 / avgTablePlayers;
-          const pOpponent = 1 / avgTablePlayers;
+        for (let point = 0; point < timelinePoints; point++) {
+          const handsInSegment = handsPerPoint;
+          const feesForSegment = (handsInSegment / 100) * feesPer100;
+          runningProfit -= feesForSegment;
           
-          let payout = 0;
-          let type = '';
-          
-          if (roll < pJackpot) {
-            payout = jackpotWinnerBB;
-            jackpotWins++;
-            type = 'jackpot';
-          } else if (roll < pJackpot + pOpponent) {
-            payout = opponentBB;
-            opponentWins++;
-            type = 'opponent';
-          } else {
-            payout = tableShareBB;
-            tableShares++;
-            type = 'table';
+          for (let h = 0; h < handsInSegment; h++) {
+            if (Math.random() < bbjProbability) {
+              bbjsHit++;
+              const role = Math.random() * avgTablePlayers;
+              
+              if (role < 1) {
+                jackpotWins++;
+                totalPayout += jackpotWinnerBB;
+                runningProfit += jackpotWinnerBB;
+              } else if (role < 2) {
+                opponentWins++;
+                totalPayout += opponentBB;
+                runningProfit += opponentBB;
+              } else {
+                tableShares++;
+                totalPayout += tableShareBB;
+                runningProfit += tableShareBB;
+              }
+            }
           }
           
-          bbjEvents.push({ hand: bbjHand, payout, type });
+          timeline.push({
+            hands: (point + 1) * handsPerPoint,
+            profit: runningProfit
+          });
         }
         
-        // Generate timeline
-        const timeline: { hands: number; profit: number }[] = [];
-        let currentProfit = 0;
-        let nextBBJIndex = 0;
-        
-        for (let i = 0; i <= samplePoints; i++) {
-          const currentHand = i * handsPerSample;
-          
-          // Apply fees up to this point
-          const feesAtThisPoint = currentHand * feePerHand;
-          
-          // Apply any BBJ payouts that occurred before this point
-          let payoutsAtThisPoint = 0;
-          while (nextBBJIndex < bbjEvents.length && bbjEvents[nextBBJIndex].hand <= currentHand) {
-            payoutsAtThisPoint += bbjEvents[nextBBJIndex].payout;
-            nextBBJIndex++;
-          }
-          
-          // Recalculate profit including this segment
-          const totalPayoutsSoFar = bbjEvents
-            .filter(e => e.hand <= currentHand)
-            .reduce((sum, e) => sum + e.payout, 0);
-          
-          currentProfit = totalPayoutsSoFar - feesAtThisPoint;
-          
-          timeline.push({ hands: currentHand, profit: currentProfit });
-        }
-        
-        const totalPayout = jackpotWins * jackpotWinnerBB + opponentWins * opponentBB + tableShares * tableShareBB;
-        const feesPaid = actualHandsPerTrial * feePerHand;
-        const netProfit = totalPayout - feesPaid;
+        const totalFeesPaid = (actualHandsPerTrial / 100) * feesPer100;
         
         trials.push({
-          trialNumber: trialNum + 1,
-          bbjsHit: bbjTimes.length,
+          trialNumber: t + 1,
+          bbjsHit,
           jackpotWins,
           opponentWins,
           tableShares,
           totalPayout,
-          feesPaid,
-          netProfit,
-          timeline,
+          feesPaid: totalFeesPaid,
+          netProfit: totalPayout - totalFeesPaid,
+          timeline
         });
       }
       
-      currentTrial += batchSize;
+      currentTrial = batchEnd;
       setSimulationProgress(Math.round((currentTrial / numTrials) * 100));
       
       if (currentTrial < numTrials) {
         requestAnimationFrame(processBatch);
       } else {
-        // Calculate statistics
         const profits = trials.map(t => t.netProfit);
         profits.sort((a, b) => a - b);
         
@@ -516,14 +487,12 @@ const BBJDashboard: React.FC = () => {
         const stdDev = Math.sqrt(variance);
         const profitableCount = profits.filter(p => p >= 0).length;
         
-        // Calculate top/bottom 20% averages
         const twentyPercent = Math.max(1, Math.floor(sortedProfits.length * 0.2));
         const bottom20Profits = sortedProfits.slice(0, twentyPercent);
         const top20Profits = sortedProfits.slice(-twentyPercent);
         const bottom20Avg = bottom20Profits.reduce((a, b) => a + b, 0) / bottom20Profits.length;
         const top20Avg = top20Profits.reduce((a, b) => a + b, 0) / top20Profits.length;
         
-        // Convert to BB/100
         const bottom20BBper100 = (bottom20Avg / actualHandsPerTrial) * 100;
         const top20BBper100 = (top20Avg / actualHandsPerTrial) * 100;
         
@@ -590,17 +559,17 @@ const BBJDashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    const newNachos = Array.from({ length: 54 }, (_, i) => ({
+    const newNachos = Array.from({ length: 14 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: 12 + Math.random() * 28,
-      duration: 40 + Math.random() * 20,
-      delay: Math.random() * 20,
+      size: 14 + Math.random() * 24,
+      duration: 50 + Math.random() * 30,
+      delay: Math.random() * 40,
       rotation: Math.random() * 360,
-      opacity: 0.4 + Math.random() * 0.5,
-      moveX: Math.random() * 200 - 100,
-      moveY: Math.random() * 200 - 100
+      opacity: 0.15 + Math.random() * 0.15,
+      moveX: Math.random() * 80 - 40,
+      moveY: Math.random() * 100 - 50
     }));
     setNachos(newNachos);
   }, []);
@@ -608,35 +577,31 @@ const BBJDashboard: React.FC = () => {
   const eyeOffset = getEyeOffset();
 
   // ============================================
-  // COMPONENTS
+  // HELPER COMPONENTS
   // ============================================
 
   const CartoonNacho = () => (
-    <svg ref={nachoRef} width="90" height="90" viewBox="0 0 100 100" style={{ filter: 'drop-shadow(0 4px 12px rgba(255, 179, 71, 0.4))' }}>
-      <path d="M50 8 L88 85 Q90 92 82 92 L18 92 Q10 92 12 85 Z" fill="#FFB347" stroke="#E09A30" strokeWidth="2"/>
-      <path d="M25 70 Q20 75 22 82 Q24 88 28 85 Q30 80 28 75 Z" fill="#FFD54F" opacity="0.9"/>
-      <path d="M72 65 Q78 72 76 80 Q74 86 70 82 Q68 76 70 70 Z" fill="#FFD54F" opacity="0.9"/>
-      <path d="M48 75 Q45 82 48 88 Q52 92 55 86 Q56 80 52 76 Z" fill="#FFD54F" opacity="0.9"/>
-      <ellipse cx="50" cy="50" rx="22" ry="18" fill="#FFB347" />
+    <svg ref={nachoRef} width="90" height="90" viewBox="0 0 100 100" className="drop-shadow-[0_4px_12px_rgba(212,175,55,0.4)]">
+      <path d="M50 8 L88 85 Q90 92 82 92 L18 92 Q10 92 12 85 Z" fill="#D4AF37" stroke="#A68942" strokeWidth="2"/>
+      <path d="M25 70 Q20 75 22 82 Q24 88 28 85 Q30 80 28 75 Z" fill="#E5C158" opacity="0.9"/>
+      <path d="M72 65 Q78 72 76 80 Q74 86 70 82 Q68 76 70 70 Z" fill="#E5C158" opacity="0.9"/>
+      <path d="M48 75 Q45 82 48 88 Q52 92 55 86 Q56 80 52 76 Z" fill="#E5C158" opacity="0.9"/>
+      <ellipse cx="50" cy="50" rx="22" ry="18" fill="#D4AF37" />
       <ellipse cx="40" cy="48" rx="8" ry="9" fill="white" />
       <ellipse cx="60" cy="48" rx="8" ry="9" fill="white" />
-      <circle cx={40 + eyeOffset.x} cy={48 + eyeOffset.y} r="4" fill="#1a1a1a" style={{ transition: 'cx 0.1s ease-out, cy 0.1s ease-out' }}/>
-      <circle cx={60 + eyeOffset.x} cy={48 + eyeOffset.y} r="4" fill="#1a1a1a" style={{ transition: 'cx 0.1s ease-out, cy 0.1s ease-out' }}/>
+      <circle cx={40 + eyeOffset.x} cy={48 + eyeOffset.y} r="4" fill="#0a0a0a" className="transition-all duration-100"/>
+      <circle cx={60 + eyeOffset.x} cy={48 + eyeOffset.y} r="4" fill="#0a0a0a" className="transition-all duration-100"/>
       <circle cx={38 + eyeOffset.x * 0.5} cy={46 + eyeOffset.y * 0.5} r="1.5" fill="white" opacity="0.8" />
       <circle cx={58 + eyeOffset.x * 0.5} cy={46 + eyeOffset.y * 0.5} r="1.5" fill="white" opacity="0.8" />
-      <path d="M38 62 Q50 72 62 62" fill="none" stroke="#1a1a1a" strokeWidth="3" strokeLinecap="round"/>
-      <path d="M33 38 Q40 35 47 38" fill="none" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" />
-      <path d="M53 38 Q60 35 67 38" fill="none" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" />
-      <circle cx="30" cy="30" r="2" fill="#E09A30" opacity="0.5" />
-      <circle cx="70" cy="35" r="2.5" fill="#E09A30" opacity="0.5" />
-      <circle cx="35" cy="80" r="2" fill="#E09A30" opacity="0.5" />
-      <circle cx="65" cy="78" r="1.5" fill="#E09A30" opacity="0.5" />
+      <path d="M38 62 Q50 72 62 62" fill="none" stroke="#0a0a0a" strokeWidth="3" strokeLinecap="round"/>
+      <path d="M33 38 Q40 35 47 38" fill="none" stroke="#0a0a0a" strokeWidth="2" strokeLinecap="round" />
+      <path d="M53 38 Q60 35 67 38" fill="none" stroke="#0a0a0a" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
 
   const NachoTriangle = ({ size, opacity }: { size: number; opacity: number }) => (
     <svg width={size} height={size} viewBox="0 0 20 20" style={{ opacity }}>
-      <path d="M10 2 L18 17 L2 17 Z" fill="#FFB347" opacity="0.8"/>
+      <path d="M10 2 L18 17 L2 17 Z" fill="#D4AF37" opacity="0.6"/>
     </svg>
   );
 
@@ -664,7 +629,6 @@ const BBJDashboard: React.FC = () => {
     return `${sign}${value.toFixed(1)} bb`;
   };
 
-  // Format value for simulator - can be BB or $
   const formatSimValue = (bbValue: number, showSign: boolean = false): string => {
     const stakeOption = STAKE_OPTIONS.find(s => s.value === selectedStake) || STAKE_OPTIONS[4];
     const dollarValue = bbValue * stakeOption.bbValue;
@@ -691,37 +655,33 @@ const BBJDashboard: React.FC = () => {
   };
 
   const getEVColor = (value: number): string => {
-    if (value > 0) return '#22c55e';
-    if (value < 0) return '#ef4444';
-    return 'rgba(255,255,255,0.6)';
+    if (value > 0) return 'text-emerald-400';
+    if (value < 0) return 'text-red-400';
+    return 'text-zinc-400';
   };
 
-  const getStatusColor = (isProfitable: boolean): string => {
-    return isProfitable ? '#22c55e' : '#ef4444';
+  const getEVColorRaw = (value: number): string => {
+    if (value > 0) return '#34d399';
+    if (value < 0) return '#f87171';
+    return '#a1a1aa';
   };
 
   // Progress bar component
   const ProgressBar = ({ value, max, color, showLabel = true }: { value: number; max: number; color: string; showLabel?: boolean }) => {
     const percentage = Math.min((value / max) * 100, 100);
     return (
-      <div style={{ width: '100%' }}>
-        <div style={{
-          width: '100%',
-          height: '8px',
-          background: 'rgba(255,255,255,0.1)',
-          borderRadius: '4px',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            width: `${percentage}%`,
-            height: '100%',
-            background: `linear-gradient(90deg, ${color}88, ${color})`,
-            borderRadius: '4px',
-            transition: 'width 0.5s ease-out'
-          }} />
+      <div className="w-full">
+        <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+          <motion.div 
+            className="h-full rounded-full"
+            style={{ background: `linear-gradient(90deg, ${color}88, ${color})` }}
+            initial={{ width: 0 }}
+            animate={{ width: `${percentage}%` }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+          />
         </div>
         {showLabel && (
-          <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginTop: '4px', textAlign: 'right' }}>
+          <div className="text-[11px] text-zinc-500 mt-1 text-right">
             {percentage.toFixed(1)}%
           </div>
         )}
@@ -735,7 +695,6 @@ const BBJDashboard: React.FC = () => {
     const normalizedValue = ((value - min) / range) * 100;
     const clampedValue = Math.max(0, Math.min(100, normalizedValue));
     
-    // Color gradient from red (-EV) through yellow (0) to green (+EV)
     const getGaugeColor = (pct: number): string => {
       if (pct < 50) {
         const red = 239;
@@ -749,9 +708,8 @@ const BBJDashboard: React.FC = () => {
     };
 
     return (
-      <div style={{ position: 'relative', width: '100%', height: '120px' }}>
-        <svg viewBox="0 0 200 100" style={{ width: '100%', height: '100%' }}>
-          {/* Background arc */}
+      <div className="relative w-full h-[120px]">
+        <svg viewBox="0 0 200 100" className="w-full h-full">
           <path
             d="M 20 90 A 80 80 0 0 1 180 90"
             fill="none"
@@ -759,17 +717,17 @@ const BBJDashboard: React.FC = () => {
             strokeWidth="12"
             strokeLinecap="round"
           />
-          {/* Colored arc based on value */}
-          <path
+          <motion.path
             d="M 20 90 A 80 80 0 0 1 180 90"
             fill="none"
             stroke={getGaugeColor(clampedValue)}
             strokeWidth="12"
             strokeLinecap="round"
             strokeDasharray={`${clampedValue * 2.51} 251`}
-            style={{ transition: 'stroke-dasharray 0.5s ease-out, stroke 0.5s ease-out' }}
+            initial={{ strokeDasharray: '0 251' }}
+            animate={{ strokeDasharray: `${clampedValue * 2.51} 251` }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
           />
-          {/* Center value display */}
           <text
             x="100"
             y="70"
@@ -777,6 +735,7 @@ const BBJDashboard: React.FC = () => {
             fill={getGaugeColor(clampedValue)}
             fontSize="24"
             fontWeight="700"
+            className="font-bold"
           >
             {value >= 0 ? '+' : ''}{value.toFixed(2)}
           </text>
@@ -789,7 +748,6 @@ const BBJDashboard: React.FC = () => {
           >
             bb/100
           </text>
-          {/* Min/Max labels */}
           <text x="20" y="98" textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="10">
             {min.toFixed(1)}
           </text>
@@ -801,62 +759,7 @@ const BBJDashboard: React.FC = () => {
     );
   };
 
-  // Bar chart component
-  const BarChart = ({ data, labelKey, valueKey, maxValue }: { data: any[]; labelKey: string; valueKey: string; maxValue?: number }) => {
-    const max = maxValue || Math.max(...data.map(d => Math.abs(d[valueKey])));
-    
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        {data.map((item, index) => {
-          const value = item[valueKey];
-          const isPositive = value >= 0;
-          const width = (Math.abs(value) / max) * 100;
-          
-          return (
-            <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ width: '80px', fontSize: '11px', color: 'rgba(255,255,255,0.6)', textAlign: 'right', flexShrink: 0 }}>
-                {item[labelKey]}
-              </div>
-              <div style={{ flex: 1, height: '24px', position: 'relative' }}>
-                <div style={{
-                  position: 'absolute',
-                  left: isPositive ? '50%' : `${50 - width / 2}%`,
-                  width: `${width / 2}%`,
-                  height: '100%',
-                  background: isPositive 
-                    ? 'linear-gradient(90deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.8))' 
-                    : 'linear-gradient(90deg, rgba(239, 68, 68, 0.8), rgba(239, 68, 68, 0.3))',
-                  borderRadius: '4px',
-                  transition: 'all 0.3s ease-out'
-                }} />
-                {/* Center line */}
-                <div style={{
-                  position: 'absolute',
-                  left: '50%',
-                  top: 0,
-                  bottom: 0,
-                  width: '1px',
-                  background: 'rgba(255,255,255,0.2)'
-                }} />
-              </div>
-              <div style={{ 
-                width: '70px', 
-                fontSize: '12px', 
-                fontWeight: '600',
-                color: getEVColor(value),
-                textAlign: 'left',
-                flexShrink: 0
-              }}>
-                {value >= 0 ? '+' : ''}{value.toFixed(2)}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-
-  // Line chart for simulation results showing bankroll over time
+  // Line chart for simulation results
   const SimulationLineChart = ({ results }: { results: SimulationResults }) => {
     const chartWidth = 700;
     const chartHeight = 300;
@@ -864,14 +767,11 @@ const BBJDashboard: React.FC = () => {
     const innerWidth = chartWidth - padding.left - padding.right;
     const innerHeight = chartHeight - padding.top - padding.bottom;
     
-    // Get BB value for conversion
     const stakeOption = STAKE_OPTIONS.find(s => s.value === selectedStake) || STAKE_OPTIONS[4];
     const bbValue = stakeOption.bbValue;
     
-    // Convert value based on display mode
     const convertValue = (bb: number) => displayInDollars ? bb * bbValue : bb;
     
-    // Get all profit values to determine Y scale
     const allProfits = results.trials.flatMap(t => t.timeline.map(p => convertValue(p.profit)));
     const minProfit = Math.min(...allProfits);
     const maxProfit = Math.max(...allProfits);
@@ -882,23 +782,18 @@ const BBJDashboard: React.FC = () => {
     
     const maxHands = results.handsPerTrial;
     
-    // Scale functions
     const scaleX = (hands: number) => padding.left + (hands / maxHands) * innerWidth;
     const scaleY = (profit: number) => padding.top + innerHeight - ((convertValue(profit) - yMin) / (yMax - yMin)) * innerHeight;
     
-    // Y-axis zero line position
     const zeroY = padding.top + innerHeight - ((0 - yMin) / (yMax - yMin)) * innerHeight;
     
-    // Generate path for each trial (limit to 20 for performance)
     const visibleTrials = results.trials;
     
-    // Color palette for lines
     const getLineColor = (index: number, profit: number) => {
       if (profit >= 0) return `hsla(142, 70%, ${50 + (index % 3) * 10}%, 0.6)`;
       return `hsla(0, 70%, ${50 + (index % 3) * 10}%, 0.6)`;
     };
     
-    // Format axis labels
     const formatAxisLabel = (value: number) => {
       if (Math.abs(value) >= 1000000000) return `${(value / 1000000000).toFixed(0)}B`;
       if (Math.abs(value) >= 1000000) return `${(value / 1000000).toFixed(0)}M`;
@@ -906,85 +801,67 @@ const BBJDashboard: React.FC = () => {
       return value.toFixed(0);
     };
     
-    // Format Y-axis label with unit
     const formatYAxisLabel = (value: number) => {
       const formatted = formatAxisLabel(value);
       return displayInDollars ? `$${formatted}` : `${formatted} bb`;
     };
-    
+
     return (
-      <div style={{ width: '100%', overflowX: 'auto' }}>
-        <svg width={chartWidth} height={chartHeight} style={{ display: 'block', margin: '0 auto' }}>
-          {/* Background */}
-          <rect x={padding.left} y={padding.top} width={innerWidth} height={innerHeight} fill="rgba(255,255,255,0.02)" rx="4" />
-          
+      <div className="w-full overflow-x-auto">
+        <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full min-w-[600px]">
           {/* Grid lines */}
           {[0.25, 0.5, 0.75].map(pct => (
-            <line
+            <line 
               key={pct}
-              x1={padding.left}
-              y1={padding.top + innerHeight * pct}
-              x2={padding.left + innerWidth}
-              y2={padding.top + innerHeight * pct}
-              stroke="rgba(255,255,255,0.05)"
-              strokeDasharray="4,4"
+              x1={padding.left} 
+              y1={padding.top + innerHeight * pct} 
+              x2={padding.left + innerWidth} 
+              y2={padding.top + innerHeight * pct} 
+              stroke="rgba(255,255,255,0.05)" 
+              strokeDasharray="4"
             />
           ))}
           
-          {/* Zero line (if visible) */}
+          {/* Zero line */}
           {yMin < 0 && yMax > 0 && (
-            <line
-              x1={padding.left}
-              y1={zeroY}
-              x2={padding.left + innerWidth}
-              y2={zeroY}
-              stroke="rgba(255,255,255,0.3)"
-              strokeWidth="2"
+            <line 
+              x1={padding.left} 
+              y1={zeroY} 
+              x2={padding.left + innerWidth} 
+              y2={zeroY} 
+              stroke="rgba(212, 175, 55, 0.3)" 
+              strokeWidth="1"
             />
           )}
           
           {/* Trial lines */}
-          {visibleTrials.map((trial, index) => {
-            const pathData = trial.timeline
-              .map((point, i) => `${i === 0 ? 'M' : 'L'} ${scaleX(point.hands)} ${scaleY(point.profit)}`)
-              .join(' ');
-            
+          {visibleTrials.map((trial, idx) => {
+            const points = trial.timeline.map(p => `${scaleX(p.hands)},${scaleY(p.profit)}`).join(' ');
             return (
-              <path
+              <polyline
                 key={trial.trialNumber}
-                d={pathData}
+                points={points}
                 fill="none"
-                stroke={getLineColor(index, trial.netProfit)}
+                stroke={getLineColor(idx, trial.netProfit)}
                 strokeWidth="1.5"
-                strokeLinecap="round"
                 strokeLinejoin="round"
               />
             );
           })}
           
-          {/* Average line (highlighted) */}
-          {results.trials.length > 0 && (() => {
-            // Calculate average timeline
-            const avgTimeline: { hands: number; profit: number }[] = [];
-            const sampleCount = results.trials[0].timeline.length;
-            
-            for (let i = 0; i < sampleCount; i++) {
-              const hands = results.trials[0].timeline[i].hands;
-              const avgProfit = results.trials.reduce((sum, t) => sum + t.timeline[i].profit, 0) / results.trials.length;
-              avgTimeline.push({ hands, profit: avgProfit });
-            }
-            
-            const pathData = avgTimeline
-              .map((point, i) => `${i === 0 ? 'M' : 'L'} ${scaleX(point.hands)} ${scaleY(point.profit)}`)
-              .join(' ');
-            
+          {/* Average line */}
+          {(() => {
+            const avgTimeline = Array.from({ length: visibleTrials[0]?.timeline.length || 0 }, (_, i) => {
+              const avgProfit = visibleTrials.reduce((sum, t) => sum + t.timeline[i].profit, 0) / visibleTrials.length;
+              return { hands: visibleTrials[0]?.timeline[i].hands || 0, profit: avgProfit };
+            });
+            const points = avgTimeline.map(p => `${scaleX(p.hands)},${scaleY(p.profit)}`).join(' ');
             return (
-              <path
-                d={pathData}
+              <polyline
+                points={points}
                 fill="none"
-                stroke="#FFB347"
+                stroke="#D4AF37"
                 strokeWidth="3"
-                strokeLinecap="round"
                 strokeLinejoin="round"
                 opacity="0.9"
               />
@@ -1051,7 +928,7 @@ const BBJDashboard: React.FC = () => {
           {/* Legend */}
           <g transform={`translate(${padding.left + innerWidth - 120}, ${padding.top + 10})`}>
             <rect x="-5" y="-5" width="130" height="50" fill="rgba(0,0,0,0.5)" rx="4" />
-            <line x1="0" y1="8" x2="25" y2="8" stroke="#FFB347" strokeWidth="3" />
+            <line x1="0" y1="8" x2="25" y2="8" stroke="#D4AF37" strokeWidth="3" />
             <text x="30" y="12" fill="rgba(255,255,255,0.7)" fontSize="10">Average</text>
             <line x1="0" y1="25" x2="25" y2="25" stroke="rgba(34, 197, 94, 0.6)" strokeWidth="1.5" />
             <text x="30" y="29" fill="rgba(255,255,255,0.7)" fontSize="10">Winning Trial</text>
@@ -1068,557 +945,292 @@ const BBJDashboard: React.FC = () => {
   // ============================================
 
   return (
-    <div style={{minHeight: '100vh', background: '#0a0a0a', position: 'relative', overflow: 'hidden', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+    <div className="min-h-screen bg-zinc-950 relative overflow-hidden font-['Inter',_-apple-system,_BlinkMacSystemFont,_sans-serif]">
       {/* Floating Nachos Background */}
-      <div style={{position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1}}>
+      <div className="fixed inset-0 pointer-events-none z-0">
         {nachos.map(nacho => (
-          <div
+          <motion.div
             key={nacho.id}
+            className="absolute"
             style={{
-              position: 'absolute',
               left: `${nacho.x}%`,
               top: `${nacho.y}%`,
-              animation: `floatNacho ${nacho.duration}s ease-in-out infinite`,
-              animationDelay: `${nacho.delay}s`,
-              '--moveX': `${nacho.moveX}px`,
-              '--moveY': `${nacho.moveY}px`
-            } as React.CSSProperties}
+            }}
+            animate={{
+              x: [0, nacho.moveX, 0],
+              y: [0, nacho.moveY, 0],
+              rotate: [0, 180, 360],
+            }}
+            transition={{
+              duration: nacho.duration,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: nacho.delay,
+            }}
           >
             <NachoTriangle size={nacho.size} opacity={nacho.opacity} />
-          </div>
+          </motion.div>
         ))}
       </div>
-      
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        
-        @keyframes floatNacho {
-          0%, 100% { transform: translate(0, 0) rotate(0deg); }
-          50% { transform: translate(var(--moveX), var(--moveY)) rotate(180deg); }
-        }
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes traceBorder {
-          0% { offset-distance: 0%; }
-          100% { offset-distance: 100%; }
-        }
-        @keyframes bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-5px); }
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.8; transform: scale(1.02); }
-        }
-        @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        
-        .glass-card {
-          background: rgba(20, 20, 20, 0.6);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .card-hover {
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card-hover:hover {
-          transform: translateY(-4px);
-        }
-        .input-focus {
-          transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        .input-focus:focus {
-          border-color: #FFB347 !important;
-          box-shadow: 0 0 0 3px rgba(255, 179, 71, 0.15);
-          outline: none;
-        }
-        .btn-hover {
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .btn-hover:hover:not(:disabled) {
-          transform: translateY(-2px);
-        }
-        .btn-hover:active:not(:disabled) {
-          transform: translateY(0);
-        }
-        
-        .spark-border {
-          position: relative;
-          overflow: hidden;
-          border-radius: 16px;
-          background: #0a0a0a;
-        }
-        
-        .spark-border::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          padding: 2px;
-          background: linear-gradient(135deg, rgba(255, 179, 71, 0.3), rgba(255, 179, 71, 0.1));
-          -webkit-mask: 
-            linear-gradient(#fff 0 0) content-box, 
-            linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          z-index: 1;
-          pointer-events: none;
-        }
-        
-        .spark-border::after {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100px;
-          height: 2px;
-          background: linear-gradient(90deg, transparent 0%, #FFB347 50%, #FFB347 100%);
-          box-shadow: 0 0 10px 1px rgba(255, 179, 71, 0.6);
-          offset-path: rect(0 100% 100% 0 round 16px);
-          animation: traceBorder 5s linear infinite;
-          offset-rotate: auto;
-          offset-anchor: center;
-          z-index: 2;
-          pointer-events: none;
-        }
 
-        .input-field {
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 8px;
-          padding: 12px 16px;
-          color: #ffffff;
-          font-size: 14px;
-          width: 100%;
-          box-sizing: border-box;
-        }
-        .input-field::placeholder {
-          color: rgba(255, 255, 255, 0.3);
-        }
+      {/* Radial gradient overlay */}
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(212,175,55,0.08)_0%,transparent_50%)] pointer-events-none z-0" />
 
-        .stat-card {
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.06);
-          border-radius: 12px;
-          padding: 20px;
-          transition: all 0.3s ease;
-        }
-        .stat-card:hover {
-          background: rgba(255, 255, 255, 0.05);
-          border-color: rgba(255, 179, 71, 0.2);
-        }
-
-        .ev-positive {
-          background: rgba(34, 197, 94, 0.1);
-          border-color: rgba(34, 197, 94, 0.3);
-        }
-        .ev-negative {
-          background: rgba(239, 68, 68, 0.1);
-          border-color: rgba(239, 68, 68, 0.3);
-        }
-        .ev-neutral {
-          background: rgba(255, 179, 71, 0.1);
-          border-color: rgba(255, 179, 71, 0.3);
-        }
-
-        .shimmer-text {
-          background: linear-gradient(90deg, #FFB347 0%, #fff 50%, #FFB347 100%);
-          background-size: 200% 100%;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          animation: shimmer 3s linear infinite;
-        }
-      `}</style>
-
-      <div style={{position: 'relative', zIndex: 2, maxWidth: '1200px', margin: '0 auto', padding: '20px'}}>
+      {/* Main Content */}
+      <div className="relative z-10 max-w-6xl mx-auto px-5 py-6">
         <NachosPokerNavBar />
         
-        {/* Header Banner - CTA */}
-        <div 
-          className="card-hover spark-border"
-          style={{
-            marginBottom: '30px',
-            padding: '28px 32px',
-            animation: 'fadeInUp 0.6s ease-out',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '24px'
-          }}
+        {/* Header Banner */}
+        <motion.div 
+          className="relative mb-8 p-7 rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/10 overflow-hidden"
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
         >
-          <div style={{ flexShrink: 0, animation: 'bounce 2s ease-in-out infinite' }}>
-            <CartoonNacho />
-          </div>
+          {/* Animated border glow */}
+          <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-yellow-500/20 via-transparent to-yellow-500/20 opacity-50" />
           
-          <div style={{ flex: 1 }}>
-            <div style={{fontSize: '12px', color: '#FFB347', fontWeight: '600', marginBottom: '6px', letterSpacing: '0.1em', textTransform: 'uppercase'}}>
-              Crafted by FreeNachos
+          <div className="relative flex items-center gap-6 flex-wrap">
+            <motion.div 
+              className="flex-shrink-0"
+              animate={{ y: [0, -5, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <CartoonNacho />
+            </motion.div>
+            
+            <div className="flex-1 min-w-[280px]">
+              <div className="text-xs text-yellow-500 font-semibold mb-1.5 tracking-[0.1em] uppercase">
+                Crafted by FreeNachos
+              </div>
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-2 leading-tight">
+                The house always wins. <span className="text-zinc-500">But by how much?</span>
+              </h2>
+              <p className="text-sm text-zinc-400 leading-relaxed max-w-lg">
+                Bad Beat Jackpots look tempting — until you do the math. See exactly when the pool makes it worth chasing, and when you're just padding the casino's pockets.
+              </p>
             </div>
-            <h2 style={{fontSize: '22px', fontWeight: '700', color: '#ffffff', marginBottom: '8px', lineHeight: 1.2}}>
-              The house always wins. <span style={{ color: 'rgba(255,255,255,0.5)' }}>But by how much?</span>
-            </h2>
-            <p style={{fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginBottom: '0', lineHeight: 1.5, maxWidth: '480px'}}>
-              Bad Beat Jackpots look tempting — until you do the math. See exactly when the pool makes it worth chasing, and when you're just padding the casino's pockets.
-            </p>
+            
+            <div className="flex flex-col gap-3 flex-shrink-0">
+              <a 
+                href="https://www.nachospoker.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-zinc-950 px-5 py-3 rounded-xl font-semibold text-sm inline-flex items-center gap-2 hover:shadow-[0_0_20px_rgba(234,179,8,0.3)] transition-all duration-300 hover:-translate-y-0.5"
+              >
+                Join Our CFP <ExternalLink size={14} />
+              </a>
+              <a 
+                href="https://www.freenachoscoaching.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-transparent border border-yellow-500/50 text-yellow-500 px-5 py-2.5 rounded-xl font-semibold text-sm inline-flex items-center gap-2 hover:bg-yellow-500/10 hover:border-yellow-500 transition-all duration-300"
+              >
+                Private Coaching <ExternalLink size={14} />
+              </a>
+            </div>
           </div>
-          
-          <div style={{display: 'flex', flexDirection: 'column', gap: '10px', flexShrink: 0}}>
-            <a 
-              href="https://www.nachospoker.com/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="btn-hover"
-              style={{
-                background: '#FFB347',
-                color: '#0a0a0a',
-                padding: '12px 20px',
-                borderRadius: '8px',
-                fontWeight: '600',
-                fontSize: '13px',
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-            >
-              Join Our CFP <ExternalLink size={14} />
-            </a>
-            <a 
-              href="https://www.freenachoscoaching.com/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="btn-hover"
-              style={{
-                background: 'transparent',
-                border: '1px solid rgba(255, 179, 71, 0.5)',
-                color: '#FFB347',
-                padding: '10px 20px',
-                borderRadius: '8px',
-                fontWeight: '600',
-                fontSize: '13px',
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-            >
-              Private Coaching <ExternalLink size={14} />
-            </a>
-          </div>
-        </div>
+        </motion.div>
 
-        {/* Data Methodology Explanation */}
-        <div 
-          className="glass-card"
-          style={{
-            borderRadius: '16px', 
-            padding: '24px 32px', 
-            marginBottom: '30px',
-            animation: 'fadeInUp 0.6s ease-out 0.05s both',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            background: 'rgba(255, 255, 255, 0.02)'
-          }}
+        {/* Data Methodology Section */}
+        <motion.div 
+          className="rounded-3xl p-6 md:p-8 mb-8 bg-white/[0.02] backdrop-blur-xl border border-white/10"
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.1 }}
         >
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-            <div style={{ 
-              flexShrink: 0, 
-              background: 'rgba(255, 179, 71, 0.15)', 
-              borderRadius: '10px', 
-              padding: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <Database size={24} color="#FFB347" />
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 bg-yellow-500/15 rounded-2xl p-3">
+              <Database size={24} className="text-yellow-500" />
             </div>
-            <div style={{ flex: 1 }}>
-              <h3 style={{ color: '#ffffff', fontSize: '16px', fontWeight: '700', marginBottom: '12px' }}>
-                About This Data
-              </h3>
+            <div className="flex-1">
+              <h3 className="text-white text-lg font-bold mb-3">About This Data</h3>
               
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', lineHeight: 1.8, margin: '0 0 12px 0' }}>
-                Based on <strong style={{ color: '#FFB347' }}>42.1 million hands</strong> from GGPoker NL100+. 
-                We found <strong style={{ color: '#FFB347' }}>624 BBJ triggers</strong> — a frequency of <strong>1 in 67,500 hands</strong>.
+              <p className="text-zinc-400 text-sm leading-relaxed mb-3">
+                Based on <strong className="text-yellow-500">42.1 million hands</strong> from GGPoker NL100+. 
+                We found <strong className="text-yellow-500">624 BBJ triggers</strong> — a frequency of <strong>1 in 67,500 hands</strong>.
               </p>
               
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', lineHeight: 1.6, margin: '0 0 20px 0' }}>
+              <p className="text-zinc-500 text-xs leading-relaxed mb-5">
                 Sample: 8.2M regular hands + 33.9M Rush & Cash. Rush plays faster (new table each hand) but BBJ rules are identical — combining both ensures robust data.
               </p>
               
-              {/* Two key numbers */}
-              <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
-                <div style={{ flex: 1, background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.15)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginBottom: '6px' }}>YOUR JACKPOT "RAKE"</div>
-                  <div style={{ fontSize: '28px', color: '#ef4444', fontWeight: '700' }}>2.08 bb/100</div>
+              {/* Key Numbers */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 text-center">
+                  <div className="text-[11px] text-zinc-500 mb-1.5 uppercase tracking-wide">Your Jackpot "Rake"</div>
+                  <div className="text-2xl md:text-3xl text-red-400 font-bold">2.08 bb/100</div>
                 </div>
-                <div style={{ flex: 1, background: 'rgba(255, 179, 71, 0.08)', border: '1px solid rgba(255, 179, 71, 0.15)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginBottom: '6px' }}>BREAK-EVEN POOL</div>
-                  <div style={{ fontSize: '28px', color: '#FFB347', fontWeight: '700' }}>~$2.02M</div>
+                <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-4 text-center">
+                  <div className="text-[11px] text-zinc-500 mb-1.5 uppercase tracking-wide">Break-Even Pool</div>
+                  <div className="text-2xl md:text-3xl text-yellow-500 font-bold">~$2.02M</div>
                 </div>
               </div>
 
-              {/* Simple verdict */}
-              <div style={{ 
-                background: 'rgba(255,255,255,0.03)', 
-                border: '1px solid rgba(255,255,255,0.08)', 
-                borderRadius: '8px', 
-                padding: '12px',
-                fontSize: '13px',
-                color: 'rgba(255,255,255,0.6)',
-                lineHeight: 1.6
-              }}>
-                <strong style={{ color: 'rgba(255,255,255,0.8)' }}>Note on variance:</strong> Even with 42M hands and 624 observed BBJs, statistical variance means the true frequency could range from ~1 in 55K to ~1 in 85K hands. Use these numbers as strong estimates, not guarantees.
-              </div>
-              
-              {/* Your Odds of Winning */}
-              <div style={{ marginTop: '24px' }}>
-                <h4 style={{ color: '#FFB347', marginBottom: '16px', fontSize: '13px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  Your Odds of Winning
-                </h4>
-                
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px' }}>
-                  <div style={{ background: 'rgba(255, 179, 71, 0.08)', borderRadius: '8px', padding: '14px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)', marginBottom: '6px' }}>SEE BBJ AT TABLE</div>
-                    <div style={{ fontSize: '18px', fontWeight: '700', color: '#FFB347' }}>1 in 67.5K</div>
-                  </div>
-                  <div style={{ background: 'rgba(34, 197, 94, 0.08)', borderRadius: '8px', padding: '14px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)', marginBottom: '6px' }}>WIN JACKPOT (10%)</div>
-                    <div style={{ fontSize: '18px', fontWeight: '700', color: '#22c55e' }}>1 in 402K</div>
-                  </div>
-                  <div style={{ background: 'rgba(59, 130, 246, 0.08)', borderRadius: '8px', padding: '14px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)', marginBottom: '6px' }}>WIN OPPONENT (3%)</div>
-                    <div style={{ fontSize: '18px', fontWeight: '700', color: '#60a5fa' }}>1 in 402K</div>
-                  </div>
-                  <div style={{ background: 'rgba(168, 85, 247, 0.08)', borderRadius: '8px', padding: '14px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)', marginBottom: '6px' }}>TABLE SHARE (0.8%)</div>
-                    <div style={{ fontSize: '18px', fontWeight: '700', color: '#a855f7' }}>1 in 102K</div>
-                  </div>
-                </div>
+              {/* Verdict */}
+              <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-3 text-sm text-zinc-400 leading-relaxed">
+                <strong className="text-yellow-500">TL;DR:</strong> When the total pool exceeds ~$2M, playing BBJ tables becomes mathematically +EV. Below that, you're subsidizing other players' jackpot dreams.
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Variance Calculator Card */}
-        <div 
-          className="card-hover glass-card"
-          style={{
-            borderRadius: '16px', 
-            padding: '40px', 
-            marginBottom: '30px',
-            animation: 'fadeInUp 0.6s ease-out 0.2s both'
-          }}
+        {/* Variance Simulator Section */}
+        <motion.div 
+          className="rounded-3xl p-6 md:p-10 mb-8 bg-white/[0.03] backdrop-blur-xl border border-white/10"
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.15 }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '8px' }}>
-            <LineChart size={28} color="#FFB347" />
-            <h1 style={{
-              textAlign: 'center', 
-              fontSize: '2em', 
-              margin: 0,
-              color: '#ffffff',
-              fontWeight: '700'
-            }}>
-              Monte Carlo Simulator
-            </h1>
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <Calculator size={28} className="text-yellow-500" />
+            <h2 className="text-xl md:text-2xl font-bold text-white">Variance Simulator</h2>
           </div>
-          <p style={{textAlign: 'center', color: 'rgba(255,255,255,0.5)', fontSize: '14px', marginBottom: '30px'}}>
-            Run thousands of simulated poker sessions to see the range of possible outcomes
+          <p className="text-center text-zinc-500 text-sm mb-8">
+            See how BBJ fees and payouts affect your bankroll across thousands of hands
           </p>
 
-          {/* Calculator Inputs */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '24px' }}>
-            {/* Hands Per Trial */}
-            <div className="glass-card" style={{ padding: '20px', borderRadius: '12px' }}>
-              <h3 style={{ color: '#FFB347', marginBottom: '12px', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Hands Per Trial
+          {/* Simulator Controls */}
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+          >
+            {/* Hands per Trial */}
+            <motion.div 
+              className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-5"
+              variants={scaleIn}
+            >
+              <h3 className="text-yellow-500 mb-3 text-xs font-semibold uppercase tracking-wider">
+                Hands per Trial
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>
-                {[100000, 1000000, 10000000, 100000000, 1000000000, 10000000000].map(preset => (
+              <div className="grid grid-cols-2 gap-2">
+                {[100000, 500000, 1000000, 5000000].map(preset => (
                   <button
                     key={preset}
                     onClick={() => setSimulationHands(preset)}
-                    style={{
-                      background: simulationHands === preset ? '#FFB347' : 'rgba(255,255,255,0.08)',
-                      color: simulationHands === preset ? '#0a0a0a' : 'rgba(255,255,255,0.7)',
-                      border: simulationHands === preset ? 'none' : '1px solid rgba(255,255,255,0.1)',
-                      padding: '6px 4px',
-                      borderRadius: '6px',
-                      fontSize: '11px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
+                    className={`py-2 px-3 rounded-lg text-xs font-semibold transition-all duration-200 ${
+                      simulationHands === preset 
+                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-zinc-950' 
+                        : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800 hover:text-white border border-zinc-700'
+                    }`}
                   >
-                    {preset >= 1000000000 ? `${preset / 1000000000}B` : preset >= 1000000 ? `${preset / 1000000}M` : `${preset / 1000}K`}
+                    {preset >= 1000000 ? `${preset / 1000000}M` : `${preset / 1000}K`}
                   </button>
                 ))}
               </div>
-              <div style={{ marginTop: '8px', fontSize: '9px', color: 'rgba(255,255,255,0.4)', textAlign: 'center', lineHeight: 1.4 }}>
-                {(() => {
-                  const handsPerYear = 250 * 20 * 52;
-                  const yearsNeeded = simulationHands / handsPerYear;
-                  const startYear = Math.round(2026 - yearsNeeded);
-                  let era = '';
-                  if (startYear < -3000) era = ' (Bronze Age)';
-                  else if (startYear < -500) era = ' (Ancient Egypt)';
-                  else if (startYear < 0) era = ' (Roman Era)';
-                  else if (startYear < 500) era = ' (Fall of Rome)';
-                  else if (startYear < 1500) era = ' (Medieval)';
-                  const yearDisplay = startYear < 0 ? `${Math.abs(startYear)} BC` : `${startYear}`;
-                  return <>250 hands/hr, 20 hrs/week<br/>= started in <strong style={{ color: '#FFB347' }}>{yearDisplay}</strong>{era}</>;
-                })()}
-              </div>
-            </div>
+            </motion.div>
 
-            {/* Number of Simulations */}
-            <div className="glass-card" style={{ padding: '20px', borderRadius: '12px' }}>
-              <h3 style={{ color: '#FFB347', marginBottom: '12px', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Simulations
+            {/* Number of Trials */}
+            <motion.div 
+              className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-5"
+              variants={scaleIn}
+            >
+              <h3 className="text-yellow-500 mb-3 text-xs font-semibold uppercase tracking-wider">
+                Number of Trials
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px' }}>
-                {[10, 25, 50, 100].map(preset => (
+              <div className="grid grid-cols-2 gap-2">
+                {[50, 100, 200, 500].map(preset => (
                   <button
                     key={preset}
                     onClick={() => setNumTrials(preset)}
-                    style={{
-                      background: numTrials === preset ? '#FFB347' : 'rgba(255,255,255,0.08)',
-                      color: numTrials === preset ? '#0a0a0a' : 'rgba(255,255,255,0.7)',
-                      border: numTrials === preset ? 'none' : '1px solid rgba(255,255,255,0.1)',
-                      padding: '8px 6px',
-                      borderRadius: '6px',
-                      fontSize: '12px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
+                    className={`py-2 px-3 rounded-lg text-xs font-semibold transition-all duration-200 ${
+                      numTrials === preset 
+                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-zinc-950' 
+                        : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800 hover:text-white border border-zinc-700'
+                    }`}
                   >
                     {preset}
                   </button>
                 ))}
               </div>
-              <div style={{ marginTop: '8px', fontSize: '10px', color: 'rgba(255,255,255,0.4)', textAlign: 'center' }}>
-                Total: {(simulationHands * numTrials) >= 1000000000 
-                  ? `${((simulationHands * numTrials) / 1000000000).toFixed(1)}B` 
-                  : `${((simulationHands * numTrials) / 1000000).toFixed(0)}M`} hands
-              </div>
-            </div>
+            </motion.div>
 
             {/* Your Stakes */}
-            <div className="glass-card" style={{ padding: '20px', borderRadius: '12px' }}>
-              <h3 style={{ color: '#FFB347', marginBottom: '12px', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <motion.div 
+              className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-5"
+              variants={scaleIn}
+            >
+              <h3 className="text-yellow-500 mb-3 text-xs font-semibold uppercase tracking-wider">
                 Your Stakes
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '4px' }}>
+              <div className="grid grid-cols-2 gap-1">
                 {STAKE_OPTIONS.slice(0, 6).map(stake => (
                   <button
                     key={stake.value}
                     onClick={() => setSelectedStake(stake.value)}
-                    style={{
-                      background: selectedStake === stake.value ? '#FFB347' : 'rgba(255,255,255,0.08)',
-                      color: selectedStake === stake.value ? '#0a0a0a' : 'rgba(255,255,255,0.7)',
-                      border: selectedStake === stake.value ? 'none' : '1px solid rgba(255,255,255,0.1)',
-                      padding: '6px 4px',
-                      borderRadius: '5px',
-                      fontSize: '10px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
+                    className={`py-1.5 px-2 rounded-md text-[10px] font-semibold transition-all duration-200 ${
+                      selectedStake === stake.value 
+                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-zinc-950' 
+                        : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800 hover:text-white border border-zinc-700'
+                    }`}
                   >
                     {stake.label.replace('$', '')}
                   </button>
                 ))}
               </div>
-            </div>
+            </motion.div>
 
             {/* BBJ Pool Size */}
-            <div className="glass-card" style={{ padding: '20px', borderRadius: '12px' }}>
-              <h3 style={{ color: '#FFB347', marginBottom: '12px', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <motion.div 
+              className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-5"
+              variants={scaleIn}
+            >
+              <h3 className="text-yellow-500 mb-3 text-xs font-semibold uppercase tracking-wider">
                 BBJ Pool Size
               </h3>
               <input
                 type="number"
-                className="input-field input-focus"
+                className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm mb-2 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500/30 outline-none transition-all"
                 value={poolSize}
                 onChange={(e) => setPoolSize(parseFloat(e.target.value) || 0)}
-                style={{ padding: '8px 10px', fontSize: '13px', marginBottom: '8px' }}
               />
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '4px' }}>
+              <div className="grid grid-cols-2 gap-1">
                 {[1800000, 2200000, 2400000].map(preset => (
                   <button
                     key={preset}
                     onClick={() => setPoolSize(preset)}
-                    style={{
-                      background: poolSize === preset ? '#FFB347' : 'rgba(255,255,255,0.08)',
-                      color: poolSize === preset ? '#0a0a0a' : 'rgba(255,255,255,0.6)',
-                      border: 'none',
-                      padding: '5px 4px',
-                      borderRadius: '4px',
-                      fontSize: '9px',
-                      fontWeight: '600',
-                      cursor: 'pointer'
-                    }}
+                    className={`py-1 px-2 rounded-md text-[9px] font-semibold transition-all duration-200 ${
+                      poolSize === preset 
+                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-zinc-950' 
+                        : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800 border border-zinc-700'
+                    }`}
                   >
                     ${(preset / 1000000).toFixed(1)}M
                   </button>
                 ))}
                 <button
                   onClick={() => setPoolSize(2017000)}
-                  style={{
-                    background: poolSize === 2017000 ? '#22c55e' : 'rgba(34, 197, 94, 0.15)',
-                    color: poolSize === 2017000 ? '#0a0a0a' : '#22c55e',
-                    border: poolSize === 2017000 ? 'none' : '1px solid rgba(34, 197, 94, 0.3)',
-                    padding: '5px 4px',
-                    borderRadius: '4px',
-                    fontSize: '9px',
-                    fontWeight: '700',
-                    cursor: 'pointer'
-                  }}
+                  className={`py-1 px-2 rounded-md text-[9px] font-bold transition-all duration-200 ${
+                    poolSize === 2017000 
+                      ? 'bg-emerald-500 text-zinc-950' 
+                      : 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30'
+                  }`}
                 >
                   Break-even
                 </button>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Run Simulation Button */}
-          <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-            <button
+          <div className="text-center mb-8">
+            <motion.button
               onClick={runSimulation}
               disabled={isCalculating}
-              className="btn-hover"
-              style={{
-                background: isCalculating ? 'rgba(255, 179, 71, 0.3)' : '#FFB347',
-                color: isCalculating ? 'rgba(0,0,0,0.5)' : '#0a0a0a',
-                padding: '16px 48px',
-                borderRadius: '10px',
-                fontWeight: '700',
-                fontSize: '16px',
-                border: 'none',
-                cursor: isCalculating ? 'not-allowed' : 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '10px',
-                boxShadow: isCalculating ? 'none' : '0 4px 20px rgba(255, 179, 71, 0.3)',
-                minWidth: '280px',
-                justifyContent: 'center'
-              }}
+              className={`px-12 py-4 rounded-2xl font-bold text-base inline-flex items-center gap-3 transition-all duration-300 ${
+                isCalculating 
+                  ? 'bg-yellow-500/30 text-zinc-600 cursor-not-allowed' 
+                  : 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-zinc-950 hover:shadow-[0_0_30px_rgba(234,179,8,0.4)] hover:-translate-y-1'
+              }`}
+              whileTap={{ scale: isCalculating ? 1 : 0.98 }}
             >
               {isCalculating ? (
                 <>
-                  <RefreshCw size={20} style={{ animation: 'spin 1s linear infinite' }} />
+                  <RefreshCw size={20} className="animate-spin" />
                   Simulating... {simulationProgress}%
                 </>
               ) : (
@@ -1627,66 +1239,58 @@ const BBJDashboard: React.FC = () => {
                   Run {numTrials} Simulations
                 </>
               )}
-            </button>
+            </motion.button>
+            
             {isCalculating && (
-              <div style={{ marginTop: '12px', maxWidth: '400px', margin: '12px auto 0' }}>
-                <div style={{
-                  width: '100%',
-                  height: '6px',
-                  background: 'rgba(255,255,255,0.1)',
-                  borderRadius: '3px',
-                  overflow: 'hidden'
-                }}>
-                  <div style={{
-                    width: `${simulationProgress}%`,
-                    height: '100%',
-                    background: 'linear-gradient(90deg, #FFB347, #22c55e)',
-                    borderRadius: '3px',
-                    transition: 'width 0.3s ease-out'
-                  }} />
+              <motion.div 
+                className="mt-4 max-w-md mx-auto"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <div className="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                  <motion.div 
+                    className="h-full bg-gradient-to-r from-yellow-500 to-emerald-500 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${simulationProgress}%` }}
+                    transition={{ duration: 0.3 }}
+                  />
                 </div>
-              </div>
+              </motion.div>
             )}
           </div>
 
-          {/* Simulation Results with Line Chart */}
+          {/* Simulation Results */}
           {simulationResults && !isCalculating && (
-            <div style={{ animation: 'fadeIn 0.4s ease-out' }}>
-              <h3 style={{ color: '#ffffff', fontSize: '18px', fontWeight: '600', marginBottom: '16px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-                <BarChart3 size={20} color="#FFB347" />
-                Results: {simulationResults.totalTrials} simulations of {simulationResults.handsPerTrial >= 1000000000 ? `${(simulationResults.handsPerTrial / 1000000000)}B` : simulationResults.handsPerTrial >= 1000000 ? `${(simulationResults.handsPerTrial / 1000000)}M` : `${(simulationResults.handsPerTrial / 1000).toLocaleString()}K`} hands each
+            <motion.div
+              variants={fadeIn}
+              initial="hidden"
+              animate="visible"
+            >
+              <h3 className="text-white text-lg font-semibold mb-4 text-center flex items-center justify-center gap-3">
+                <BarChart3 size={20} className="text-yellow-500" />
+                Results: {simulationResults.totalTrials} simulations of {simulationResults.handsPerTrial >= 1000000 ? `${(simulationResults.handsPerTrial / 1000000)}M` : `${(simulationResults.handsPerTrial / 1000)}K`} hands each
               </h3>
               
               {/* Display Toggle */}
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                <div style={{ display: 'flex', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.15)' }}>
+              <div className="flex justify-center mb-6">
+                <div className="inline-flex rounded-xl overflow-hidden border border-zinc-700">
                   <button
                     onClick={() => setDisplayInDollars(false)}
-                    style={{
-                      padding: '8px 20px',
-                      background: !displayInDollars ? '#FFB347' : 'rgba(255,255,255,0.08)',
-                      color: !displayInDollars ? '#0a0a0a' : 'rgba(255,255,255,0.7)',
-                      border: 'none',
-                      fontSize: '12px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
+                    className={`px-5 py-2 text-xs font-semibold transition-all duration-200 ${
+                      !displayInDollars 
+                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-zinc-950' 
+                        : 'bg-zinc-800/50 text-zinc-400 hover:text-white'
+                    }`}
                   >
                     Show in BB
                   </button>
                   <button
                     onClick={() => setDisplayInDollars(true)}
-                    style={{
-                      padding: '8px 20px',
-                      background: displayInDollars ? '#FFB347' : 'rgba(255,255,255,0.08)',
-                      color: displayInDollars ? '#0a0a0a' : 'rgba(255,255,255,0.7)',
-                      border: 'none',
-                      fontSize: '12px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
+                    className={`px-5 py-2 text-xs font-semibold transition-all duration-200 ${
+                      displayInDollars 
+                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-zinc-950' 
+                        : 'bg-zinc-800/50 text-zinc-400 hover:text-white'
+                    }`}
                   >
                     Show in $
                   </button>
@@ -1694,123 +1298,109 @@ const BBJDashboard: React.FC = () => {
               </div>
 
               {/* Line Chart */}
-              <div className="glass-card" style={{ padding: '24px', borderRadius: '12px', marginBottom: '24px' }}>
-                <h4 style={{ color: '#FFB347', marginBottom: '16px', fontSize: '14px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 mb-6">
+                <h4 className="text-yellow-500 mb-4 text-sm font-semibold uppercase tracking-wider flex items-center gap-2">
                   <LineChart size={16} /> Bankroll Over Time ({simulationResults.totalTrials} trials shown)
                 </h4>
                 <SimulationLineChart results={simulationResults} />
-                <div style={{ marginTop: '12px', textAlign: 'center', fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>
+                <div className="mt-3 text-center text-[11px] text-zinc-500">
                   Lines trend down from fees ({BBJ_CONSTANTS.bbPer100Fees.toFixed(2)} bb/100), jump up when BBJ hits
                 </div>
               </div>
 
               {/* Summary Statistics */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', marginBottom: '24px' }}>
-                <div className="stat-card">
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px', textTransform: 'uppercase' }}>
-                    Average BB/100
-                  </div>
-                  <div style={{ fontSize: '24px', fontWeight: '700', color: getEVColor(simulationResults.averageProfit) }}>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <motion.div 
+                  className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-5"
+                  variants={scaleIn}
+                >
+                  <div className="text-[11px] text-zinc-500 mb-2 uppercase tracking-wide">Average BB/100</div>
+                  <div className={`text-2xl font-bold ${getEVColor(simulationResults.averageProfit)}`}>
                     {((simulationResults.averageProfit / simulationResults.handsPerTrial) * 100) >= 0 ? '+' : ''}{((simulationResults.averageProfit / simulationResults.handsPerTrial) * 100).toFixed(4)}
                   </div>
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>
-                    across all {simulationResults.totalTrials} trials
-                  </div>
-                </div>
+                  <div className="text-[11px] text-zinc-600 mt-1">across all {simulationResults.totalTrials} trials</div>
+                </motion.div>
 
-                <div className="stat-card">
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px', textTransform: 'uppercase' }}>
-                    Median BB/100
-                  </div>
-                  <div style={{ fontSize: '24px', fontWeight: '700', color: getEVColor(simulationResults.medianProfit) }}>
+                <motion.div 
+                  className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-5"
+                  variants={scaleIn}
+                >
+                  <div className="text-[11px] text-zinc-500 mb-2 uppercase tracking-wide">Median BB/100</div>
+                  <div className={`text-2xl font-bold ${getEVColor(simulationResults.medianProfit)}`}>
                     {((simulationResults.medianProfit / simulationResults.handsPerTrial) * 100) >= 0 ? '+' : ''}{((simulationResults.medianProfit / simulationResults.handsPerTrial) * 100).toFixed(4)}
                   </div>
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>
-                    typical outcome
-                  </div>
-                </div>
+                  <div className="text-[11px] text-zinc-600 mt-1">typical outcome</div>
+                </motion.div>
 
-                <div className="stat-card">
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px', textTransform: 'uppercase' }}>
-                    Top 20% Avg BB/100
-                  </div>
-                  <div style={{ fontSize: '24px', fontWeight: '700', color: '#22c55e' }}>
+                <motion.div 
+                  className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-5"
+                  variants={scaleIn}
+                >
+                  <div className="text-[11px] text-zinc-500 mb-2 uppercase tracking-wide">Top 20% Avg BB/100</div>
+                  <div className="text-2xl font-bold text-emerald-400">
                     {simulationResults.top20BBper100 >= 0 ? '+' : ''}{simulationResults.top20BBper100.toFixed(4)}
                   </div>
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>
-                    luckiest {Math.max(1, Math.floor(simulationResults.totalTrials * 0.2))} trials
-                  </div>
-                </div>
+                  <div className="text-[11px] text-zinc-600 mt-1">luckiest {Math.max(1, Math.floor(simulationResults.totalTrials * 0.2))} trials</div>
+                </motion.div>
 
-                <div className="stat-card">
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px', textTransform: 'uppercase' }}>
-                    Bottom 20% Avg BB/100
-                  </div>
-                  <div style={{ fontSize: '24px', fontWeight: '700', color: '#ef4444' }}>
+                <motion.div 
+                  className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-5"
+                  variants={scaleIn}
+                >
+                  <div className="text-[11px] text-zinc-500 mb-2 uppercase tracking-wide">Bottom 20% Avg BB/100</div>
+                  <div className="text-2xl font-bold text-red-400">
                     {simulationResults.bottom20BBper100 >= 0 ? '+' : ''}{simulationResults.bottom20BBper100.toFixed(4)}
                   </div>
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>
-                    unluckiest {Math.max(1, Math.floor(simulationResults.totalTrials * 0.2))} trials
-                  </div>
-                </div>
+                  <div className="text-[11px] text-zinc-600 mt-1">unluckiest {Math.max(1, Math.floor(simulationResults.totalTrials * 0.2))} trials</div>
+                </motion.div>
               </div>
 
               {/* Range Statistics */}
-              <div className="glass-card" style={{ padding: '20px', borderRadius: '12px' }}>
-                <h4 style={{ color: '#FFB347', marginBottom: '16px', fontSize: '13px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-5">
+                <h4 className="text-yellow-500 mb-4 text-sm font-semibold uppercase tracking-wider">
                   Outcome Range
                 </h4>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>Worst Trial</div>
-                    <div style={{ fontSize: '18px', fontWeight: '700', color: '#ef4444' }}>
+                <div className="flex justify-between items-center flex-wrap gap-5">
+                  <div className="text-center">
+                    <div className="text-[11px] text-zinc-500 mb-1">Worst Trial</div>
+                    <div className="text-lg font-bold text-red-400">
                       {formatSimValue(simulationResults.minProfit, true)}
                     </div>
                   </div>
-                  <div style={{ flex: 1, minWidth: '200px', padding: '0 20px' }}>
-                    <div style={{ position: 'relative', height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px' }}>
-                      {/* Range bar */}
-                      <div style={{
-                        position: 'absolute',
-                        left: '0%',
-                        right: '0%',
-                        height: '100%',
-                        background: 'linear-gradient(90deg, #ef4444, #FFB347, #22c55e)',
-                        borderRadius: '4px',
-                        opacity: 0.6
-                      }} />
-                      {/* Average marker */}
-                      <div style={{
-                        position: 'absolute',
-                        left: `${((simulationResults.averageProfit - simulationResults.minProfit) / (simulationResults.maxProfit - simulationResults.minProfit)) * 100}%`,
-                        top: '-4px',
-                        width: '4px',
-                        height: '16px',
-                        background: '#FFB347',
-                        borderRadius: '2px',
-                        transform: 'translateX(-50%)'
-                      }} />
+                  <div className="flex-1 min-w-[200px] px-5">
+                    <div className="relative h-2 bg-zinc-800 rounded-full">
+                      <div 
+                        className="absolute inset-0 bg-gradient-to-r from-red-500 via-yellow-500 to-emerald-500 rounded-full opacity-60"
+                      />
+                      <motion.div 
+                        className="absolute top-[-4px] w-1 h-4 bg-yellow-500 rounded"
+                        style={{
+                          left: `${((simulationResults.averageProfit - simulationResults.minProfit) / (simulationResults.maxProfit - simulationResults.minProfit)) * 100}%`,
+                          transform: 'translateX(-50%)'
+                        }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                      />
                     </div>
                   </div>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginBottom: '4px' }}>Best Trial</div>
-                    <div style={{ fontSize: '18px', fontWeight: '700', color: '#22c55e' }}>
+                  <div className="text-center">
+                    <div className="text-[11px] text-zinc-500 mb-1">Best Trial</div>
+                    <div className="text-lg font-bold text-emerald-400">
                       {formatSimValue(simulationResults.maxProfit, true)}
                     </div>
                   </div>
                 </div>
-                <div style={{ marginTop: '16px', textAlign: 'center', fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>
+                <div className="mt-4 text-center text-xs text-zinc-500">
                   Range: {formatSimValue(simulationResults.maxProfit - simulationResults.minProfit)} spread between best and worst outcomes
                 </div>
               </div>
 
               {/* Variance Summary */}
               {(() => {
-                // Sort trials by profit
                 const sortedTrials = [...simulationResults.trials].sort((a, b) => a.netProfit - b.netProfit);
                 const twentyPercent = Math.max(1, Math.floor(sortedTrials.length * 0.2));
                 
-                // Bottom 20% (worst performers)
                 const bottom20 = sortedTrials.slice(0, twentyPercent);
                 const bottom20Avg = {
                   netProfit: bottom20.reduce((sum, t) => sum + t.netProfit, 0) / bottom20.length,
@@ -1821,7 +1411,6 @@ const BBJDashboard: React.FC = () => {
                   feesPaid: bottom20.reduce((sum, t) => sum + t.feesPaid, 0) / bottom20.length,
                 };
                 
-                // Top 20% (best performers)
                 const top20 = sortedTrials.slice(-twentyPercent);
                 const top20Avg = {
                   netProfit: top20.reduce((sum, t) => sum + t.netProfit, 0) / top20.length,
@@ -1832,290 +1421,155 @@ const BBJDashboard: React.FC = () => {
                   feesPaid: top20.reduce((sum, t) => sum + t.feesPaid, 0) / top20.length,
                 };
                 
-                const handsLabel = simulationResults.handsPerTrial >= 1000000000 
-                  ? `${(simulationResults.handsPerTrial / 1000000000)}B` 
-                  : simulationResults.handsPerTrial >= 1000000 
-                    ? `${(simulationResults.handsPerTrial / 1000000)}M` 
-                    : `${(simulationResults.handsPerTrial / 1000)}K`;
-                
-                // 250 hands/hr × 30 hrs/week × 52 weeks = 390,000 hands/year
-                const handsPerYear = 250 * 30 * 52;
-                const yearsNeeded = simulationResults.handsPerTrial / handsPerYear;
-                const startYear = Math.round(2026 - yearsNeeded);
-                
-                let startYearDisplay;
-                if (startYear < -3000) {
-                  startYearDisplay = `${Math.abs(startYear)} BC (Bronze Age) 🏺`;
-                } else if (startYear < -500) {
-                  startYearDisplay = `${Math.abs(startYear)} BC`;
-                } else if (startYear < 0) {
-                  startYearDisplay = `${Math.abs(startYear)} BC`;
-                } else if (startYear < 1900) {
-                  startYearDisplay = `the year ${startYear}`;
-                } else {
-                  startYearDisplay = startYear.toString();
-                }
-                
-                const stakeOption = STAKE_OPTIONS.find(s => s.value === selectedStake) || STAKE_OPTIONS[4];
+                const handsLabel = simulationResults.handsPerTrial >= 1000000 
+                  ? `${(simulationResults.handsPerTrial / 1000000)}M` 
+                  : `${(simulationResults.handsPerTrial / 1000)}K`;
                 
                 return (
-                  <div className="glass-card" style={{ 
-                    padding: '28px', 
-                    borderRadius: '12px', 
-                    marginTop: '24px',
-                    background: 'rgba(255, 179, 71, 0.05)',
-                    border: '1px solid rgba(255, 179, 71, 0.2)'
-                  }}>
-                    <h4 style={{ color: '#FFB347', marginBottom: '20px', fontSize: '16px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <AlertTriangle size={20} /> What This Variance Actually Means
+                  <motion.div 
+                    className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 mt-6"
+                    variants={fadeIn}
+                  >
+                    <h4 className="text-yellow-500 mb-4 text-sm font-semibold uppercase tracking-wider">
+                      What Makes the Difference? (Top 20% vs Bottom 20%)
                     </h4>
                     
-                    <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.7)', lineHeight: 1.7, margin: '0 0 24px 0' }}>
-                      Over <strong style={{ color: '#FFB347' }}>{handsLabel} hands</strong> (playing 30 hrs/week since <strong style={{ color: '#FFB347' }}>{startYearDisplay}</strong>), 
-                      we ran <strong style={{ color: '#FFB347' }}>{simulationResults.totalTrials} simulations</strong>. 
-                      Here's how the bottom 20% compares to the top 20%:
-                    </p>
-                    
                     {/* Comparison Table */}
-                    <div style={{ 
-                      background: 'rgba(0,0,0,0.3)', 
-                      borderRadius: '12px', 
-                      overflow: 'hidden',
-                      marginBottom: '20px'
-                    }}>
-                      {/* Header Row */}
-                      <div style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: '1fr 1fr 1fr', 
-                        padding: '14px 20px',
-                        background: 'rgba(255,255,255,0.05)',
-                        borderBottom: '1px solid rgba(255,255,255,0.1)'
-                      }}>
-                        <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', fontWeight: '600' }}>METRIC</div>
-                        <div style={{ fontSize: '15px', color: '#ef4444', fontWeight: '700', textAlign: 'center' }}>😢 BOTTOM 20%</div>
-                        <div style={{ fontSize: '15px', color: '#22c55e', fontWeight: '700', textAlign: 'center' }}>🎉 TOP 20%</div>
-                      </div>
-                      
-                      {/* Net Result Row */}
-                      <div style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: '1fr 1fr 1fr', 
-                        padding: '16px 20px',
-                        borderBottom: '1px solid rgba(255,255,255,0.05)',
-                        background: 'rgba(255, 179, 71, 0.05)'
-                      }}>
-                        <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', fontWeight: '600' }}>Net Result</div>
-                        <div style={{ fontSize: '18px', color: '#ef4444', fontWeight: '700', textAlign: 'center' }}>
-                          {formatSimValue(bottom20Avg.netProfit, true)}
+                    <div className="overflow-x-auto">
+                      <div className="min-w-[400px]">
+                        {/* Header */}
+                        <div className="grid grid-cols-3 bg-zinc-800/50 rounded-t-xl py-3 px-5 border-b border-zinc-700">
+                          <div className="text-xs text-zinc-500 font-medium">Metric</div>
+                          <div className="text-xs text-red-400 font-medium text-center">Bottom 20%</div>
+                          <div className="text-xs text-emerald-400 font-medium text-center">Top 20%</div>
                         </div>
-                        <div style={{ fontSize: '18px', color: '#22c55e', fontWeight: '700', textAlign: 'center' }}>
-                          {formatSimValue(top20Avg.netProfit, true)}
-                        </div>
-                      </div>
-                      
-                      {/* BBJs at Table Row */}
-                      <div style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: '1fr 1fr 1fr', 
-                        padding: '12px 20px',
-                        borderBottom: '1px solid rgba(255,255,255,0.05)'
-                      }}>
-                        <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)' }}>BBJs at Table</div>
-                        <div style={{ fontSize: '16px', color: 'rgba(255,255,255,0.9)', textAlign: 'center', fontWeight: '600' }}>{bottom20Avg.bbjsHit}</div>
-                        <div style={{ fontSize: '16px', color: 'rgba(255,255,255,0.9)', textAlign: 'center', fontWeight: '600' }}>{top20Avg.bbjsHit}</div>
-                      </div>
-                      
-                      {/* Jackpot Wins Row */}
-                      <div style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: '1fr 1fr 1fr', 
-                        padding: '12px 20px',
-                        borderBottom: '1px solid rgba(255,255,255,0.05)'
-                      }}>
-                        <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)' }}>Jackpot Wins (10%)</div>
-                        <div style={{ fontSize: '16px', color: 'rgba(255,255,255,0.9)', textAlign: 'center', fontWeight: '600' }}>{bottom20Avg.jackpotWins}</div>
-                        <div style={{ fontSize: '16px', color: 'rgba(255,255,255,0.9)', textAlign: 'center', fontWeight: '600' }}>{top20Avg.jackpotWins}</div>
-                      </div>
-                      
-                      {/* Opponent Wins Row */}
-                      <div style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: '1fr 1fr 1fr', 
-                        padding: '12px 20px',
-                        borderBottom: '1px solid rgba(255,255,255,0.05)'
-                      }}>
-                        <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)' }}>Opponent Wins (3%)</div>
-                        <div style={{ fontSize: '16px', color: 'rgba(255,255,255,0.9)', textAlign: 'center', fontWeight: '600' }}>{bottom20Avg.opponentWins}</div>
-                        <div style={{ fontSize: '16px', color: 'rgba(255,255,255,0.9)', textAlign: 'center', fontWeight: '600' }}>{top20Avg.opponentWins}</div>
-                      </div>
-                      
-                      {/* Table Shares Row */}
-                      <div style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: '1fr 1fr 1fr', 
-                        padding: '12px 20px',
-                        borderBottom: '1px solid rgba(255,255,255,0.05)'
-                      }}>
-                        <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)' }}>Table Shares (0.8%)</div>
-                        <div style={{ fontSize: '16px', color: 'rgba(255,255,255,0.9)', textAlign: 'center', fontWeight: '600' }}>{bottom20Avg.tableShares}</div>
-                        <div style={{ fontSize: '16px', color: 'rgba(255,255,255,0.9)', textAlign: 'center', fontWeight: '600' }}>{top20Avg.tableShares}</div>
-                      </div>
-                      
-                      {/* Fees Paid Row */}
-                      <div style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: '1fr 1fr 1fr', 
-                        padding: '12px 20px'
-                      }}>
-                        <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)' }}>Fees Paid</div>
-                        <div style={{ fontSize: '16px', color: 'rgba(255,255,255,0.9)', textAlign: 'center', fontWeight: '600' }}>{formatSimValue(bottom20Avg.feesPaid)}</div>
-                        <div style={{ fontSize: '16px', color: 'rgba(255,255,255,0.9)', textAlign: 'center', fontWeight: '600' }}>{formatSimValue(top20Avg.feesPaid)}</div>
+                        
+                        {/* Rows */}
+                        {[
+                          { label: 'Net Profit', bottom: formatSimValue(bottom20Avg.netProfit, true), top: formatSimValue(top20Avg.netProfit, true), highlight: true },
+                          { label: 'BBJs Witnessed', bottom: bottom20Avg.bbjsHit, top: top20Avg.bbjsHit },
+                          { label: 'Jackpot Wins', bottom: bottom20Avg.jackpotWins, top: top20Avg.jackpotWins },
+                          { label: 'Opponent Wins', bottom: bottom20Avg.opponentWins, top: top20Avg.opponentWins },
+                          { label: 'Table Shares', bottom: bottom20Avg.tableShares, top: top20Avg.tableShares },
+                          { label: 'Fees Paid', bottom: formatSimValue(bottom20Avg.feesPaid), top: formatSimValue(top20Avg.feesPaid) },
+                        ].map((row, idx) => (
+                          <div 
+                            key={row.label}
+                            className={`grid grid-cols-3 py-3 px-5 ${
+                              row.highlight ? 'bg-yellow-500/10 border-b border-yellow-500/20' : 
+                              idx < 5 ? 'border-b border-zinc-800' : ''
+                            }`}
+                          >
+                            <div className="text-sm text-zinc-400">{row.label}</div>
+                            <div className={`text-base text-center font-semibold ${row.highlight ? 'text-red-400' : 'text-white'}`}>
+                              {row.bottom}
+                            </div>
+                            <div className={`text-base text-center font-semibold ${row.highlight ? 'text-emerald-400' : 'text-white'}`}>
+                              {row.top}
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                     
                     {/* Summary */}
-                    <div style={{ 
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '16px',
-                      padding: '16px 20px',
-                      background: 'rgba(0,0,0,0.2)',
-                      borderRadius: '10px',
-                      fontSize: '14px',
-                      color: 'rgba(255,255,255,0.8)'
-                    }}>
-                      <div style={{ 
-                        flexShrink: 0,
-                        width: '50px',
-                        height: '50px',
-                        borderRadius: '50%',
-                        background: 'rgba(255, 179, 71, 0.2)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '20px'
-                      }}>
+                    <div className="flex items-center gap-4 p-4 bg-zinc-800/30 rounded-xl mt-5 text-sm text-zinc-300">
+                      <div className="flex-shrink-0 w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center text-xl">
                         📊
                       </div>
                       <div>
-                        <strong style={{ color: '#FFB347' }}>The Gap: </strong>
-                        <strong style={{ color: '#ffffff' }}>{formatSimValue(top20Avg.netProfit - bottom20Avg.netProfit)}</strong> difference.
+                        <strong className="text-yellow-500">The Gap: </strong>
+                        <strong className="text-white">{formatSimValue(top20Avg.netProfit - bottom20Avg.netProfit)}</strong> difference.
                         {simulationResults.profitableTrials < simulationResults.totalTrials && simulationResults.profitableTrials > 0 && (
                           <span>
-                            {' '}Only <strong style={{ color: simulationResults.profitableTrials / simulationResults.totalTrials >= 0.5 ? '#22c55e' : '#ef4444' }}>
+                            {' '}Only <strong className={simulationResults.profitableTrials / simulationResults.totalTrials >= 0.5 ? 'text-emerald-400' : 'text-red-400'}>
                               {((simulationResults.profitableTrials / simulationResults.totalTrials) * 100).toFixed(0)}%
                             </strong> of simulations were profitable.
                           </span>
                         )}
                         {simulationResults.profitableTrials === 0 && (
-                          <span style={{ color: '#ef4444' }}>
+                          <span className="text-red-400">
                             {' '}<strong>0%</strong> of simulations were profitable.
                           </span>
                         )}
                         {simulationResults.profitableTrials === simulationResults.totalTrials && (
-                          <span style={{ color: '#22c55e' }}>
+                          <span className="text-emerald-400">
                             {' '}<strong>100%</strong> of simulations were profitable!
                           </span>
                         )}
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })()}
-            </div>
+            </motion.div>
           )}
 
           {/* Empty State */}
           {!simulationResults && !isCalculating && (
-            <div style={{
-              textAlign: 'center',
-              padding: '40px 20px',
-              background: 'rgba(255, 255, 255, 0.02)',
-              borderRadius: '12px',
-              border: '1px dashed rgba(255, 255, 255, 0.1)'
-            }}>
-              <LineChart size={40} color="rgba(255,255,255,0.2)" style={{ marginBottom: '12px' }} />
-              <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.4)', marginBottom: '8px' }}>
+            <div className="text-center py-10 px-5 bg-zinc-900/30 rounded-2xl border border-dashed border-zinc-700">
+              <LineChart size={40} className="text-zinc-700 mx-auto mb-3" />
+              <div className="text-sm text-zinc-500 mb-2">
                 No simulation run yet
               </div>
-              <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)' }}>
-                Configure your settings above and click "Run Simulations" to see how variance affects your bankroll across {numTrials} simulated poker sessions of {simulationHands >= 1000000000 ? `${(simulationHands / 1000000000)}B` : simulationHands >= 1000000 ? `${(simulationHands / 1000000)}M` : `${(simulationHands / 1000).toLocaleString()}K`} hands each
+              <div className="text-xs text-zinc-600">
+                Configure your settings above and click "Run Simulations" to see how variance affects your bankroll across {numTrials} simulated poker sessions of {simulationHands >= 1000000 ? `${(simulationHands / 1000000)}M` : `${(simulationHands / 1000)}K`} hands each
               </div>
             </div>
           )}
-        </div>
+        </motion.div>
 
         {/* Main Dashboard Card */}
-        <div 
-          className="card-hover glass-card"
-          style={{
-            borderRadius: '16px', 
-            padding: '40px', 
-            marginBottom: '30px',
-            animation: 'fadeInUp 0.6s ease-out 0.1s both'
-          }}
+        <motion.div 
+          className="rounded-3xl p-6 md:p-10 mb-8 bg-white/[0.03] backdrop-blur-xl border border-white/10"
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.2 }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '8px' }}>
-            <Target size={28} color="#FFB347" />
-            <h1 style={{
-              textAlign: 'center', 
-              fontSize: '2.2em', 
-              margin: 0,
-              color: '#ffffff',
-              fontWeight: '700'
-            }}>
-              BBJ Dashboard
-            </h1>
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <Target size={28} className="text-yellow-500" />
+            <h1 className="text-2xl md:text-3xl font-bold text-white">BBJ Dashboard</h1>
           </div>
-          <p style={{textAlign: 'center', color: 'rgba(255,255,255,0.5)', fontSize: '14px', marginBottom: '30px'}}>
+          <p className="text-center text-zinc-500 text-sm mb-8">
             Real-time EV analysis powered by 42.1M verified hands
           </p>
 
           {/* Pool Size & Stake Input */}
-          <div className="glass-card" style={{
-            padding: '24px',
-            borderRadius: '12px',
-            marginBottom: '30px',
-            animation: 'fadeIn 0.4s ease-out 0.2s both'
-          }}>
-            <h3 style={{color: '#FFB347', marginBottom: '16px', fontSize: '14px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '8px'}}>
+          <motion.div 
+            className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 mb-8"
+            variants={scaleIn}
+          >
+            <h3 className="text-yellow-500 mb-4 text-sm font-semibold uppercase tracking-wider flex items-center gap-2">
               <DollarSign size={16} /> Pool Size & Your Stakes
             </h3>
-            <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '16px' }}>
-              <div style={{ flex: '1 1 200px' }}>
-                <label style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', display: 'block', marginBottom: '6px' }}>
+            <div className="flex gap-5 flex-wrap mb-4">
+              <div className="flex-1 min-w-[200px]">
+                <label className="text-[11px] text-zinc-500 block mb-1.5">
                   Total Jackpot Pool (USD)
                 </label>
                 <input
                   type="number"
-                  className="input-field input-focus"
+                  className="w-full bg-zinc-800/50 border border-zinc-700 rounded-xl px-4 py-3 text-white text-lg font-semibold focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500/30 outline-none transition-all"
                   placeholder="e.g., 2172588"
                   value={poolSize}
                   onChange={(e) => setPoolSize(parseFloat(e.target.value) || 0)}
-                  style={{ fontSize: '18px', fontWeight: '600' }}
                 />
               </div>
-              <div style={{ flex: '1 1 300px' }}>
-                <label style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', display: 'block', marginBottom: '6px' }}>
+              <div className="flex-1 min-w-[300px]">
+                <label className="text-[11px] text-zinc-500 block mb-1.5">
                   Your Stakes
                 </label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '4px' }}>
+                <div className="grid grid-cols-5 gap-1">
                   {STAKE_OPTIONS.map(stake => (
                     <button
                       key={stake.value}
                       onClick={() => setSelectedStake(stake.value)}
-                      style={{
-                        background: selectedStake === stake.value ? '#FFB347' : 'rgba(255,255,255,0.08)',
-                        color: selectedStake === stake.value ? '#0a0a0a' : 'rgba(255,255,255,0.7)',
-                        border: selectedStake === stake.value ? 'none' : '1px solid rgba(255,255,255,0.1)',
-                        padding: '8px 2px',
-                        borderRadius: '5px',
-                        fontSize: '10px',
-                        fontWeight: '600',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease',
-                        whiteSpace: 'nowrap'
-                      }}
+                      className={`py-2 px-1 rounded-lg text-[10px] font-semibold transition-all duration-200 whitespace-nowrap ${
+                        selectedStake === stake.value 
+                          ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-zinc-950' 
+                          : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800 hover:text-white border border-zinc-700'
+                      }`}
                     >
                       {stake.value}
                     </button>
@@ -2123,186 +1577,181 @@ const BBJDashboard: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
+            <div className="flex gap-2 flex-wrap mb-4">
               {[1600000, 1800000, 2017000, 2200000, 2400000].map(preset => (
                 <button
                   key={preset}
                   onClick={() => setPoolSize(preset)}
-                  className="btn-hover"
-                  style={{
-                    background: poolSize === preset ? '#FFB347' : 'rgba(255,255,255,0.05)',
-                    color: poolSize === preset ? '#0a0a0a' : 'rgba(255,255,255,0.6)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    padding: '8px 12px',
-                    borderRadius: '6px',
-                    fontSize: '12px',
-                    fontWeight: '500',
-                    cursor: 'pointer'
-                  }}
+                  className={`px-4 py-2 rounded-xl text-xs font-medium transition-all duration-200 ${
+                    poolSize === preset 
+                      ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-zinc-950' 
+                      : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800 hover:text-white border border-zinc-700'
+                  }`}
                 >
                   {formatCurrency(preset)}
                 </button>
               ))}
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-              <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>
-                Your stake pool: <span style={{ color: '#FFB347', fontWeight: '600' }}>{formatCurrency(currentEV.stakePoolSize)}</span>
-                <span style={{ color: 'rgba(255,255,255,0.3)', marginLeft: '8px' }}>
+            <div className="flex justify-between items-center flex-wrap gap-3">
+              <span className="text-xs text-zinc-500">
+                Your stake pool: <span className="text-yellow-500 font-semibold">{formatCurrency(currentEV.stakePoolSize)}</span>
+                <span className="text-zinc-600 ml-2">
                   ({(STAKE_OPTIONS.find(s => s.value === selectedStake)?.poolPercent || 0).toFixed(2)}% of total)
                 </span>
               </span>
-              <span style={{ 
-                fontSize: '12px', 
-                fontWeight: '600',
-                color: currentEV.isProfitable ? '#22c55e' : '#ef4444',
-                background: currentEV.isProfitable ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                padding: '6px 12px',
-                borderRadius: '6px'
-              }}>
+              <span className={`text-xs font-semibold px-3 py-1.5 rounded-lg ${
+                currentEV.isProfitable 
+                  ? 'bg-emerald-500/20 text-emerald-400' 
+                  : 'bg-red-500/20 text-red-400'
+              }`}>
                 {currentEV.isProfitable ? '✓ +EV at this pool' : `✗ -EV (need ${formatCurrency(Math.abs(currentEV.poolNeeded))} more)`}
               </span>
             </div>
-          </div>
+          </motion.div>
 
           {/* EV Overview Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: '30px' }}>
-            
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+          >
             {/* Main EV Gauge */}
-            <div className={`stat-card ${currentEV.isProfitable ? 'ev-positive' : 'ev-negative'}`} style={{ animation: 'fadeIn 0.4s ease-out 0.25s both' }}>
-              <h3 style={{ color: currentEV.isProfitable ? '#22c55e' : '#ef4444', marginBottom: '8px', fontSize: '13px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <motion.div 
+              className={`rounded-2xl p-5 border ${
+                currentEV.isProfitable 
+                  ? 'bg-emerald-500/10 border-emerald-500/30' 
+                  : 'bg-red-500/10 border-red-500/30'
+              }`}
+              variants={scaleIn}
+            >
+              <h3 className={`mb-2 text-sm font-semibold uppercase tracking-wider flex items-center gap-2 ${
+                currentEV.isProfitable ? 'text-emerald-400' : 'text-red-400'
+              }`}>
                 <Activity size={14} /> Your Expected Value
               </h3>
               <EVGauge value={currentEV.netBBper100} min={-1.5} max={1.5} />
-              <div style={{ textAlign: 'center', marginTop: '8px' }}>
-                <span style={{ 
-                  fontSize: '11px', 
-                  color: 'rgba(255,255,255,0.5)',
-                  background: 'rgba(0,0,0,0.3)',
-                  padding: '4px 10px',
-                  borderRadius: '4px'
-                }}>
+              <div className="text-center mt-2">
+                <span className="text-[11px] text-zinc-500 bg-zinc-900/50 px-3 py-1 rounded-lg">
                   {currentEV.isProfitable ? 'Playing is +EV at this pool size' : 'You\'re paying to chase the dream'}
                 </span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Pool Progress */}
-            <div className="stat-card" style={{ animation: 'fadeIn 0.4s ease-out 0.3s both' }}>
-              <h3 style={{ color: '#FFB347', marginBottom: '16px', fontSize: '13px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <motion.div 
+              className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-5"
+              variants={scaleIn}
+            >
+              <h3 className="text-yellow-500 mb-4 text-sm font-semibold uppercase tracking-wider flex items-center gap-2">
                 <TrendingUp size={14} /> Pool vs Breakeven
               </h3>
-              <div style={{ marginBottom: '16px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>
+              <div className="mb-4">
+                <div className="flex justify-between mb-2">
+                  <span className="text-2xl font-bold text-white">
                     {currentEV.percentToBreakeven.toFixed(1)}%
                   </span>
-                  <span style={{ 
-                    fontSize: '12px', 
-                    color: currentEV.isProfitable ? '#22c55e' : 'rgba(255,255,255,0.5)',
-                    alignSelf: 'flex-end'
-                  }}>
+                  <span className={`text-xs self-end ${currentEV.isProfitable ? 'text-emerald-400' : 'text-zinc-500'}`}>
                     {currentEV.isProfitable ? 'Above breakeven!' : `${formatCurrency(currentEV.poolNeeded)} needed`}
                   </span>
                 </div>
                 <ProgressBar 
                   value={poolSize} 
                   max={BBJ_CONSTANTS.breakevenPool_usd * 1.5} 
-                  color={currentEV.isProfitable ? '#22c55e' : '#FFB347'}
+                  color={currentEV.isProfitable ? '#34d399' : '#D4AF37'}
                   showLabel={false}
                 />
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontSize: '10px', color: 'rgba(255,255,255,0.4)' }}>
+                <div className="flex justify-between mt-1.5 text-[10px] text-zinc-600">
                   <span>$0</span>
-                  <span style={{ color: '#FFB347' }}>Breakeven</span>
+                  <span className="text-yellow-500">Breakeven</span>
                   <span>{formatCurrency(BBJ_CONSTANTS.breakevenPool_usd * 1.5)}</span>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Payout Breakdown */}
-            <div className="stat-card" style={{ animation: 'fadeIn 0.4s ease-out 0.35s both' }}>
-              <h3 style={{ color: '#FFB347', marginBottom: '16px', fontSize: '13px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <motion.div 
+              className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-5"
+              variants={scaleIn}
+            >
+              <h3 className="text-yellow-500 mb-4 text-sm font-semibold uppercase tracking-wider flex items-center gap-2">
                 <Zap size={14} /> When BBJ Hits at Your Stake
               </h3>
-              <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '12px' }}>
-                Total distributed: <span style={{ color: '#FFB347', fontWeight: '600' }}>{formatCurrency(currentEV.totalPayoutAtStake)}</span>
+              <div className="text-xs text-zinc-500 mb-3">
+                Total distributed: <span className="text-yellow-500 font-semibold">{formatCurrency(currentEV.totalPayoutAtStake)}</span>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(34, 197, 94, 0.1)', borderRadius: '8px', padding: '10px 12px' }}>
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between items-center bg-emerald-500/10 rounded-xl p-3">
                   <div>
-                    <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)' }}>Bad Beat Winner</div>
-                    <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)' }}>(Loser with quads+) • 10%</div>
+                    <div className="text-[11px] text-zinc-400">Bad Beat Winner</div>
+                    <div className="text-[10px] text-zinc-600">(Loser with quads+) • 10%</div>
                   </div>
-                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#22c55e' }}>{formatCurrency(currentEV.jackpotWinnerPayout)}</div>
+                  <div className="text-base font-bold text-emerald-400">{formatCurrency(currentEV.jackpotWinnerPayout)}</div>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '8px', padding: '10px 12px' }}>
+                <div className="flex justify-between items-center bg-blue-500/10 rounded-xl p-3">
                   <div>
-                    <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)' }}>Bad Beat Opponent</div>
-                    <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)' }}>(Winner of hand) • 3%</div>
+                    <div className="text-[11px] text-zinc-400">Bad Beat Opponent</div>
+                    <div className="text-[10px] text-zinc-600">(Winner of hand) • 3%</div>
                   </div>
-                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#60a5fa' }}>{formatCurrency(currentEV.opponentPayout)}</div>
+                  <div className="text-base font-bold text-blue-400">{formatCurrency(currentEV.opponentPayout)}</div>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(168, 85, 247, 0.1)', borderRadius: '8px', padding: '10px 12px' }}>
+                <div className="flex justify-between items-center bg-purple-500/10 rounded-xl p-3">
                   <div>
-                    <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)' }}>Table Share</div>
-                    <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)' }}>(Each other player) • 0.8%</div>
+                    <div className="text-[11px] text-zinc-400">Table Share</div>
+                    <div className="text-[10px] text-zinc-600">(Each other player) • 0.8%</div>
                   </div>
-                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#a855f7' }}>{formatCurrency(currentEV.tableSharePayout)}</div>
+                  <div className="text-base font-bold text-purple-400">{formatCurrency(currentEV.tableSharePayout)}</div>
                 </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          {/* EV by Pool Size Chart */}
-          <div className="glass-card" style={{
-            padding: '24px',
-            borderRadius: '12px',
-            animation: 'fadeIn 0.4s ease-out 0.45s both'
-          }}>
-            <h3 style={{ color: '#FFB347', marginBottom: '20px', fontSize: '14px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* EV by Pool Size Table */}
+          <motion.div 
+            className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6"
+            variants={fadeIn}
+          >
+            <h3 className="text-yellow-500 mb-5 text-sm font-semibold uppercase tracking-wider flex items-center gap-2">
               <TrendingUp size={16} /> EV at Different Pool Sizes ({STAKE_OPTIONS.find(s => s.value === selectedStake)?.label})
             </h3>
             
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[600px]">
                 <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                    <th style={{ padding: '12px 8px', textAlign: 'left', fontSize: '11px', color: 'rgba(255,255,255,0.5)', fontWeight: '600' }}>Total Pool</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'right', fontSize: '11px', color: 'rgba(255,255,255,0.5)', fontWeight: '600' }}>Your Stake Pool</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'right', fontSize: '11px', color: 'rgba(255,255,255,0.5)', fontWeight: '600' }}>Jackpot Win</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'right', fontSize: '11px', color: 'rgba(255,255,255,0.5)', fontWeight: '600' }}>Net BB/100</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'center', fontSize: '11px', color: 'rgba(255,255,255,0.5)', fontWeight: '600' }}>Status</th>
+                  <tr className="border-b border-zinc-700">
+                    <th className="py-3 px-2 text-left text-[11px] text-zinc-500 font-semibold">Total Pool</th>
+                    <th className="py-3 px-2 text-right text-[11px] text-zinc-500 font-semibold">Your Stake Pool</th>
+                    <th className="py-3 px-2 text-right text-[11px] text-zinc-500 font-semibold">Jackpot Win</th>
+                    <th className="py-3 px-2 text-right text-[11px] text-zinc-500 font-semibold">Net BB/100</th>
+                    <th className="py-3 px-2 text-center text-[11px] text-zinc-500 font-semibold">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {evTableData.map((row, index) => (
                     <tr 
                       key={row.pool}
-                      style={{ 
-                        borderBottom: index < evTableData.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
-                        background: row.pool === poolSize ? 'rgba(255, 179, 71, 0.1)' : 'transparent'
-                      }}
+                      className={`border-b border-zinc-800/50 ${
+                        row.pool === poolSize ? 'bg-yellow-500/10' : ''
+                      }`}
                     >
-                      <td style={{ padding: '12px 8px', fontSize: '13px', color: '#ffffff', fontWeight: '500' }}>
+                      <td className="py-3 px-2 text-sm text-white font-medium">
                         {formatCurrency(row.pool)}
                       </td>
-                      <td style={{ padding: '12px 8px', fontSize: '13px', color: 'rgba(255,255,255,0.7)', textAlign: 'right' }}>
+                      <td className="py-3 px-2 text-sm text-zinc-400 text-right">
                         {formatCurrency(row.stakePoolSize)}
                       </td>
-                      <td style={{ padding: '12px 8px', fontSize: '13px', color: '#22c55e', textAlign: 'right', fontWeight: '600' }}>
+                      <td className="py-3 px-2 text-sm text-emerald-400 text-right font-semibold">
                         {formatCurrency(row.jackpotWinnerPayout)}
                       </td>
-                      <td style={{ padding: '12px 8px', fontSize: '13px', color: getEVColor(row.netBBper100), textAlign: 'right', fontWeight: '700' }}>
+                      <td className={`py-3 px-2 text-sm text-right font-bold ${getEVColor(row.netBBper100)}`}>
                         {row.netBBper100 >= 0 ? '+' : ''}{row.netBBper100.toFixed(3)}
                       </td>
-                      <td style={{ padding: '12px 8px', textAlign: 'center' }}>
-                        <span style={{
-                          fontSize: '11px',
-                          fontWeight: '600',
-                          padding: '4px 8px',
-                          borderRadius: '4px',
-                          background: row.isProfitable ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                          color: row.isProfitable ? '#22c55e' : '#ef4444'
-                        }}>
+                      <td className="py-3 px-2 text-center">
+                        <span className={`text-[11px] font-semibold px-2 py-1 rounded ${
+                          row.isProfitable 
+                            ? 'bg-emerald-500/20 text-emerald-400' 
+                            : 'bg-red-500/20 text-red-400'
+                        }`}>
                           {row.isProfitable ? '+EV' : '-EV'}
                         </span>
                       </td>
@@ -2312,122 +1761,105 @@ const BBJDashboard: React.FC = () => {
               </table>
             </div>
 
-            <div style={{ marginTop: '16px', fontSize: '12px', color: 'rgba(255,255,255,0.4)', textAlign: 'center' }}>
-              Fee cost: <span style={{ color: '#ef4444' }}>-{BBJ_CONSTANTS.bbPer100Fees.toFixed(4)} bb/100</span> • 
+            <div className="mt-4 text-xs text-zinc-500 text-center">
+              Fee cost: <span className="text-red-400">-{BBJ_CONSTANTS.bbPer100Fees.toFixed(4)} bb/100</span> • 
               Breakeven requires expected return to exceed fee cost
             </div>
-          </div>
-        </div>
-
+          </motion.div>
+        </motion.div>
 
         {/* Insights Section */}
-        <div 
-          className="glass-card"
-          style={{
-            borderRadius: '16px', 
-            padding: '40px',
-            animation: 'fadeInUp 0.6s ease-out 0.3s both'
-          }}
+        <motion.div 
+          className="rounded-3xl p-6 md:p-10 mb-8 bg-white/[0.03] backdrop-blur-xl border border-white/10"
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.25 }}
         >
-          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '28px'}}>
-            <AlertTriangle size={24} color="#FFB347" />
-            <h2 style={{fontSize: '20px', fontWeight: '600', color: '#ffffff', margin: 0}}>
-              Reality Check
-            </h2>
+          <div className="flex items-center justify-center gap-3 mb-7">
+            <AlertTriangle size={24} className="text-yellow-500" />
+            <h2 className="text-xl font-semibold text-white">Reality Check</h2>
           </div>
 
-          <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px'}}>
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-3 gap-5"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+          >
             {/* Insight 1 */}
-            <div style={{
-              background: 'rgba(239, 68, 68, 0.1)',
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              padding: '24px',
-              borderRadius: '12px',
-              border: '1px solid rgba(239, 68, 68, 0.2)'
-            }}>
-              <h3 style={{color: '#ef4444', fontSize: '14px', fontWeight: '600', marginBottom: '12px'}}>
+            <motion.div 
+              className="bg-red-500/10 border border-red-500/20 rounded-2xl p-6"
+              variants={scaleIn}
+            >
+              <h3 className="text-red-400 text-sm font-semibold mb-3">
                 The Odds Are Astronomical
               </h3>
-              <p style={{color: 'rgba(255,255,255,0.7)', fontSize: '13px', lineHeight: 1.7, margin: 0}}>
-                To WIN the main jackpot (lose with AAATT or better), you need to play <strong>~{PROBABILITY_DATA.handsToWinJackpot.toLocaleString()} hands</strong>. 
-                At 500 hands/hour, that's <strong>{Math.round(PROBABILITY_DATA.handsToWinJackpot / 500).toLocaleString()} hours</strong> — 
-                or about <strong>{Math.round(PROBABILITY_DATA.handsToWinJackpot / 500 / 8)} days</strong> of 8-hour sessions.
+              <p className="text-zinc-400 text-sm leading-relaxed">
+                To WIN the main jackpot (lose with AAATT or better), you need to play <strong className="text-white">~{PROBABILITY_DATA.handsToWinJackpot.toLocaleString()} hands</strong>. 
+                At 500 hands/hour, that's <strong className="text-white">{Math.round(PROBABILITY_DATA.handsToWinJackpot / 500).toLocaleString()} hours</strong> — 
+                or about <strong className="text-white">{Math.round(PROBABILITY_DATA.handsToWinJackpot / 500 / 8)} days</strong> of 8-hour sessions.
               </p>
-            </div>
+            </motion.div>
 
             {/* Insight 2 */}
-            <div style={{
-              background: 'rgba(255, 179, 71, 0.1)',
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              padding: '24px',
-              borderRadius: '12px',
-              border: '1px solid rgba(255, 179, 71, 0.2)'
-            }}>
-              <h3 style={{color: '#FFB347', fontSize: '14px', fontWeight: '600', marginBottom: '12px'}}>
+            <motion.div 
+              className="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-6"
+              variants={scaleIn}
+            >
+              <h3 className="text-yellow-500 text-sm font-semibold mb-3">
                 Most Players Never Win It
               </h3>
-              <p style={{color: 'rgba(255,255,255,0.7)', fontSize: '13px', lineHeight: 1.7, margin: 0}}>
-                To <em>win</em> the main jackpot, you need <strong>{PROBABILITY_DATA.handsToWinJackpot.toLocaleString()} hands</strong>. 
-                A recreational player grinding 5 hours/week at 80 hands/hour would need <strong>~{Math.round(PROBABILITY_DATA.handsToWinJackpot / (5 * 80 * 52))} years</strong> of play 
+              <p className="text-zinc-400 text-sm leading-relaxed">
+                To <em>win</em> the main jackpot, you need <strong className="text-white">{PROBABILITY_DATA.handsToWinJackpot.toLocaleString()} hands</strong>. 
+                A recreational player grinding 5 hours/week at 80 hands/hour would need <strong className="text-white">~{Math.round(PROBABILITY_DATA.handsToWinJackpot / (5 * 80 * 52))} years</strong> of play 
                 to expect one jackpot win. That's longer than most poker careers.
               </p>
-            </div>
+            </motion.div>
 
             {/* Insight 3 */}
-            <div style={{
-              background: 'rgba(34, 197, 94, 0.1)',
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              padding: '24px',
-              borderRadius: '12px',
-              border: '1px solid rgba(34, 197, 94, 0.2)'
-            }}>
-              <h3 style={{color: '#22c55e', fontSize: '14px', fontWeight: '600', marginBottom: '12px'}}>
+            <motion.div 
+              className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-6"
+              variants={scaleIn}
+            >
+              <h3 className="text-emerald-400 text-sm font-semibold mb-3">
                 Table Share is Your Best Bet
               </h3>
-              <p style={{color: 'rgba(255,255,255,0.7)', fontSize: '13px', lineHeight: 1.7, margin: 0}}>
-                You'll get a table share once every <strong>~{PROBABILITY_DATA.handsToGetTableShare.toLocaleString()} hands</strong> — 
-                about <strong>4x more often</strong> than winning the main prize. 
+              <p className="text-zinc-400 text-sm leading-relaxed">
+                You'll get a table share once every <strong className="text-white">~{PROBABILITY_DATA.handsToGetTableShare.toLocaleString()} hands</strong> — 
+                about <strong className="text-white">4x more often</strong> than winning the main prize. 
                 It's small ({formatCurrency(currentEV.tableSharePayout)} at your stake), but it's something!
               </p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          <div style={{
-            marginTop: '24px',
-            padding: '18px',
-            background: 'rgba(0,0,0,0.3)',
-            borderRadius: '10px',
-            border: '1px solid rgba(255,255,255,0.05)',
-            textAlign: 'center'
-          }}>
-            <p style={{color: 'rgba(255,255,255,0.5)', fontSize: '13px', margin: 0, lineHeight: 1.7}}>
-              <strong style={{color: '#FFB347'}}>Bottom Line:</strong> At current pool levels, you're paying <strong style={{color: '#ef4444'}}>{BBJ_CONSTANTS.bbPer100Fees.toFixed(2)} bb/100</strong> in fees. 
-              Your expected return is <strong style={{color: currentEV.netBBper100 >= 0 ? '#22c55e' : '#ef4444'}}>{currentEV.netBBper100 >= 0 ? '+' : ''}{currentEV.netBBper100.toFixed(3)} bb/100</strong>. 
+          <div className="mt-6 p-5 bg-zinc-900/50 rounded-2xl border border-zinc-800 text-center">
+            <p className="text-zinc-400 text-sm leading-relaxed">
+              <strong className="text-yellow-500">Bottom Line:</strong> At current pool levels, you're paying <strong className="text-red-400">{BBJ_CONSTANTS.bbPer100Fees.toFixed(2)} bb/100</strong> in fees. 
+              Your expected return is <strong className={currentEV.netBBper100 >= 0 ? 'text-emerald-400' : 'text-red-400'}>{currentEV.netBBper100 >= 0 ? '+' : ''}{currentEV.netBBper100.toFixed(3)} bb/100</strong>. 
               {currentEV.isProfitable 
                 ? " The pool is high enough to make BBJ tables mathematically +EV!"
                 : ` The pool needs to reach about ${formatCurrency(poolSize + currentEV.poolNeeded)} before playing BBJ tables becomes +EV.`
               }
             </p>
           </div>
-        </div>
+        </motion.div>
 
         {/* Footer */}
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '30px 20px',
-          color: 'rgba(255,255,255,0.3)',
-          fontSize: '12px'
-        }}>
-          <p style={{ margin: 0 }}>
+        <motion.div 
+          className="text-center py-8 text-zinc-600 text-xs"
+          variants={fadeIn}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.3 }}
+        >
+          <p>
             Data based on 42.1M verified hands from GGPoker (NL100+) • 624 BBJ triggers analyzed
           </p>
-          <p style={{ margin: '8px 0 0 0' }}>
+          <p className="mt-2">
             Built with 🌮 by FreeNachos
           </p>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
