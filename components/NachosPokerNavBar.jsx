@@ -213,8 +213,15 @@ const NachosPokerNavBar = () => {
           color: #FFB347;
         }
 
-        /* Tools dropdown */
+        /* Desktop: show individual tool links */
+        .desktop-tools {
+          display: flex;
+          gap: 4px;
+        }
+
+        /* Mobile: show dropdown */
         .tools-dropdown {
+          display: none;
           position: relative;
         }
         
@@ -256,8 +263,7 @@ const NachosPokerNavBar = () => {
         .tools-dropdown-menu {
           position: absolute;
           top: calc(100% + 8px);
-          left: 50%;
-          transform: translateX(-50%);
+          right: 0;
           background: rgba(15, 15, 15, 0.95);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
@@ -267,7 +273,7 @@ const NachosPokerNavBar = () => {
           min-width: 180px;
           opacity: 0;
           visibility: hidden;
-          transform: translateX(-50%) translateY(-10px);
+          transform: translateY(-10px);
           transition: all 0.2s ease;
           box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
@@ -275,7 +281,7 @@ const NachosPokerNavBar = () => {
         .tools-dropdown.open .tools-dropdown-menu {
           opacity: 1;
           visibility: visible;
-          transform: translateX(-50%) translateY(0);
+          transform: translateY(0);
         }
         
         .tools-dropdown-item {
@@ -310,6 +316,16 @@ const NachosPokerNavBar = () => {
           opacity: 1;
         }
         
+        /* Breakpoint: switch to dropdown */
+        @media (max-width: 1000px) {
+          .desktop-tools {
+            display: none;
+          }
+          .tools-dropdown {
+            display: block;
+          }
+        }
+        
         @media (max-width: 900px) {
           .nachospoker-nav-item {
             padding: 8px 10px;
@@ -325,9 +341,6 @@ const NachosPokerNavBar = () => {
             padding: 8px 10px;
             font-size: 11px;
           }
-          .tools-dropdown-btn svg.wrench {
-            display: none;
-          }
         }
         
         @media (max-width: 600px) {
@@ -336,14 +349,6 @@ const NachosPokerNavBar = () => {
           }
           .nachospoker-navbar-brand-text {
             display: none;
-          }
-          .tools-dropdown-menu {
-            left: auto;
-            right: 0;
-            transform: translateX(0) translateY(-10px);
-          }
-          .tools-dropdown.open .tools-dropdown-menu {
-            transform: translateX(0) translateY(0);
           }
         }
         
@@ -389,7 +394,24 @@ const NachosPokerNavBar = () => {
             <span>Articles</span>
           </Link>
           
-          {/* Tools Dropdown */}
+          {/* Desktop: Individual tool links */}
+          <div className="desktop-tools">
+            {toolItems.map((tool) => {
+              const Icon = tool.icon;
+              return (
+                <Link
+                  key={tool.href}
+                  href={tool.href}
+                  className={`nachospoker-nav-item ${isActive(tool.href) ? 'active' : ''}`}
+                >
+                  <Icon size={14} />
+                  <span>{tool.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+          
+          {/* Mobile: Tools Dropdown */}
           <div 
             className={`tools-dropdown ${toolsOpen ? 'open' : ''}`}
             ref={toolsRef}
@@ -398,7 +420,7 @@ const NachosPokerNavBar = () => {
               className={`tools-dropdown-btn ${isToolActive ? 'active' : ''} ${toolsOpen ? 'open' : ''}`}
               onClick={() => setToolsOpen(!toolsOpen)}
             >
-              <Wrench size={14} className="wrench" />
+              <Wrench size={14} />
               <span>Tools</span>
               <ChevronDown size={12} className="chevron" />
             </button>
