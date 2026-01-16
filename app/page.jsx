@@ -1498,55 +1498,38 @@ The 3-month program consists of:
         {/* Sparse at top (distant stars), denser toward bottom */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 16, overflow: 'hidden', pointerEvents: 'none' }}>
           
-          {/* === TOP-LEFT CORNER: Distant Star === */}
-          {/* Nacho - Tucked into top-left corner */}
+          {/* === HERO ACCENT NACHOS: Intentional Placement === */}
+          
+          {/* Nacho - Left of "Master High-Stakes" headline */}
           <div style={{
             position: 'absolute',
-            top: '3%',
-            left: '2%',
-            width: '90px',
-            height: '90px',
-            opacity: 0.18,
-            filter: 'blur(12px)',
-            animation: 'cinematicFloat 20s ease-in-out infinite'
+            top: '38%',
+            left: '6%',
+            width: '45px',
+            height: '45px',
+            opacity: 0.25,
+            filter: 'blur(4px)',
+            animation: 'cinematicFloat 18s ease-in-out infinite'
           }}>
             <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
               <polygon points="50,5 95,95 5,95" fill="#D4AF37" />
             </svg>
           </div>
 
-          {/* === LEFT MARGIN: Peripheral Stars === */}
-          {/* Nacho - Left margin, upper-mid */}
+          {/* Nacho - Top Center */}
           <div style={{
             position: 'absolute',
-            top: '52%',
-            left: '1.5%',
-            width: '100px',
-            height: '100px',
-            opacity: 0.15,
-            filter: 'blur(14px)',
-            animation: 'cinematicFloat2 24s ease-in-out infinite',
-            animationDelay: '-8s'
+            top: '8%',
+            left: '45%',
+            width: '70px',
+            height: '70px',
+            opacity: 0.2,
+            filter: 'blur(8px)',
+            animation: 'cinematicFloat2 22s ease-in-out infinite',
+            animationDelay: '-6s'
           }}>
             <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
               <polygon points="50,5 95,95 5,95" fill="#FF9900" />
-            </svg>
-          </div>
-
-          {/* Nacho - Left margin, lower */}
-          <div style={{
-            position: 'absolute',
-            top: '72%',
-            left: '3%',
-            width: '110px',
-            height: '110px',
-            opacity: 0.16,
-            filter: 'blur(15px)',
-            animation: 'cinematicFloat 22s ease-in-out infinite',
-            animationDelay: '-12s'
-          }}>
-            <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-              <polygon points="50,5 95,95 5,95" fill="#D4AF37" />
             </svg>
           </div>
 
