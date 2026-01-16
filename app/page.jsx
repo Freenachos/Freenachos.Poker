@@ -2027,67 +2027,74 @@ The 3-month program consists of:
       {/* ==================== MAIN CONTENT CONTAINER ==================== */}
       <div style={{position: 'relative', zIndex: 10, maxWidth: '1400px', margin: '0 auto', padding: '0 24px'}}>
 
-        {/* About Section - First Card with Extra Dramatic Entrance */}
+        {/* ==================== COACH SECTION - Floating Layout ==================== */}
         <div 
           ref={aboutSectionRef}
-          className="glass-card reveal-first"
+          className="reveal-first"
           style={{
-            borderRadius: '24px',
-            padding: '64px',
-            marginBottom: '200px'
+            paddingTop: '60px',
+            paddingBottom: '120px',
+            marginBottom: '250px'
           }}
         >
-          {/* New Headline */}
-          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          {/* Section Header - Left Aligned */}
+          <div style={{ marginBottom: '48px' }}>
             <h2 style={{
-              fontSize: '32px',
+              fontSize: 'clamp(36px, 4.5vw, 52px)',
               fontWeight: '800',
-              color: '#F0F0F0',
-              marginBottom: '8px',
-              letterSpacing: '-0.01em'
+              color: '#FFFFFF',
+              marginBottom: '16px',
+              lineHeight: 1.08,
+              letterSpacing: '-0.025em',
+              fontFamily: 'Manrope, Inter, sans-serif'
             }}>
-              The Coach Behind <span style={{ color: '#D4AF37' }}>$5M+</span> in Student Profits
+              The Coach Behind <span style={{ 
+                color: '#D4AF37',
+                textShadow: '0 0 60px rgba(212, 175, 55, 0.4)'
+              }}>$5M+</span> in Student Profits
             </h2>
           </div>
 
-          {/* Stats Row - Prominent at Top */}
+          {/* Stats Row - Floating Pills */}
           <div style={{ 
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '20px',
-            marginBottom: '48px',
-            padding: '28px 32px',
-            background: 'rgba(18, 18, 18, 0.6)',
-            borderRadius: '16px',
-            border: '1px solid rgba(212, 175, 55, 0.2)'
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '16px',
+            marginBottom: '56px'
           }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '32px', fontWeight: '800', color: '#D4AF37', marginBottom: '6px' }}>$5M+</div>
-              <div style={{ fontSize: '12px', color: 'rgba(240, 240, 240, 0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Student Profits</div>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '32px', fontWeight: '800', color: '#D4AF37', marginBottom: '6px' }}>200+</div>
-              <div style={{ fontSize: '12px', color: 'rgba(240, 240, 240, 0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Players Coached</div>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '32px', fontWeight: '800', color: '#D4AF37', marginBottom: '6px' }}>6.2bb/100</div>
-              <div style={{ fontSize: '12px', color: 'rgba(240, 240, 240, 0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Win Rate at 1KNL+</div>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '32px', fontWeight: '800', color: '#D4AF37', marginBottom: '6px' }}>10M+</div>
-              <div style={{ fontSize: '12px', color: 'rgba(240, 240, 240, 0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Hands Played</div>
-            </div>
+            {[
+              { value: '$5M+', label: 'Student Profits' },
+              { value: '200+', label: 'Players Coached' },
+              { value: '6.2bb/100', label: 'Win Rate at 1KNL+' },
+              { value: '10M+', label: 'Hands Played' }
+            ].map((stat, idx) => (
+              <div 
+                key={idx}
+                style={{ 
+                  padding: '20px 28px',
+                  background: 'rgba(212, 175, 55, 0.08)',
+                  border: '1px solid rgba(212, 175, 55, 0.25)',
+                  borderRadius: '16px',
+                  transition: 'all 0.3s ease'
+                }}
+                className="stat-pill"
+              >
+                <div style={{ fontSize: '28px', fontWeight: '800', color: '#D4AF37', marginBottom: '4px' }}>{stat.value}</div>
+                <div style={{ fontSize: '12px', color: 'rgba(240, 240, 240, 0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{stat.label}</div>
+              </div>
+            ))}
           </div>
           
-          <div style={{ display: 'flex', gap: '48px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-            {/* Bio Text - Rewritten for Authority (max-width 650px) */}
-            <div style={{ flex: 1, minWidth: '300px', maxWidth: '650px' }}>
+          {/* Two Column Layout - Text Left, Graph Right */}
+          <div style={{ display: 'flex', gap: '64px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+            {/* Bio Text - Left Column */}
+            <div style={{ flex: 1, minWidth: '320px', maxWidth: '620px' }}>
               {/* Paragraph 1: The Authority */}
               <p style={{
                 color: 'rgba(240, 240, 240, 0.9)',
-                fontSize: '16px',
+                fontSize: '17px',
                 lineHeight: 1.9,
-                marginBottom: '20px'
+                marginBottom: '24px'
               }}>
                 My students have generated over <strong style={{ color: '#D4AF37' }}>$5,000,000</strong> in combined profits. I maintain a <strong style={{ color: '#D4AF37' }}>6.2bb/100 win rate at 1KNL and above</strong>, with over 10 million hands of high-stakes experience. This isn't theory. It's a system that produces results.
               </p>
@@ -2095,9 +2102,9 @@ The 3-month program consists of:
               {/* Paragraph 2: The Method */}
               <p style={{
                 color: 'rgba(240, 240, 240, 0.8)',
-                fontSize: '16px',
+                fontSize: '17px',
                 lineHeight: 1.9,
-                marginBottom: '20px'
+                marginBottom: '24px'
               }}>
                 I don't teach you to memorize solver outputs. I teach you to <strong style={{ color: '#D4AF37' }}>weaponize data</strong>. By identifying where real opponents deviate from equilibrium, we build strategies that exploit population tendencies in a controlled, repeatable way. GTO is the diagnostic tool. Exploitation is the profit engine.
               </p>
@@ -2105,14 +2112,14 @@ The 3-month program consists of:
               {/* Paragraph 3: The Journey */}
               <p style={{
                 color: 'rgba(240, 240, 240, 0.7)',
-                fontSize: '16px',
+                fontSize: '17px',
                 lineHeight: 1.9,
-                marginBottom: '32px'
+                marginBottom: '40px'
               }}>
                 I wasn't born winning. My early graph was filled with breakeven stretches and frustrating downswings. What changed wasn't more study. It was a better system. That same system is now the foundation of my mentorship, and it's responsible for the results you see above.
               </p>
 
-              {/* Secondary CTA after bio */}
+              {/* CTA Button */}
               <a 
                 href="https://calendly.com/freenachos/intro" 
                 target="_blank" 
@@ -2121,10 +2128,10 @@ The 3-month program consists of:
                 style={{
                   background: 'transparent',
                   color: '#D4AF37',
-                  padding: '16px 32px',
-                  borderRadius: '12px',
+                  padding: '18px 36px',
+                  borderRadius: '14px',
                   fontWeight: '600',
-                  fontSize: '15px',
+                  fontSize: '16px',
                   textDecoration: 'none',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -2137,18 +2144,18 @@ The 3-month program consists of:
               </a>
             </div>
             
-            {/* Results Graph - Visual Proof */}
+            {/* Results Graph - Right Column */}
             <div style={{
-              flex: '0 0 360px',
+              flex: '0 0 380px',
               display: 'flex',
               flexDirection: 'column',
               gap: '14px'
             }}>
               <div style={{
-                borderRadius: '20px',
+                borderRadius: '24px',
                 overflow: 'hidden',
                 border: '2px solid rgba(212, 175, 55, 0.35)',
-                boxShadow: '0 12px 40px rgba(0, 0, 0, 0.5)'
+                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(212, 175, 55, 0.1)'
               }}>
                 <img 
                   src="https://static.runitonce.com/static/img/courses/dominate-with-data/chart.bcc69818f43c.jpg"
@@ -2170,28 +2177,38 @@ The 3-month program consists of:
               </div>
             </div>
           </div>
+
+          {/* Stat pill hover style */}
+          <style>{`
+            .stat-pill:hover {
+              background: rgba(212, 175, 55, 0.15) !important;
+              border-color: rgba(212, 175, 55, 0.4) !important;
+              transform: translateY(-2px);
+            }
+          `}</style>
         </div>
 
-        {/* What You Get in the Mentorship Program Section */}
+        {/* ==================== WHAT YOU GET - Naked Layout ==================== */}
         <div 
           id="mentorship"
-          className="glass-card reveal"
+          className="reveal"
           style={{
-            borderRadius: '24px',
-            padding: '72px 56px',
-            marginBottom: '200px'
+            paddingTop: '60px',
+            paddingBottom: '120px',
+            marginBottom: '250px'
           }}
         >
-          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
+          {/* Header - Left Aligned (Golden Axis) */}
+          <div style={{ marginBottom: '64px' }}>
             <div style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '10px',
-              background: 'rgba(212, 175, 55, 0.1)',
-              border: '1px solid rgba(212, 175, 55, 0.25)',
+              background: 'rgba(212, 175, 55, 0.08)',
+              border: '1px solid rgba(212, 175, 55, 0.2)',
               borderRadius: '30px',
               padding: '8px 20px',
-              marginBottom: '20px'
+              marginBottom: '24px'
             }}>
               <Sparkles size={16} color="#D4AF37" />
               <span style={{ fontSize: '13px', color: '#D4AF37', fontWeight: '600', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
@@ -2199,73 +2216,151 @@ The 3-month program consists of:
               </span>
             </div>
             <h2 style={{
-              fontSize: '36px',
+              fontSize: 'clamp(36px, 4.5vw, 52px)',
               fontWeight: '800',
-              color: '#F0F0F0',
-              marginBottom: '12px',
-              letterSpacing: '-0.02em'
+              color: '#FFFFFF',
+              marginBottom: '16px',
+              lineHeight: 1.08,
+              letterSpacing: '-0.025em',
+              fontFamily: 'Manrope, Inter, sans-serif'
             }}>
-              What You Get
+              What You <span style={{ 
+                color: '#D4AF37',
+                textShadow: '0 0 60px rgba(212, 175, 55, 0.4)'
+              }}>Get</span>
             </h2>
             <p style={{
               fontSize: '17px',
-              color: 'rgba(240, 240, 240, 0.6)',
-              maxWidth: '550px',
-              margin: '0 auto',
-              lineHeight: 1.7
+              color: '#8A8A8A',
+              maxWidth: '520px',
+              lineHeight: 1.85
             }}>
               Everything you need to transform from a struggling reg into a high-stakes crusher
             </p>
           </div>
           
+          {/* Naked Benefits Grid - Reveal on Hover */}
           <div 
-            className="benefits-grid"
+            className="naked-benefits-grid"
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '24px'
+              gap: '8px'
             }}
           >
-            {mentorshipBenefits.map((benefit, idx) => (
-              <BenefitCard key={idx} benefit={benefit} index={idx} />
-            ))}
+            {mentorshipBenefits.map((benefit, idx) => {
+              const Icon = benefit.icon;
+              return (
+                <div 
+                  key={idx}
+                  className="naked-benefit-item"
+                  style={{
+                    padding: '40px 32px',
+                    borderRadius: '20px',
+                    transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
+                    cursor: 'default'
+                  }}
+                >
+                  {/* Icon */}
+                  <div style={{
+                    width: '56px',
+                    height: '56px',
+                    borderRadius: '14px',
+                    background: 'rgba(212, 175, 55, 0.1)',
+                    border: '1px solid rgba(212, 175, 55, 0.25)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '24px',
+                    transition: 'all 0.4s ease'
+                  }}>
+                    <Icon size={26} color="#D4AF37" strokeWidth={1.5} />
+                  </div>
+                  
+                  {/* Title */}
+                  <h3 style={{
+                    color: '#F0F0F0',
+                    fontSize: '18px',
+                    fontWeight: '700',
+                    marginBottom: '12px',
+                    lineHeight: 1.3
+                  }}>
+                    {benefit.title}
+                  </h3>
+                  
+                  {/* Description */}
+                  <p style={{
+                    color: 'rgba(240, 240, 240, 0.55)',
+                    fontSize: '14px',
+                    lineHeight: 1.75
+                  }}>
+                    {benefit.description}
+                  </p>
+                </div>
+              );
+            })}
           </div>
           
-          {/* Responsive grid for smaller screens */}
+          {/* Naked benefits styles */}
           <style>{`
+            .naked-benefit-item:hover {
+              background: rgba(255, 255, 255, 0.03) !important;
+              transform: translateY(-4px);
+            }
+            .naked-benefit-item:hover div:first-child {
+              background: rgba(212, 175, 55, 0.15) !important;
+              border-color: rgba(212, 175, 55, 0.4) !important;
+              box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            }
             @media (max-width: 1024px) {
-              .benefits-grid {
+              .naked-benefits-grid {
                 grid-template-columns: repeat(2, 1fr) !important;
               }
             }
             @media (max-width: 680px) {
-              .benefits-grid {
+              .naked-benefits-grid {
                 grid-template-columns: 1fr !important;
               }
             }
           `}</style>
         </div>
 
-        {/* Testimonials Section */}
+        {/* ==================== TESTIMONIALS - Individual Cards Only ==================== */}
         <div 
           id="testimonials"
-          className="glass-card reveal"
+          className="reveal"
           style={{
-            borderRadius: '24px',
-            padding: '64px',
-            marginBottom: '200px',
-            overflow: 'hidden'
+            paddingTop: '60px',
+            paddingBottom: '120px',
+            marginBottom: '250px',
+            overflow: 'visible'
           }}
         >
-          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          {/* Centered Header */}
+          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
             <h2 style={{
-              fontSize: '32px',
+              fontSize: 'clamp(38px, 5vw, 56px)',
               fontWeight: '800',
-              color: '#F0F0F0',
-              marginBottom: '8px'
+              marginBottom: '16px',
+              lineHeight: 1.08,
+              letterSpacing: '-0.025em',
+              fontFamily: 'Manrope, Inter, sans-serif',
+              background: 'linear-gradient(135deg, #FFFFFF 0%, #D4AF37 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
             }}>
-              Testimonials
+              What Players Say
             </h2>
+            <p style={{
+              fontSize: '17px',
+              color: '#8A8A8A',
+              maxWidth: '480px',
+              margin: '0 auto',
+              lineHeight: 1.7
+            }}>
+              Results from real students who've been through the mentorship
+            </p>
           </div>
 
           {/* Testimonial Carousel with Side Previews */}
@@ -2280,23 +2375,24 @@ The 3-month program consists of:
             {/* Left Preview Card */}
             <div 
               onClick={prevTestimonial}
+              className="testimonial-preview-card"
               style={{
                 flex: '0 0 200px',
                 height: '280px',
-                background: 'rgba(15, 15, 15, 0.4)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.05)',
-                borderRadius: '16px',
+                background: 'rgba(15, 15, 15, 0.6)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '20px',
                 padding: '20px',
                 opacity: 0.5,
                 transform: 'scale(0.9)',
                 cursor: 'pointer',
-                transition: 'all 0.3s ease',
+                transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden'
               }}
-              className="preview-card"
             >
               <div style={{
                 background: 'rgba(15, 15, 15, 0.8)',
@@ -2327,132 +2423,101 @@ The 3-month program consists of:
               }}>
                 "{testimonials[(currentTestimonialIndex - 1 + testimonials.length) % testimonials.length].quote.substring(0, 100)}..."
               </div>
-              <div style={{
-                color: 'rgba(255,255,255,0.5)',
-                fontSize: '11px',
-                fontWeight: '600',
-                marginTop: '8px',
-                flexShrink: 0
-              }}>
-                {testimonials[(currentTestimonialIndex - 1 + testimonials.length) % testimonials.length].name}
-              </div>
             </div>
 
             {/* Main Testimonial Card */}
             <div 
               key={currentTestimonialIndex}
-              className="testimonial-card-main"
+              className="main-testimonial-card"
               style={{
-                flex: '0 0 600px',
-                maxWidth: '600px',
-                height: '480px',
-                background: 'rgba(15, 15, 15, 0.6)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 179, 71, 0.2)',
-                borderRadius: '20px',
-                padding: '32px',
-                position: 'relative',
-                display: 'flex',
-                flexDirection: 'column',
-                animation: `${slideDirection === 'right' ? 'slideInRight' : 'slideInLeft'} 0.4s ease-out`
+                flex: '0 0 550px',
+                background: 'rgba(18, 18, 18, 0.5)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                border: '1px solid rgba(212, 175, 55, 0.2)',
+                borderRadius: '24px',
+                padding: '40px',
+                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(212, 175, 55, 0.1)',
+                animation: slideDirection === 'right' ? 'slideInRight 0.4s ease-out' : 'slideInLeft 0.4s ease-out'
               }}
             >
-              {/* Graph */}
-              <div style={{
-                background: 'rgba(15, 15, 15, 0.8)',
-                borderRadius: '12px',
-                padding: '16px',
-                marginBottom: '24px',
-                border: '1px solid rgba(255, 179, 71, 0.2)',
-                height: '160px',
-                flexShrink: 0,
-                overflow: 'hidden',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                {testimonials[currentTestimonialIndex].hasBeforeAfter ? (
-                  <BeforeAfterGraph 
-                    imageBefore={testimonials[currentTestimonialIndex].imageBefore}
-                    imageAfter={testimonials[currentTestimonialIndex].imageAfter}
-                  />
-                ) : (
-                  <TestimonialGraph src={testimonials[currentTestimonialIndex].image} />
-                )}
-              </div>
-
               {/* Quote */}
-              <div style={{
-                position: 'relative',
-                flex: 1,
-                overflow: 'auto',
-                marginBottom: '16px'
+              <p style={{
+                color: 'rgba(255, 255, 255, 0.9)',
+                fontSize: '16px',
+                lineHeight: 1.8,
+                fontStyle: 'italic',
+                marginBottom: '24px',
+                minHeight: '120px'
               }}>
+                "{testimonials[currentTestimonialIndex].quote}"
+              </p>
+              
+              {/* Results Image */}
+              {(testimonials[currentTestimonialIndex].image || testimonials[currentTestimonialIndex].imageAfter) && (
                 <div style={{
-                  position: 'absolute',
-                  top: '-10px',
-                  left: '-10px',
-                  fontSize: '60px',
-                  color: 'rgba(255, 179, 71, 0.2)',
-                  fontFamily: 'Georgia, serif',
-                  lineHeight: 1
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  marginBottom: '24px',
+                  border: '1px solid rgba(212, 175, 55, 0.2)',
+                  maxHeight: '200px'
                 }}>
-                  "
+                  <img 
+                    src={testimonials[currentTestimonialIndex].image || testimonials[currentTestimonialIndex].imageAfter}
+                    alt="Results graph"
+                    style={{ width: '100%', height: 'auto', display: 'block' }}
+                  />
                 </div>
-                <p style={{
-                  color: 'rgba(255,255,255,0.85)',
-                  fontSize: '15px',
-                  lineHeight: 1.8,
-                  fontStyle: 'italic',
-                  paddingLeft: '30px',
-                  paddingRight: '20px',
-                  margin: 0
-                }}>
-                  {testimonials[currentTestimonialIndex].quote}
-                </p>
-              </div>
-
-              {/* Name */}
-              <div style={{ textAlign: 'center', flexShrink: 0 }}>
+              )}
+              
+              {/* Author Info */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                 <div style={{
-                  color: '#ffffff',
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #D4AF37, #FF9900)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   fontSize: '18px',
-                  fontWeight: '700'
+                  fontWeight: '700',
+                  color: '#0a0a0a'
                 }}>
-                  {testimonials[currentTestimonialIndex].name}
+                  {testimonials[currentTestimonialIndex].name.charAt(0)}
                 </div>
-                {testimonials[currentTestimonialIndex].subtitle && (
-                  <div style={{
-                    color: 'rgba(255,255,255,0.5)',
-                    fontSize: '13px',
-                    marginTop: '4px'
-                  }}>
-                    {testimonials[currentTestimonialIndex].subtitle}
+                <div>
+                  <div style={{ color: '#fff', fontWeight: '600', fontSize: '15px' }}>
+                    {testimonials[currentTestimonialIndex].name}
                   </div>
-                )}
+                  <div style={{ color: 'rgba(212, 175, 55, 0.8)', fontSize: '13px' }}>
+                    {testimonials[currentTestimonialIndex].result}
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Right Preview Card */}
             <div 
               onClick={nextTestimonial}
+              className="testimonial-preview-card"
               style={{
                 flex: '0 0 200px',
                 height: '280px',
-                background: 'rgba(15, 15, 15, 0.4)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.05)',
-                borderRadius: '16px',
+                background: 'rgba(15, 15, 15, 0.6)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '20px',
                 padding: '20px',
                 opacity: 0.5,
                 transform: 'scale(0.9)',
                 cursor: 'pointer',
-                transition: 'all 0.3s ease',
+                transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden'
               }}
-              className="preview-card"
             >
               <div style={{
                 background: 'rgba(15, 15, 15, 0.8)',
@@ -2483,28 +2548,34 @@ The 3-month program consists of:
               }}>
                 "{testimonials[(currentTestimonialIndex + 1) % testimonials.length].quote.substring(0, 100)}..."
               </div>
-              <div style={{
-                color: 'rgba(255,255,255,0.5)',
-                fontSize: '11px',
-                fontWeight: '600',
-                marginTop: '8px',
-                flexShrink: 0
-              }}>
-                {testimonials[(currentTestimonialIndex + 1) % testimonials.length].name}
-              </div>
             </div>
           </div>
 
           {/* Carousel Controls */}
           <div style={{
             display: 'flex',
-            gap: '12px',
+            gap: '16px',
             justifyContent: 'center',
             alignItems: 'center',
-            marginTop: '32px'
+            marginTop: '40px'
           }}>
-            <button className="carousel-btn" onClick={prevTestimonial}>
-              <ChevronLeft size={20} color="#D4AF37" />
+            <button 
+              className="cinema-nav-btn"
+              onClick={prevTestimonial}
+              style={{
+                width: '52px',
+                height: '52px',
+                borderRadius: '50%',
+                background: 'rgba(212, 175, 55, 0.1)',
+                border: '1px solid rgba(212, 175, 55, 0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              <ChevronLeft size={22} color="#D4AF37" />
             </button>
             
             {/* Counter */}
@@ -2518,54 +2589,88 @@ The 3-month program consists of:
               {currentTestimonialIndex + 1} / {testimonials.length}
             </div>
             
-            <button className="carousel-btn" onClick={nextTestimonial}>
-              <ChevronRight size={20} color="#D4AF37" />
+            <button 
+              className="cinema-nav-btn"
+              onClick={nextTestimonial}
+              style={{
+                width: '52px',
+                height: '52px',
+                borderRadius: '50%',
+                background: 'rgba(212, 175, 55, 0.1)',
+                border: '1px solid rgba(212, 175, 55, 0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              <ChevronRight size={22} color="#D4AF37" />
             </button>
           </div>
-        </div>
 
+          {/* Testimonial styles */}
+          <style>{`
+            .testimonial-preview-card:hover {
+              opacity: 0.8 !important;
+              transform: scale(0.95) !important;
+              border-color: rgba(212, 175, 55, 0.2) !important;
+            }
+            @media (max-width: 1024px) {
+              .testimonial-preview-card {
+                display: none !important;
+              }
+              .main-testimonial-card {
+                flex: 1 !important;
+                max-width: 600px !important;
+              }
+            }
+          `}</style>
+        </div>
         {/* ==================== DEAD SPACE: Cinema Transition Zone ==================== */}
         {/* 40vh of darkness with drifting nachos before YouTube section */}
         <div style={{ height: '40vh', position: 'relative', zIndex: 0 }} />
 
         {/* ==================== YOUTUBE CINEMA SECTION ==================== */}
-        {/* Premium Masterclass Library - Golden Axis Alignment */}
+        {/* Premium Masterclass Library - Warm Gold Cinema */}
         <div 
           className="reveal"
           id="videos"
           style={{
             position: 'relative',
             zIndex: 30,
-            paddingTop: '80px',
+            paddingTop: '100px',
             paddingBottom: '160px',
             marginBottom: '200px'
           }}
         >
-          {/* Cinematic Heading - Locked to Hero's Golden Axis */}
+          {/* Cinematic Heading - Centered Museum Style */}
           <div style={{ 
-            maxWidth: '1400px',
-            margin: '0 auto',
-            padding: '0 24px',
-            marginBottom: '64px'
+            textAlign: 'center',
+            marginBottom: '72px',
+            padding: '0 24px'
           }}>
             <h2 style={{
-              fontSize: 'clamp(36px, 4.5vw, 56px)',
+              fontSize: 'clamp(38px, 5vw, 60px)',
               fontWeight: '800',
-              color: '#FFFFFF',
-              marginBottom: '20px',
+              marginBottom: '24px',
               lineHeight: 1.08,
               letterSpacing: '-0.025em',
-              fontFamily: 'Manrope, Inter, sans-serif'
+              fontFamily: 'Manrope, Inter, sans-serif',
+              background: 'linear-gradient(135deg, #FFFFFF 0%, #D4AF37 50%, #FF9900 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              textShadow: 'none',
+              filter: 'drop-shadow(0 0 40px rgba(212, 175, 55, 0.3))'
             }}>
-              Proof in the <span style={{ 
-                color: '#D4AF37',
-                textShadow: '0 0 60px rgba(212, 175, 55, 0.4)'
-              }}>Process</span>.
+              Proof in the Process.
             </h2>
             <p style={{
-              fontSize: '17px',
+              fontSize: '18px',
               color: '#8A8A8A',
-              maxWidth: '520px',
+              maxWidth: '560px',
+              margin: '0 auto',
               lineHeight: 1.85,
               fontWeight: '400'
             }}>
@@ -2626,15 +2731,14 @@ The 3-month program consists of:
                     position: 'relative'
                   }}
                 >
-                  {/* Gold Bloom Glow Layer */}
+                  {/* Gold Bloom Glow Layer - Pulsing on Hover */}
                   <div 
                     className="cinema-bloom"
                     style={{
                       position: 'absolute',
                       inset: '-30px',
-                      background: 'radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.35) 0%, transparent 70%)',
+                      background: 'radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.4) 0%, rgba(255, 153, 0, 0.2) 40%, transparent 70%)',
                       opacity: 0,
-                      transition: 'opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
                       filter: 'blur(30px)',
                       zIndex: 0,
                       pointerEvents: 'none'
@@ -2653,7 +2757,7 @@ The 3-month program consists of:
                       zIndex: 1
                     }}
                   >
-                    {/* Thumbnail Image - Desaturated Default */}
+                    {/* Thumbnail Image - Warm Gold Tint Default */}
                     <div 
                       className="cinema-thumbnail"
                       style={{
@@ -2662,12 +2766,12 @@ The 3-month program consists of:
                         backgroundImage: `url(${video.thumbnail})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
-                        filter: 'saturate(0.2) brightness(0.8) contrast(1.1)',
-                        transition: 'all 0.5s cubic-bezier(0.22, 1, 0.36, 1)'
+                        filter: 'sepia(0.4) saturate(0.8) brightness(0.6) hue-rotate(-10deg)',
+                        transition: 'all 0.5s ease-in-out'
                       }}
                     />
                     
-                    {/* Play Icon Overlay - Gold Triangle Outline */}
+                    {/* Permanent Play Icon - Subtle Default, Bright on Hover */}
                     <div 
                       className="cinema-play-icon"
                       style={{
@@ -2676,28 +2780,45 @@ The 3-month program consists of:
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        background: 'rgba(0, 0, 0, 0.2)',
-                        opacity: 0,
-                        transition: 'opacity 0.4s ease'
+                        background: 'transparent',
+                        transition: 'all 0.4s ease'
                       }}
                     >
-                      <svg 
-                        width="64" 
-                        height="64" 
-                        viewBox="0 0 64 64" 
-                        fill="none"
+                      <div 
+                        className="play-button-inner"
                         style={{
-                          filter: 'drop-shadow(0 0 20px rgba(212, 175, 55, 0.6))'
+                          width: '72px',
+                          height: '72px',
+                          borderRadius: '50%',
+                          background: 'rgba(0, 0, 0, 0.3)',
+                          backdropFilter: 'blur(4px)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          border: '2px solid rgba(212, 175, 55, 0.4)',
+                          transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)'
                         }}
                       >
-                        <polygon 
-                          points="24,16 24,48 48,32" 
-                          fill="none" 
-                          stroke="#D4AF37" 
-                          strokeWidth="2.5"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                        <svg 
+                          width="28" 
+                          height="28" 
+                          viewBox="0 0 24 24" 
+                          fill="none"
+                          className="play-triangle"
+                          style={{
+                            marginLeft: '3px',
+                            transition: 'all 0.4s ease'
+                          }}
+                        >
+                          <polygon 
+                            points="5,3 19,12 5,21" 
+                            fill="rgba(212, 175, 55, 0.6)"
+                            stroke="rgba(212, 175, 55, 0.8)"
+                            strokeWidth="1.5"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
                     </div>
                   </div>
                   
@@ -2805,29 +2926,43 @@ The 3-month program consists of:
             </div>
           </div>
 
-          {/* Cinema Carousel Styles */}
+          {/* Cinema Carousel Styles - Warm Gold Cinema */}
           <style>{`
             .cinema-carousel::-webkit-scrollbar {
               display: none;
             }
             
+            @keyframes bloomPulse {
+              0%, 100% { opacity: 0.8; transform: scale(1); }
+              50% { opacity: 1; transform: scale(1.05); }
+            }
+            
             .cinema-video-card:hover .cinema-bloom {
               opacity: 1 !important;
+              animation: bloomPulse 2s ease-in-out infinite;
             }
             
             .cinema-video-card:hover .cinema-thumbnail-wrap {
               transform: scale(1.05);
-              border-color: rgba(212, 175, 55, 0.4);
-              box-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+              border-color: rgba(212, 175, 55, 0.5);
+              box-shadow: 0 0 50px rgba(212, 175, 55, 0.35);
             }
             
             .cinema-video-card:hover .cinema-thumbnail {
               transform: scale(1.08);
-              filter: saturate(1) brightness(1) contrast(1) !important;
+              filter: sepia(0) saturate(1) brightness(1) hue-rotate(0deg) !important;
             }
             
-            .cinema-video-card:hover .cinema-play-icon {
-              opacity: 1 !important;
+            .cinema-video-card:hover .play-button-inner {
+              background: rgba(212, 175, 55, 0.2) !important;
+              border-color: rgba(255, 215, 0, 0.8) !important;
+              transform: scale(1.1);
+              box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+            }
+            
+            .cinema-video-card:hover .play-triangle polygon {
+              fill: #FFD700 !important;
+              stroke: #FFFFFF !important;
             }
             
             .cinema-video-card:hover .cinema-title-wrap {
@@ -2851,29 +2986,37 @@ The 3-month program consists of:
           `}</style>
         </div>
 
-        {/* Pricing Section */}
+        {/* ==================== PRICING SECTION - Centered Anchor ==================== */}
         <div 
-          className="glass-card reveal"
+          className="reveal"
           style={{
-            borderRadius: '24px',
-            padding: '72px 56px',
-            marginBottom: '200px'
+            paddingTop: '60px',
+            paddingBottom: '120px',
+            marginBottom: '250px'
           }}
         >
-          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
+          {/* Centered Header */}
+          <div style={{ textAlign: 'center', marginBottom: '64px' }}>
             <h2 style={{
-              fontSize: '36px',
+              fontSize: 'clamp(38px, 5vw, 56px)',
               fontWeight: '800',
-              color: '#F0F0F0',
-              marginBottom: '12px',
-              letterSpacing: '-0.02em'
+              marginBottom: '16px',
+              lineHeight: 1.08,
+              letterSpacing: '-0.025em',
+              fontFamily: 'Manrope, Inter, sans-serif',
+              background: 'linear-gradient(135deg, #FFFFFF 0%, #D4AF37 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
             }}>
               Investment
             </h2>
             <p style={{
-              color: '#A1A1AA',
+              color: '#8A8A8A',
               fontSize: '17px',
-              lineHeight: 1.8
+              lineHeight: 1.7,
+              maxWidth: '480px',
+              margin: '0 auto'
             }}>
               Choose the commitment level that fits your goals
             </p>
@@ -2893,24 +3036,30 @@ The 3-month program consists of:
           </div>
         </div>
 
-        {/* You're a Good Fit If Section */}
+        {/* ==================== GOOD FIT SECTION - Floating Layout ==================== */}
         <div 
-          className="glass-card reveal"
+          className="reveal"
           style={{
-            borderRadius: '24px',
-            padding: '72px 56px',
-            marginBottom: '200px'
+            paddingTop: '60px',
+            paddingBottom: '120px',
+            marginBottom: '250px'
           }}
         >
-          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
+          {/* Centered Header */}
+          <div style={{ textAlign: 'center', marginBottom: '64px' }}>
             <h2 style={{
-              fontSize: '36px',
+              fontSize: 'clamp(36px, 4.5vw, 52px)',
               fontWeight: '800',
-              color: '#F0F0F0',
-              marginBottom: '12px',
-              letterSpacing: '-0.02em'
+              color: '#FFFFFF',
+              marginBottom: '16px',
+              lineHeight: 1.08,
+              letterSpacing: '-0.025em',
+              fontFamily: 'Manrope, Inter, sans-serif'
             }}>
-              Is This Right For You?
+              Is This Right <span style={{ 
+                color: '#D4AF37',
+                textShadow: '0 0 60px rgba(212, 175, 55, 0.4)'
+              }}>For You</span>?
             </h2>
           </div>
 
@@ -3017,63 +3166,71 @@ The 3-month program consists of:
           {/* CTA Button */}
           <div style={{
             textAlign: 'center',
-            marginTop: '48px'
+            marginTop: '56px'
           }}>
             <a 
-              href="https://calendly.com/patrickgerritsen90/30min"
+              href="https://calendly.com/freenachos/intro"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-hover cta-primary"
               style={{
                 background: '#FF9900',
                 color: '#0a0a0a',
-                padding: '18px 36px',
-                borderRadius: '30px',
-                fontWeight: '600',
-                fontSize: '15px',
+                padding: '20px 44px',
+                borderRadius: '14px',
+                fontWeight: '700',
+                fontSize: '16px',
                 textDecoration: 'none',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '8px',
-                boxShadow: '0 6px 28px rgba(255, 153, 0, 0.45)'
+                gap: '10px',
+                boxShadow: '0 6px 30px rgba(255, 153, 0, 0.45)'
               }}
             >
-              Book Free Intro Call
+              Book Free Intro Call <ArrowRight size={18} />
             </a>
           </div>
         </div>
 
-        {/* FAQ Section */}
+        {/* ==================== FAQ - Narrow Glass Accordion ==================== */}
         <div 
-          className="glass-card reveal"
+          className="reveal"
           style={{
-            borderRadius: '24px',
-            padding: '72px 56px',
-            marginBottom: '200px',
-            animation: 'fadeInUp 0.6s ease-out 0.45s both'
+            paddingTop: '60px',
+            paddingBottom: '120px',
+            marginBottom: '250px'
           }}
         >
-          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
+          {/* Centered Header */}
+          <div style={{ textAlign: 'center', marginBottom: '64px' }}>
             <h2 style={{
-              fontSize: '36px',
+              fontSize: 'clamp(36px, 4.5vw, 52px)',
               fontWeight: '800',
-              color: '#F0F0F0',
-              marginBottom: '12px',
-              letterSpacing: '-0.02em'
+              marginBottom: '16px',
+              lineHeight: 1.08,
+              letterSpacing: '-0.025em',
+              fontFamily: 'Manrope, Inter, sans-serif',
+              background: 'linear-gradient(135deg, #FFFFFF 0%, #D4AF37 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
             }}>
-              Frequently Asked Questions
+              Questions & Answers
             </h2>
             <p style={{
-              color: '#A1A1AA',
+              color: '#8A8A8A',
               fontSize: '17px',
-              lineHeight: 1.8
+              lineHeight: 1.7,
+              maxWidth: '480px',
+              margin: '0 auto'
             }}>
               Everything you need to know about the mentorship
             </p>
           </div>
 
+          {/* Narrow Accordion Container - max-w-3xl */}
           <div style={{
-            maxWidth: '800px',
+            maxWidth: '768px',
             margin: '0 auto',
             display: 'flex',
             flexDirection: 'column',
