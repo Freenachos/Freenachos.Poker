@@ -36,6 +36,7 @@ const PokerToolboxHome = () => {
   const nachoRef = useRef(null);
   const aboutSectionRef = useRef(null);
   const heroSectionRef = useRef(null);
+  const cinemaCarouselRef = useRef(null);
 
   // ============================================
   // DATA
@@ -332,11 +333,15 @@ The 3-month program consists of:
   const maxVideoIndex = Math.max(0, videos.length - 3);
   
   const nextVideo = () => {
-    setCurrentVideoIndex((prev) => (prev >= maxVideoIndex ? 0 : prev + 1));
+    if (cinemaCarouselRef.current) {
+      cinemaCarouselRef.current.scrollBy({ left: 412, behavior: 'smooth' });
+    }
   };
 
   const prevVideo = () => {
-    setCurrentVideoIndex((prev) => (prev <= 0 ? maxVideoIndex : prev - 1));
+    if (cinemaCarouselRef.current) {
+      cinemaCarouselRef.current.scrollBy({ left: -412, behavior: 'smooth' });
+    }
   };
 
   const nextTestimonial = () => {
@@ -2519,68 +2524,323 @@ The 3-month program consists of:
           </div>
         </div>
 
-        {/* YouTube Videos Section - Masterclass Vibe Check */}
+        {/* ==================== YOUTUBE CINEMA SECTION ==================== */}
+        {/* Premium Masterclass Library - No Box, Museum Spacing */}
         <div 
-          className="glass-card reveal"
+          className="reveal"
           id="videos"
           style={{
-            borderRadius: '24px',
-            padding: '56px',
+            position: 'relative',
+            zIndex: 30,
+            padding: '120px 0 160px 0',
             marginBottom: '200px'
           }}
         >
-          <div className="section-title" style={{ marginBottom: '24px' }}>
-            <Youtube size={24} color="#ef4444" />
-            <h2>Latest Videos</h2>
-            <div className="line" />
-            <a 
-              href="https://www.youtube.com/@nachospoker" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              style={{
-                fontSize: '13px',
+          {/* Cinematic Heading - Hero Typography */}
+          <div style={{ 
+            maxWidth: '800px', 
+            marginBottom: '64px',
+            paddingLeft: '24px'
+          }}>
+            <h2 style={{
+              fontSize: 'clamp(36px, 4vw, 52px)',
+              fontWeight: '800',
+              color: '#FFFFFF',
+              marginBottom: '20px',
+              lineHeight: 1.1,
+              letterSpacing: '-0.025em',
+              fontFamily: 'Manrope, Inter, sans-serif'
+            }}>
+              Inside the <span style={{ 
                 color: '#D4AF37',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontWeight: '500'
-              }}
-            >
-              View all <ExternalLink size={14} />
-            </a>
+                textShadow: '0 0 60px rgba(212, 175, 55, 0.4)'
+              }}>High-Stakes Lab</span>.
+            </h2>
+            <p style={{
+              fontSize: '18px',
+              color: '#8A8A8A',
+              maxWidth: '560px',
+              lineHeight: 1.8,
+              fontWeight: '400'
+            }}>
+              Watch the data-driven methodology that generates elite-level win rates.
+            </p>
           </div>
 
-          <div style={{ position: 'relative', overflow: 'hidden' }}>
+          {/* Cinema Carousel Container */}
+          <div style={{ position: 'relative' }}>
+            {/* Gradient Fade Edges */}
+            <div style={{
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              bottom: 0,
+              width: '80px',
+              background: 'linear-gradient(to right, #0A0A0A 0%, transparent 100%)',
+              zIndex: 10,
+              pointerEvents: 'none'
+            }} />
+            <div style={{
+              position: 'absolute',
+              right: 0,
+              top: 0,
+              bottom: 0,
+              width: '80px',
+              background: 'linear-gradient(to left, #0A0A0A 0%, transparent 100%)',
+              zIndex: 10,
+              pointerEvents: 'none'
+            }} />
+
+            {/* Snap Scroll Carousel */}
             <div 
+              ref={cinemaCarouselRef}
+              className="cinema-carousel"
               style={{
                 display: 'flex',
-                gap: '20px',
-                padding: '10px 0',
-                transform: `translateX(-${currentVideoIndex * 320}px)`,
-                transition: 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                gap: '32px',
+                padding: '40px 24px',
+                overflowX: 'auto',
+                scrollSnapType: 'x mandatory',
+                scrollBehavior: 'smooth',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none'
               }}
             >
               {videos.map((video, idx) => (
-                <VideoCard key={video.id} video={video} index={idx} />
+                <a
+                  key={video.id}
+                  href={video.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cinema-video-card"
+                  style={{
+                    flex: '0 0 380px',
+                    scrollSnapAlign: 'start',
+                    textDecoration: 'none',
+                    position: 'relative'
+                  }}
+                >
+                  {/* Gold Bloom Glow Layer */}
+                  <div 
+                    className="cinema-bloom"
+                    style={{
+                      position: 'absolute',
+                      inset: '-30px',
+                      background: 'radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.35) 0%, transparent 70%)',
+                      opacity: 0,
+                      transition: 'opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+                      filter: 'blur(30px)',
+                      zIndex: 0,
+                      pointerEvents: 'none'
+                    }}
+                  />
+                  
+                  {/* Thumbnail Container */}
+                  <div 
+                    className="cinema-thumbnail-wrap"
+                    style={{
+                      position: 'relative',
+                      borderRadius: '32px',
+                      overflow: 'hidden',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      transition: 'all 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+                      zIndex: 1
+                    }}
+                  >
+                    {/* Thumbnail Image */}
+                    <div 
+                      className="cinema-thumbnail"
+                      style={{
+                        width: '100%',
+                        height: '220px',
+                        backgroundImage: `url(${video.thumbnail})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        transition: 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)'
+                      }}
+                    />
+                    
+                    {/* Play Icon Overlay - Gold Triangle Outline */}
+                    <div 
+                      className="cinema-play-icon"
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        opacity: 0,
+                        transition: 'opacity 0.4s ease'
+                      }}
+                    >
+                      <svg 
+                        width="64" 
+                        height="64" 
+                        viewBox="0 0 64 64" 
+                        fill="none"
+                        style={{
+                          filter: 'drop-shadow(0 0 20px rgba(212, 175, 55, 0.6))'
+                        }}
+                      >
+                        <polygon 
+                          points="24,16 24,48 48,32" 
+                          fill="none" 
+                          stroke="#D4AF37" 
+                          strokeWidth="2.5"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  
+                  {/* Video Title - Parallax Layer */}
+                  <div 
+                    className="cinema-title-wrap"
+                    style={{
+                      padding: '20px 8px 0',
+                      transition: 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+                      zIndex: 1,
+                      position: 'relative'
+                    }}
+                  >
+                    <h4 style={{
+                      color: '#F0F0F0',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      lineHeight: 1.5,
+                      marginBottom: '8px'
+                    }}>
+                      {video.title}
+                    </h4>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      color: '#6B6B6B',
+                      fontSize: '13px'
+                    }}>
+                      <Youtube size={14} color="#D4AF37" />
+                      <span>Nachos Poker</span>
+                    </div>
+                  </div>
+                </a>
               ))}
             </div>
-            
-            {/* Carousel Controls */}
+
+            {/* Navigation Controls */}
             <div style={{
               display: 'flex',
-              gap: '12px',
+              gap: '16px',
               justifyContent: 'center',
-              marginTop: '20px'
+              marginTop: '48px'
             }}>
-              <button className="carousel-btn" onClick={prevVideo}>
-                <ChevronLeft size={20} color="#D4AF37" />
+              <button 
+                className="cinema-nav-btn"
+                onClick={prevVideo}
+                style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '50%',
+                  background: 'rgba(212, 175, 55, 0.1)',
+                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                <ChevronLeft size={24} color="#D4AF37" />
               </button>
-              <button className="carousel-btn" onClick={nextVideo}>
-                <ChevronRight size={20} color="#D4AF37" />
+              <button 
+                className="cinema-nav-btn"
+                onClick={nextVideo}
+                style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '50%',
+                  background: 'rgba(212, 175, 55, 0.1)',
+                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                <ChevronRight size={24} color="#D4AF37" />
               </button>
             </div>
+
+            {/* View All Link */}
+            <div style={{ textAlign: 'center', marginTop: '32px' }}>
+              <a 
+                href="https://www.youtube.com/@nachospoker" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                style={{
+                  color: '#D4AF37',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  opacity: 0.8,
+                  transition: 'opacity 0.3s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                onMouseLeave={(e) => e.currentTarget.style.opacity = '0.8'}
+              >
+                View all on YouTube <ExternalLink size={14} />
+              </a>
+            </div>
           </div>
+
+          {/* Cinema Carousel Styles */}
+          <style>{`
+            .cinema-carousel::-webkit-scrollbar {
+              display: none;
+            }
+            
+            .cinema-video-card:hover .cinema-bloom {
+              opacity: 1 !important;
+            }
+            
+            .cinema-video-card:hover .cinema-thumbnail-wrap {
+              transform: scale(1.05);
+              border-color: rgba(212, 175, 55, 0.4);
+              box-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+            }
+            
+            .cinema-video-card:hover .cinema-thumbnail {
+              transform: scale(1.08);
+            }
+            
+            .cinema-video-card:hover .cinema-play-icon {
+              opacity: 1 !important;
+            }
+            
+            .cinema-video-card:hover .cinema-title-wrap {
+              transform: translateY(-4px);
+            }
+            
+            .cinema-nav-btn:hover {
+              background: rgba(212, 175, 55, 0.2) !important;
+              border-color: rgba(212, 175, 55, 0.5) !important;
+              transform: scale(1.05);
+            }
+            
+            @media (max-width: 768px) {
+              .cinema-video-card {
+                flex: 0 0 320px !important;
+              }
+              .cinema-thumbnail {
+                height: 180px !important;
+              }
+            }
+          `}</style>
         </div>
 
         {/* Pricing Section */}
