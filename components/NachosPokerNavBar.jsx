@@ -69,9 +69,10 @@ const NachosPokerNavBar = () => {
           left: 0;
           right: 0;
           z-index: 1000;
-          border-radius: 12px;
-          padding: 12px 16px;
+          max-width: 1400px;
           margin: 0 auto;
+          border-radius: 12px;
+          padding: 12px 24px;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -198,7 +199,7 @@ const NachosPokerNavBar = () => {
         }
         @media (max-width: 600px) {
           .nachospoker-navbar {
-            padding: 10px 12px;
+            padding: 10px 16px;
           }
           .nachospoker-navbar-links {
             width: 100%;
