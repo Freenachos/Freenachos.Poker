@@ -1504,10 +1504,10 @@ The 3-month program consists of:
             position: 'absolute',
             top: '3%',
             left: '2%',
-            width: '65px',
-            height: '65px',
-            opacity: 0.08,
-            filter: 'blur(20px)',
+            width: '90px',
+            height: '90px',
+            opacity: 0.18,
+            filter: 'blur(12px)',
             animation: 'cinematicFloat 20s ease-in-out infinite'
           }}>
             <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
@@ -1521,10 +1521,10 @@ The 3-month program consists of:
             position: 'absolute',
             top: '52%',
             left: '1.5%',
-            width: '75px',
-            height: '75px',
-            opacity: 0.07,
-            filter: 'blur(22px)',
+            width: '100px',
+            height: '100px',
+            opacity: 0.15,
+            filter: 'blur(14px)',
             animation: 'cinematicFloat2 24s ease-in-out infinite',
             animationDelay: '-8s'
           }}>
@@ -1538,10 +1538,10 @@ The 3-month program consists of:
             position: 'absolute',
             top: '72%',
             left: '3%',
-            width: '85px',
-            height: '85px',
-            opacity: 0.08,
-            filter: 'blur(24px)',
+            width: '110px',
+            height: '110px',
+            opacity: 0.16,
+            filter: 'blur(15px)',
             animation: 'cinematicFloat 22s ease-in-out infinite',
             animationDelay: '-12s'
           }}>
