@@ -70,6 +70,40 @@ const transformArticle = (dbArticle) => ({
 });
 
 // ============================================
+// IMAGE URL DETECTION HELPERS
+// ============================================
+
+// Check if URL is a standard image URL (ends with image extension)
+const isStandardImageUrl = (url) => {
+  return /^https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|svg)(?:\?[^\s]*)?$/i.test(url);
+};
+
+// Check if URL is a Supabase storage URL
+const isSupabaseStorageUrl = (url) => {
+  return /^https?:\/\/[^\/]+\.supabase\.co\/storage\/v1\/object\//.test(url);
+};
+
+// Check if a URL should be treated as an image
+const isImageUrl = (url) => {
+  const trimmed = url.trim();
+  return isStandardImageUrl(trimmed) || isSupabaseStorageUrl(trimmed);
+};
+
+// Extract image URL from a line (returns the URL or null)
+const extractImageUrl = (line) => {
+  const trimmed = line.trim();
+  // Check for standard image URL
+  const standardMatch = trimmed.match(/^(https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|svg)(?:\?[^\s]*)?)$/i);
+  if (standardMatch) return standardMatch[1];
+  
+  // Check for Supabase storage URL
+  const supabaseMatch = trimmed.match(/^(https?:\/\/[^\/]+\.supabase\.co\/storage\/v1\/object\/[^\s]+)$/);
+  if (supabaseMatch) return supabaseMatch[1];
+  
+  return null;
+};
+
+// ============================================
 // NOTION PARSER
 // ============================================
 
@@ -224,12 +258,12 @@ const parseNotionContent = (content) => {
       continue;
     }
     
-    // Check for image URL (standalone URL that looks like an image)
-    const imageUrlMatch = trimmedLine.match(/^(https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|svg)(?:\?[^\s]*)?)$/i);
-    if (imageUrlMatch) {
+    // Check for image URL (standalone URL that looks like an image OR Supabase storage URL)
+    const imageUrl = extractImageUrl(trimmedLine);
+    if (imageUrl) {
       blocks.push({
         type: 'image',
-        src: imageUrlMatch[1],
+        src: imageUrl,
         alt: '',
         caption: ''
       });
@@ -274,7 +308,7 @@ const parseNotionContent = (content) => {
           pLine.match(/^[-*•]\s+/) ||
           pLine.match(/^\d+\.\s+/) ||
           pLine.match(/^!\[/) ||
-          pLine.match(/^https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|svg)/i)) {
+          isImageUrl(pLine)) {  // FIX: Use the helper function to detect all image URLs
         break;
       }
       paragraphLines.push(pLine);
@@ -329,12 +363,12 @@ const parseHTMLContent = (html) => {
     if (tag === 'p') {
       const content = getTextWithFormatting(node);
       if (content.trim()) {
-        // Check if it's just an image URL
-        const imageUrlMatch = content.trim().match(/^(https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|svg)(?:\?[^\s]*)?)$/i);
-        if (imageUrlMatch) {
+        // Check if it's just an image URL (standard OR Supabase storage)
+        const imageUrl = extractImageUrl(content);
+        if (imageUrl) {
           return [{
             type: 'image',
-            src: imageUrlMatch[1],
+            src: imageUrl,
             alt: '',
             caption: ''
           }];
@@ -960,33 +994,30 @@ export default function FreeNachosArticles() {
 
   const ArticleCard = ({ article, onClick }) => {
     const thumbnailIcons = { 'poker-table': Fish, 'chart': BarChart3, 'stats': TrendingUp, 'default': FileText };
-    const ThumbnailIcon = thumbnailIcons[article.thumbnail] || thumbnailIcons.default;
-    const hasThumbnailImage = article.thumbnailUrl && article.thumbnailUrl.trim() !== '';
-    
+    const IconComponent = thumbnailIcons[article.thumbnail] || thumbnailIcons['default'];
     const isScheduled = article.scheduledFor && new Date(article.scheduledFor) > new Date();
-    const scheduledDate = isScheduled ? new Date(article.scheduledFor).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : null;
     
     return (
-      <div className="card-hover glass-card article-card" onClick={() => onClick(article)} style={{ borderRadius: '16px', overflow: 'hidden', cursor: 'pointer', position: 'relative' }}>
-        {!article.published && (<div style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(239, 68, 68, 0.9)', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: '600', textTransform: 'uppercase', zIndex: 2 }}>Draft</div>)}
-        {isScheduled && (<div style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(59, 130, 246, 0.9)', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: '600', textTransform: 'uppercase', zIndex: 2, display: 'flex', alignItems: 'center', gap: '4px' }}><Calendar size={10} />Scheduled</div>)}
-        <div style={{ height: '140px', background: 'linear-gradient(135deg, rgba(255, 179, 71, 0.15) 0%, rgba(255, 179, 71, 0.05) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', overflow: 'hidden' }}>
-          {hasThumbnailImage ? (
+      <div onClick={() => onClick(article)} className="glass-card card-hover" style={{ borderRadius: '16px', overflow: 'hidden', cursor: 'pointer', animation: 'fadeInUp 0.5s ease-out' }}>
+        {article.thumbnailUrl ? (
+          <div style={{ height: '160px', background: 'rgba(255, 179, 71, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
             <img src={article.thumbnailUrl} alt={article.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          ) : (
-            <ThumbnailIcon size={48} color="#FFB347" style={{ opacity: 0.6 }} />
-          )}
-        </div>
-        <div style={{ padding: '24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-            <span style={{ background: 'rgba(255, 179, 71, 0.2)', color: '#FFB347', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{article.category}</span>
-            <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}><Clock size={10} /> {article.readTime}</span>
           </div>
-          <h3 style={{ color: '#ffffff', fontSize: '16px', fontWeight: '600', marginBottom: '10px', lineHeight: 1.4 }}>{article.title}</h3>
-          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', lineHeight: 1.6, margin: 0, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{article.excerpt}</p>
-          <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>{article.createdAt ? new Date(article.createdAt).toLocaleDateString() : ''}</span>
-            <span style={{ color: '#FFB347', fontSize: '12px', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '4px' }}>Read More →</span>
+        ) : (
+          <div style={{ height: '160px', background: 'rgba(255, 179, 71, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <IconComponent size={48} color="#FFB347" style={{ opacity: 0.5 }} />
+          </div>
+        )}
+        <div style={{ padding: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', flexWrap: 'wrap' }}>
+            <span style={{ background: 'rgba(255, 179, 71, 0.2)', color: '#FFB347', padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase' }}>{article.category}</span>
+            {!article.published && (<span style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase' }}>Draft</span>)}
+            {isScheduled && (<span style={{ background: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa', padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}><Calendar size={10} />Scheduled</span>)}
+          </div>
+          <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: '600', marginBottom: '8px', lineHeight: 1.3 }}>{article.title}</h3>
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', lineHeight: 1.5, marginBottom: '12px' }}>{article.excerpt?.slice(0, 100)}{article.excerpt?.length > 100 ? '...' : ''}</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Clock size={12} />{article.readTime}</span>
           </div>
         </div>
       </div>
@@ -994,49 +1025,117 @@ export default function FreeNachosArticles() {
   };
 
   const ArticleEditor = () => {
-    if (!editorArticle) return null;
     const addBlock = (type) => {
       const newBlock = { type };
       switch (type) {
-        case 'header': newBlock.level = 2; newBlock.content = 'New Header'; break;
-        case 'paragraph': newBlock.content = 'New paragraph text...'; break;
-        case 'callout': newBlock.variant = 'insight'; newBlock.title = 'Key Insight'; newBlock.content = 'Important information here...'; break;
-        case 'list': newBlock.items = ['Item 1', 'Item 2', 'Item 3']; break;
-        case 'code': newBlock.language = 'javascript'; newBlock.title = 'Code Example'; newBlock.content = '// Your code here'; break;
-        case 'data-viz': newBlock.vizType = 'bar'; newBlock.title = 'Data Visualization'; newBlock.data = { labels: ['A', 'B', 'C'], values: [10, 20, 30] }; break;
-        case 'quote': newBlock.content = 'Quote text...'; newBlock.attribution = 'Author'; break;
-        case 'image': newBlock.src = ''; newBlock.alt = 'Image description'; newBlock.caption = ''; break;
-        default: break;
+        case 'header': Object.assign(newBlock, { level: 2, content: '' }); break;
+        case 'paragraph': Object.assign(newBlock, { content: '' }); break;
+        case 'callout': Object.assign(newBlock, { variant: 'insight', title: 'Quick Note', content: '' }); break;
+        case 'list': Object.assign(newBlock, { items: [''] }); break;
+        case 'code': Object.assign(newBlock, { language: 'javascript', title: 'Code', content: '' }); break;
+        case 'data-viz': Object.assign(newBlock, { title: 'Chart', data: { labels: ['A', 'B', 'C'], values: [10, 20, 15] } }); break;
+        case 'quote': Object.assign(newBlock, { content: '', attribution: '' }); break;
+        case 'image': Object.assign(newBlock, { src: '', alt: '', caption: '' }); break;
       }
       setEditorArticle({ ...editorArticle, blocks: [...editorArticle.blocks, newBlock] });
     };
-    const updateBlock = (index, updates) => { const newBlocks = [...editorArticle.blocks]; newBlocks[index] = { ...newBlocks[index], ...updates }; setEditorArticle({ ...editorArticle, blocks: newBlocks }); };
-    const removeBlock = (index) => { setEditorArticle({ ...editorArticle, blocks: editorArticle.blocks.filter((_, i) => i !== index) }); };
-    const moveBlock = (index, direction) => { const newBlocks = [...editorArticle.blocks]; const newIndex = index + direction; if (newIndex < 0 || newIndex >= newBlocks.length) return; [newBlocks[index], newBlocks[newIndex]] = [newBlocks[newIndex], newBlocks[index]]; setEditorArticle({ ...editorArticle, blocks: newBlocks }); };
+
+    const updateBlock = (index, updates) => {
+      const newBlocks = [...editorArticle.blocks];
+      newBlocks[index] = { ...newBlocks[index], ...updates };
+      setEditorArticle({ ...editorArticle, blocks: newBlocks });
+    };
+
+    const removeBlock = (index) => {
+      setEditorArticle({ ...editorArticle, blocks: editorArticle.blocks.filter((_, i) => i !== index) });
+    };
+
+    const moveBlock = (index, direction) => {
+      const newBlocks = [...editorArticle.blocks];
+      const newIndex = index + direction;
+      if (newIndex < 0 || newIndex >= newBlocks.length) return;
+      [newBlocks[index], newBlocks[newIndex]] = [newBlocks[newIndex], newBlocks[index]];
+      setEditorArticle({ ...editorArticle, blocks: newBlocks });
+    };
 
     const BlockEditor = ({ block, index }) => {
-      const blockTypeIcons = { header: Type, paragraph: FileText, callout: Lightbulb, list: List, code: Code, 'data-viz': BarChart3, quote: Quote, image: FileImage };
-      const BlockIcon = blockTypeIcons[block.type] || FileText;
+      const [collapsed, setCollapsed] = useState(false);
+      
       return (
-        <div className="glass-card" style={{ borderRadius: '12px', marginBottom: '16px', overflow: 'hidden', border: '1px solid rgba(255, 179, 71, 0.2)' }}>
-          <div style={{ background: 'rgba(255, 179, 71, 0.1)', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}><GripVertical size={16} color="rgba(255,255,255,0.4)" /><BlockIcon size={16} color="#FFB347" /><span style={{ color: '#FFB347', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>{block.type}</span></div>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button onClick={() => moveBlock(index, -1)} disabled={index === 0} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '4px', padding: '4px 8px', cursor: index === 0 ? 'not-allowed' : 'pointer', opacity: index === 0 ? 0.3 : 1 }}><ChevronUp size={14} color="rgba(255,255,255,0.7)" /></button>
-              <button onClick={() => moveBlock(index, 1)} disabled={index === editorArticle.blocks.length - 1} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '4px', padding: '4px 8px', cursor: index === editorArticle.blocks.length - 1 ? 'not-allowed' : 'pointer', opacity: index === editorArticle.blocks.length - 1 ? 0.3 : 1 }}><ChevronDown size={14} color="rgba(255,255,255,0.7)" /></button>
-              <button onClick={() => removeBlock(index)} style={{ background: 'rgba(239, 68, 68, 0.2)', border: 'none', borderRadius: '4px', padding: '4px 8px', cursor: 'pointer' }}><Trash2 size={14} color="#ef4444" /></button>
+        <div className="glass-card" style={{ borderRadius: '12px', marginBottom: '12px', overflow: 'hidden' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: 'rgba(255,255,255,0.03)', borderBottom: collapsed ? 'none' : '1px solid rgba(255,255,255,0.1)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <GripVertical size={16} color="rgba(255,255,255,0.3)" />
+              <span style={{ color: '#FFB347', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>{block.type}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <button onClick={() => moveBlock(index, -1)} disabled={index === 0} style={{ background: 'none', border: 'none', padding: '6px', cursor: index === 0 ? 'not-allowed' : 'pointer', opacity: index === 0 ? 0.3 : 1 }}><ChevronUp size={14} color="rgba(255,255,255,0.5)" /></button>
+              <button onClick={() => moveBlock(index, 1)} disabled={index === editorArticle.blocks.length - 1} style={{ background: 'none', border: 'none', padding: '6px', cursor: index === editorArticle.blocks.length - 1 ? 'not-allowed' : 'pointer', opacity: index === editorArticle.blocks.length - 1 ? 0.3 : 1 }}><ChevronDown size={14} color="rgba(255,255,255,0.5)" /></button>
+              <button onClick={() => setCollapsed(!collapsed)} style={{ background: 'none', border: 'none', padding: '6px', cursor: 'pointer' }}>{collapsed ? <Eye size={14} color="rgba(255,255,255,0.5)" /> : <EyeOff size={14} color="rgba(255,255,255,0.5)" />}</button>
+              <button onClick={() => removeBlock(index)} style={{ background: 'none', border: 'none', padding: '6px', cursor: 'pointer' }}><X size={14} color="#ef4444" /></button>
             </div>
           </div>
-          <div style={{ padding: '16px' }}>
-            {block.type === 'header' && (<><div style={{ marginBottom: '12px' }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px' }}>Level</label><select value={block.level} onChange={(e) => updateBlock(index, { level: parseInt(e.target.value) })} style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px', width: '100px' }}><option value={1}>H1</option><option value={2}>H2</option><option value={3}>H3</option></select></div><input type="text" value={block.content} onChange={(e) => updateBlock(index, { content: e.target.value })} placeholder="Header text..." style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '10px 14px', color: '#fff', fontSize: '14px', outline: 'none' }} /></>)}
-            {block.type === 'paragraph' && (<textarea value={block.content} onChange={(e) => updateBlock(index, { content: e.target.value })} placeholder="Paragraph text..." rows={4} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '10px 14px', color: '#fff', fontSize: '14px', resize: 'vertical', lineHeight: 1.6, outline: 'none' }} />)}
-            {block.type === 'callout' && (<><div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}><div style={{ flex: 1 }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px' }}>Variant</label><select value={block.variant} onChange={(e) => updateBlock(index, { variant: e.target.value })} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px' }}><option value="insight">Insight</option><option value="warning">Warning</option><option value="stat">Stat</option><option value="tip">Tip</option></select></div><div style={{ flex: 2 }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px' }}>Title</label><input type="text" value={block.title} onChange={(e) => updateBlock(index, { title: e.target.value })} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px', outline: 'none' }} /></div></div><textarea value={block.content} onChange={(e) => updateBlock(index, { content: e.target.value })} rows={3} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '10px 14px', color: '#fff', fontSize: '14px', resize: 'vertical', outline: 'none' }} /></>)}
-            {block.type === 'list' && (<><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px' }}>Items (one per line)</label><textarea value={block.items.join('\n')} onChange={(e) => updateBlock(index, { items: e.target.value.split('\n') })} rows={4} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '10px 14px', color: '#fff', fontSize: '14px', resize: 'vertical', fontFamily: 'monospace', outline: 'none' }} /></>)}
-            {block.type === 'code' && (<><div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}><div style={{ flex: 1 }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px' }}>Language</label><input type="text" value={block.language} onChange={(e) => updateBlock(index, { language: e.target.value })} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px', outline: 'none' }} /></div><div style={{ flex: 2 }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px' }}>Title</label><input type="text" value={block.title || ''} onChange={(e) => updateBlock(index, { title: e.target.value })} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px', outline: 'none' }} /></div></div><textarea value={block.content} onChange={(e) => updateBlock(index, { content: e.target.value })} rows={6} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '10px 14px', color: '#fff', fontSize: '13px', resize: 'vertical', fontFamily: 'monospace', outline: 'none' }} /></>)}
-            {block.type === 'data-viz' && (<><input type="text" value={block.title} onChange={(e) => updateBlock(index, { title: e.target.value })} placeholder="Chart title..." style={{ width: '100%', marginBottom: '12px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '10px 14px', color: '#fff', fontSize: '14px', outline: 'none' }} /><div style={{ display: 'flex', gap: '12px' }}><div style={{ flex: 1 }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px' }}>Labels (comma-separated)</label><input type="text" value={block.data.labels.join(', ')} onChange={(e) => updateBlock(index, { data: { ...block.data, labels: e.target.value.split(',').map(s => s.trim()) } })} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px', outline: 'none' }} /></div><div style={{ flex: 1 }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px' }}>Values (comma-separated)</label><input type="text" value={block.data.values.join(', ')} onChange={(e) => updateBlock(index, { data: { ...block.data, values: e.target.value.split(',').map(s => parseFloat(s.trim()) || 0) } })} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px', outline: 'none' }} /></div></div></>)}
-            {block.type === 'quote' && (<><textarea value={block.content} onChange={(e) => updateBlock(index, { content: e.target.value })} rows={3} style={{ width: '100%', marginBottom: '12px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '10px 14px', color: '#fff', fontSize: '14px', resize: 'vertical', fontStyle: 'italic', outline: 'none' }} /><input type="text" value={block.attribution || ''} onChange={(e) => updateBlock(index, { attribution: e.target.value })} placeholder="Attribution..." style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px', outline: 'none' }} /></>)}
-            {block.type === 'image' && (<><div style={{ marginBottom: '12px' }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px' }}>Image URL</label><input type="text" value={block.src || ''} onChange={(e) => updateBlock(index, { src: e.target.value })} placeholder="https://..." style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px', outline: 'none' }} /></div><div style={{ display: 'flex', gap: '12px' }}><div style={{ flex: 1 }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px' }}>Alt Text</label><input type="text" value={block.alt || ''} onChange={(e) => updateBlock(index, { alt: e.target.value })} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px', outline: 'none' }} /></div><div style={{ flex: 1 }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px' }}>Caption</label><input type="text" value={block.caption || ''} onChange={(e) => updateBlock(index, { caption: e.target.value })} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px', outline: 'none' }} /></div></div></>)}
-          </div>
+          {!collapsed && (
+            <div style={{ padding: '16px' }}>
+              {block.type === 'header' && (<>
+                <select value={block.level} onChange={(e) => updateBlock(index, { level: parseInt(e.target.value) })} style={{ marginBottom: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '12px' }}>
+                  <option value={1}>H1 - Main Title</option>
+                  <option value={2}>H2 - Section</option>
+                  <option value={3}>H3 - Subsection</option>
+                </select>
+                <input type="text" value={block.content} onChange={(e) => updateBlock(index, { content: e.target.value })} placeholder="Header text..." style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '16px', fontWeight: '600' }} />
+              </>)}
+              {block.type === 'paragraph' && (<textarea value={block.content} onChange={(e) => updateBlock(index, { content: e.target.value })} placeholder="Paragraph text... (supports **bold**, *italic*, `code`)" rows={4} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', resize: 'vertical' }} />)}
+              {block.type === 'callout' && (<>
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+                  <select value={block.variant} onChange={(e) => updateBlock(index, { variant: e.target.value })} style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '12px' }}>
+                    <option value="insight">💡 Insight</option>
+                    <option value="warning">⚡ Warning</option>
+                    <option value="stat">📈 Stat</option>
+                    <option value="tip">📖 Tip</option>
+                  </select>
+                  <input type="text" value={block.title} onChange={(e) => updateBlock(index, { title: e.target.value })} placeholder="Title" style={{ flex: 1, background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px' }} />
+                </div>
+                <textarea value={block.content} onChange={(e) => updateBlock(index, { content: e.target.value })} placeholder="Callout content..." rows={3} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', resize: 'vertical' }} />
+              </>)}
+              {block.type === 'list' && (<div>
+                {block.items.map((item, itemIndex) => (<div key={itemIndex} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                  <span style={{ color: '#FFB347', padding: '8px 0' }}>▸</span>
+                  <input type="text" value={item} onChange={(e) => { const newItems = [...block.items]; newItems[itemIndex] = e.target.value; updateBlock(index, { items: newItems }); }} style={{ flex: 1, background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px' }} />
+                  <button onClick={() => { const newItems = block.items.filter((_, i) => i !== itemIndex); updateBlock(index, { items: newItems.length ? newItems : [''] }); }} style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer' }}><X size={14} color="#ef4444" /></button>
+                </div>))}
+                <button onClick={() => updateBlock(index, { items: [...block.items, ''] })} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255, 179, 71, 0.1)', border: '1px solid rgba(255, 179, 71, 0.3)', borderRadius: '6px', padding: '8px 12px', color: '#FFB347', fontSize: '12px', cursor: 'pointer' }}><Plus size={12} />Add Item</button>
+              </div>)}
+              {block.type === 'code' && (<>
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+                  <input type="text" value={block.language} onChange={(e) => updateBlock(index, { language: e.target.value })} placeholder="Language" style={{ width: '120px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '12px' }} />
+                  <input type="text" value={block.title} onChange={(e) => updateBlock(index, { title: e.target.value })} placeholder="Title" style={{ flex: 1, background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px' }} />
+                </div>
+                <textarea value={block.content} onChange={(e) => updateBlock(index, { content: e.target.value })} placeholder="Code..." rows={6} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '13px', fontFamily: 'monospace', resize: 'vertical' }} />
+              </>)}
+              {block.type === 'quote' && (<>
+                <textarea value={block.content} onChange={(e) => updateBlock(index, { content: e.target.value })} placeholder="Quote text..." rows={3} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', fontStyle: 'italic', resize: 'vertical', marginBottom: '8px' }} />
+                <input type="text" value={block.attribution || ''} onChange={(e) => updateBlock(index, { attribution: e.target.value })} placeholder="Attribution (optional)" style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px' }} />
+              </>)}
+              {block.type === 'image' && (<>
+                <input type="text" value={block.src || ''} onChange={(e) => updateBlock(index, { src: e.target.value })} placeholder="Image URL..." style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '13px', marginBottom: '8px' }} />
+                <input type="text" value={block.alt || ''} onChange={(e) => updateBlock(index, { alt: e.target.value })} placeholder="Alt text..." style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px', marginBottom: '8px' }} />
+                <input type="text" value={block.caption || ''} onChange={(e) => updateBlock(index, { caption: e.target.value })} placeholder="Caption (optional)..." style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px' }} />
+                {block.src && <img src={block.src} alt={block.alt || ''} style={{ marginTop: '12px', maxWidth: '100%', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }} />}
+              </>)}
+              {block.type === 'data-viz' && (<>
+                <input type="text" value={block.title} onChange={(e) => updateBlock(index, { title: e.target.value })} placeholder="Chart title..." style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', marginBottom: '12px' }} />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                  {block.data.labels.map((label, labelIndex) => (<div key={labelIndex} style={{ display: 'flex', gap: '8px' }}>
+                    <input type="text" value={label} onChange={(e) => { const newLabels = [...block.data.labels]; newLabels[labelIndex] = e.target.value; updateBlock(index, { data: { ...block.data, labels: newLabels } }); }} placeholder="Label" style={{ flex: 1, background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px', color: '#fff', fontSize: '12px' }} />
+                    <input type="number" value={block.data.values[labelIndex]} onChange={(e) => { const newValues = [...block.data.values]; newValues[labelIndex] = parseFloat(e.target.value) || 0; updateBlock(index, { data: { ...block.data, values: newValues } }); }} style={{ width: '80px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px', color: '#fff', fontSize: '12px' }} />
+                    <button onClick={() => { const newLabels = block.data.labels.filter((_, i) => i !== labelIndex); const newValues = block.data.values.filter((_, i) => i !== labelIndex); updateBlock(index, { data: { labels: newLabels.length ? newLabels : ['A'], values: newValues.length ? newValues : [0] } }); }} style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer' }}><X size={12} color="#ef4444" /></button>
+                  </div>))}
+                </div>
+                <button onClick={() => updateBlock(index, { data: { labels: [...block.data.labels, 'New'], values: [...block.data.values, 0] } })} style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255, 179, 71, 0.1)', border: '1px solid rgba(255, 179, 71, 0.3)', borderRadius: '6px', padding: '8px 12px', color: '#FFB347', fontSize: '12px', cursor: 'pointer' }}><Plus size={12} />Add Data Point</button>
+              </>)}
+            </div>
+          )}
         </div>
       );
     };
@@ -1101,52 +1200,28 @@ export default function FreeNachosArticles() {
                 cursor: 'pointer' 
               }}
             >
-              <ClipboardPaste size={16} />
+              <ClipboardPaste size={14} />
               Paste from Notion
             </button>
           </div>
 
           {editorArticle.blocks.length === 0 ? (
-            <div className="glass-card" style={{ borderRadius: '12px', padding: '48px', textAlign: 'center', border: '2px dashed rgba(255, 179, 71, 0.2)' }}>
-              <ClipboardPaste size={48} color="rgba(255,255,255,0.2)" style={{ marginBottom: '16px' }} />
-              <h4 style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '8px' }}>No content yet</h4>
-              <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px', marginBottom: '20px' }}>Paste from Notion or add blocks manually</p>
-              <button 
-                onClick={() => setShowNotionPaste(true)} 
-                className="btn-hover"
-                style={{ 
-                  display: 'inline-flex', 
-                  alignItems: 'center', 
-                  gap: '8px', 
-                  background: '#FFB347', 
-                  border: 'none', 
-                  borderRadius: '8px', 
-                  padding: '12px 20px', 
-                  color: '#0a0a0a', 
-                  fontSize: '14px', 
-                  fontWeight: '600', 
-                  cursor: 'pointer' 
-                }}
-              >
-                <ClipboardPaste size={16} />
-                Paste from Notion
-              </button>
+            <div className="glass-card" style={{ borderRadius: '12px', padding: '40px', textAlign: 'center' }}>
+              <FileText size={32} color="rgba(255,255,255,0.2)" style={{ marginBottom: '12px' }} />
+              <p style={{ color: 'rgba(255,255,255,0.4)', margin: 0 }}>No content blocks yet. Add blocks from the sidebar or paste from Notion.</p>
             </div>
           ) : (
-            editorArticle.blocks.map((block, index) => (
-              <BlockEditor key={index} block={block} index={index} />
-            ))
+            editorArticle.blocks.map((block, index) => (<BlockEditor key={index} block={block} index={index} />))
           )}
         </div>
 
         <div>
           <div className="glass-card" style={{ borderRadius: '12px', padding: '20px', position: 'sticky', top: '20px' }}>
-            <h4 style={{ color: '#fff', fontSize: '14px', fontWeight: '600', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}><Plus size={16} color="#FFB347" />Add Block</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <h4 style={{ color: '#fff', fontSize: '14px', fontWeight: '600', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}><Plus size={14} color="#FFB347" />Add Block</h4>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
               {blockTypes.map(({ type, icon: Icon, label }) => (
-                <button key={type} onClick={() => addBlock(type)} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px 14px', cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s ease' }}>
-                  <Icon size={16} color="#FFB347" />
-                  <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', fontWeight: '500' }}>{label}</span>
+                <button key={type} onClick={() => addBlock(type)} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px', color: 'rgba(255,255,255,0.7)', fontSize: '12px', cursor: 'pointer', textAlign: 'left' }}>
+                  <Icon size={14} color="#FFB347" />{label}
                 </button>
               ))}
             </div>
@@ -1157,301 +1232,155 @@ export default function FreeNachosArticles() {
   };
 
   // Schedule Modal
-  const ScheduleModal = () => {
-    // Set default to tomorrow at 9:00 AM if not already set
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const defaultDate = tomorrow.toISOString().split('T')[0];
-    const defaultTime = '09:00';
-    
-    const currentDate = scheduleDate || defaultDate;
-    const currentTime = scheduleTime || defaultTime;
-    
-    const scheduledDateTime = new Date(`${currentDate}T${currentTime}`);
-    const isValidSchedule = scheduledDateTime > new Date();
-    
-    const formatPreview = () => {
-      if (!currentDate || !currentTime) return '';
-      return scheduledDateTime.toLocaleString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-      });
-    };
-
-    return (
-      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
-        <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '450px', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ width: '44px', height: '44px', borderRadius: '10px', background: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Calendar size={22} color="#60a5fa" />
-              </div>
-              <div>
-                <h2 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', margin: 0 }}>Schedule Article</h2>
-                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', margin: '4px 0 0' }}>Set when this article goes live</p>
-              </div>
-            </div>
-            <button onClick={() => { setShowScheduleModal(false); setScheduleDate(''); setScheduleTime(''); }} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '8px', padding: '8px', cursor: 'pointer' }}>
-              <X size={18} color="rgba(255,255,255,0.6)" />
-            </button>
-          </div>
-          
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date</label>
-            <input
-              type="date"
-              value={currentDate}
-              onChange={(e) => setScheduleDate(e.target.value)}
-              min={new Date().toISOString().split('T')[0]}
-              style={{
-                width: '100%',
-                background: 'rgba(0,0,0,0.4)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                borderRadius: '8px',
-                padding: '12px 16px',
-                color: '#fff',
-                fontSize: '14px',
-                outline: 'none',
-                colorScheme: 'dark'
-              }}
-            />
-          </div>
-          
-          <div style={{ marginBottom: '24px' }}>
-            <label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Time</label>
-            <input
-              type="time"
-              value={currentTime}
-              onChange={(e) => setScheduleTime(e.target.value)}
-              style={{
-                width: '100%',
-                background: 'rgba(0,0,0,0.4)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                borderRadius: '8px',
-                padding: '12px 16px',
-                color: '#fff',
-                fontSize: '14px',
-                outline: 'none',
-                colorScheme: 'dark'
-              }}
-            />
-          </div>
-          
-          {currentDate && currentTime && (
-            <div style={{ 
-              background: isValidSchedule ? 'rgba(59, 130, 246, 0.1)' : 'rgba(239, 68, 68, 0.1)', 
-              borderRadius: '8px', 
-              padding: '12px 16px', 
-              marginBottom: '24px', 
-              border: `1px solid ${isValidSchedule ? 'rgba(59, 130, 246, 0.2)' : 'rgba(239, 68, 68, 0.2)'}` 
-            }}>
-              <p style={{ color: isValidSchedule ? '#60a5fa' : '#ef4444', fontSize: '13px', margin: 0 }}>
-                {isValidSchedule ? `📅 ${formatPreview()}` : '⚠️ Please select a future date and time'}
-              </p>
-            </div>
-          )}
-          
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <button 
-              onClick={() => { setShowScheduleModal(false); setScheduleDate(''); setScheduleTime(''); }} 
-              style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '14px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}
-            >
-              Cancel
-            </button>
-            <button 
-              onClick={() => scheduleArticle(currentDate, currentTime)}
-              disabled={!isValidSchedule || saving}
-              style={{ 
-                flex: 2, 
-                background: isValidSchedule && !saving ? '#60a5fa' : 'rgba(59, 130, 246, 0.3)', 
-                border: 'none', 
-                borderRadius: '8px', 
-                padding: '14px', 
-                color: isValidSchedule && !saving ? '#0a0a0a' : 'rgba(255,255,255,0.4)', 
-                fontSize: '14px', 
-                fontWeight: '600', 
-                cursor: isValidSchedule && !saving ? 'pointer' : 'not-allowed',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px'
-              }}
-            >
-              {saving ? (<><Loader size={16} className="spin" />Scheduling...</>) : (<><Calendar size={16} />Schedule</>)}
-            </button>
-          </div>
+  const ScheduleModal = () => (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+      <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '400px', margin: '20px', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Calendar size={24} color="#60a5fa" /></div>
+          <div><h2 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', margin: 0 }}>Schedule Article</h2><p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', margin: '4px 0 0' }}>Set a future publish date</p></div>
+        </div>
+        <div style={{ marginBottom: '16px' }}>
+          <label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px', textTransform: 'uppercase' }}>Date</label>
+          <input type="date" value={scheduleDate} onChange={(e) => setScheduleDate(e.target.value)} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px' }} />
+        </div>
+        <div style={{ marginBottom: '24px' }}>
+          <label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px', textTransform: 'uppercase' }}>Time</label>
+          <input type="time" value={scheduleTime} onChange={(e) => setScheduleTime(e.target.value)} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px' }} />
+        </div>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button onClick={() => { setShowScheduleModal(false); setScheduleDate(''); setScheduleTime(''); }} style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '12px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}>Cancel</button>
+          <button onClick={() => scheduleArticle()} disabled={!scheduleDate || !scheduleTime || saving} style={{ flex: 1, background: (!scheduleDate || !scheduleTime || saving) ? 'rgba(59, 130, 246, 0.3)' : '#3b82f6', border: 'none', borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', fontWeight: '600', cursor: (!scheduleDate || !scheduleTime || saving) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            {saving ? (<><Loader size={14} className="spin" />Scheduling...</>) : (<><Calendar size={14} />Schedule</>)}
+          </button>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+
+  // Notion Paste Modal
+  const NotionPasteModal = () => (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+      <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '600px', margin: '20px', border: '1px solid rgba(255, 179, 71, 0.3)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255, 179, 71, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ClipboardPaste size={24} color="#FFB347" /></div>
+          <div><h2 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', margin: 0 }}>Paste from Notion</h2><p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', margin: '4px 0 0' }}>Copy content from Notion and paste it here. Images can be pasted directly!</p></div>
+        </div>
+        
+        {uploadingImages && (
+          <div style={{ background: 'rgba(255, 179, 71, 0.1)', border: '1px solid rgba(255, 179, 71, 0.3)', borderRadius: '8px', padding: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <Loader size={16} color="#FFB347" className="spin" />
+            <span style={{ color: '#FFB347', fontSize: '13px' }}>Uploading images...</span>
+          </div>
+        )}
+        
+        {uploadedImages.length > 0 && (
+          <div style={{ marginBottom: '16px' }}>
+            <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '8px', textTransform: 'uppercase' }}>Uploaded Images ({uploadedImages.length})</div>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              {uploadedImages.map((url, i) => (
+                <img key={i} src={url} alt={`Uploaded ${i + 1}`} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }} />
+              ))}
+            </div>
+          </div>
+        )}
+        
+        <textarea 
+          ref={notionTextareaRef}
+          onPaste={handlePasteWithImages}
+          onChange={(e) => {
+            textareaContentRef.current = e.target.value;
+          }}
+          placeholder="Paste your Notion content here...
+
+Supported formats:
+• Headers (# ## ###)
+• Paragraphs
+• Bullet and numbered lists
+• Code blocks (```)
+• Blockquotes (>)
+• Images (paste directly or include URLs)
+• Callouts (:::tip, :::warning, etc.)"
+          rows={12}
+          style={{ 
+            width: '100%', 
+            background: 'rgba(0,0,0,0.3)', 
+            border: '1px solid rgba(255,255,255,0.1)', 
+            borderRadius: '12px', 
+            padding: '16px', 
+            color: '#fff', 
+            fontSize: '14px', 
+            resize: 'vertical',
+            fontFamily: 'monospace',
+            lineHeight: 1.6,
+            marginBottom: '24px'
+          }} 
+        />
+        
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button 
+            onClick={() => { 
+              setShowNotionPaste(false); 
+              if (notionTextareaRef.current) notionTextareaRef.current.value = '';
+              textareaContentRef.current = '';
+              setUploadedImages([]);
+            }} 
+            style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '12px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}
+          >
+            Cancel
+          </button>
+          <button 
+            onClick={handleNotionPaste}
+            disabled={uploadingImages}
+            style={{ 
+              flex: 1, 
+              background: uploadingImages ? 'rgba(255, 179, 71, 0.3)' : 'linear-gradient(135deg, #FFB347 0%, #E09A30 100%)', 
+              border: 'none', 
+              borderRadius: '8px', 
+              padding: '12px', 
+              color: uploadingImages ? 'rgba(255,255,255,0.5)' : '#0a0a0a', 
+              fontSize: '14px', 
+              fontWeight: '600', 
+              cursor: uploadingImages ? 'not-allowed' : 'pointer', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              gap: '8px' 
+            }}
+          >
+            <ClipboardPaste size={14} />
+            Import Content
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Login Modal
+  const LoginModal = () => (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+      <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '400px', margin: '20px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '24px' }}><Fish size={40} color="#FFB347" style={{ marginBottom: '12px' }} /><h2 style={{ color: '#fff', fontSize: '20px', fontWeight: '700', margin: 0 }}>Admin Login</h2><p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', marginTop: '8px' }}>Sign in to manage articles</p></div>
+        {loginError && (<div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '8px', padding: '12px', marginBottom: '16px', color: '#ef4444', fontSize: '13px' }}>{loginError}</div>)}
+        <form onSubmit={handleLogin}>
+          <div style={{ marginBottom: '16px' }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px', textTransform: 'uppercase' }}>Email</label><input type="email" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} required style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px 16px', color: '#fff', fontSize: '14px' }} /></div>
+          <div style={{ marginBottom: '24px' }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px', textTransform: 'uppercase' }}>Password</label><input type="password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px 16px', color: '#fff', fontSize: '14px' }} /></div>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button type="button" onClick={() => { setShowLogin(false); setLoginError(''); }} style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '12px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}>Cancel</button>
+            <button type="submit" disabled={loginLoading} style={{ flex: 1, background: loginLoading ? 'rgba(255, 179, 71, 0.5)' : 'linear-gradient(135deg, #FFB347 0%, #E09A30 100%)', border: 'none', borderRadius: '8px', padding: '12px', color: '#0a0a0a', fontSize: '14px', fontWeight: '600', cursor: loginLoading ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>{loginLoading ? (<><Loader size={14} className="spin" />Signing in...</>) : 'Sign In'}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 
   return (
-    <div ref={nachoRef} style={{ minHeight: '100vh', background: '#0a0a0a', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
-      {showLogin && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '400px', margin: '20px', border: '1px solid rgba(255, 179, 71, 0.3)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Terminal size={20} color="#FFB347" />
-                <h2 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', margin: 0 }}>Admin Login</h2>
-              </div>
-              <button onClick={() => setShowLogin(false)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '8px', padding: '8px', cursor: 'pointer' }}>
-                <X size={18} color="rgba(255,255,255,0.6)" />
-              </button>
-            </div>
-            <form onSubmit={handleLogin}>
-              {loginError && (
-                <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '8px', padding: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <AlertTriangle size={16} color="#ef4444" />
-                  <span style={{ color: '#ef4444', fontSize: '13px' }}>{loginError}</span>
-                </div>
-              )}
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Email</label>
-                <input type="email" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} required style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', padding: '12px 16px', color: '#fff', fontSize: '14px', outline: 'none' }} />
-              </div>
-              <div style={{ marginBottom: '24px' }}>
-                <label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Password</label>
-                <input type="password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', padding: '12px 16px', color: '#fff', fontSize: '14px', outline: 'none' }} />
-              </div>
-              <button type="submit" disabled={loginLoading} style={{ width: '100%', background: loginLoading ? 'rgba(255, 179, 71, 0.5)' : '#FFB347', border: 'none', borderRadius: '8px', padding: '14px', color: '#0a0a0a', fontSize: '14px', fontWeight: '600', cursor: loginLoading ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                {loginLoading ? (<><Loader size={16} className="spin" />Signing in...</>) : (<><LogIn size={16} />Sign In</>)}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%)', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif', position: 'relative', overflow: 'hidden' }}>
+      {showLogin && <LoginModal />}
       {showDeleteConfirm && <DeleteConfirmModal article={showDeleteConfirm} />}
-      {showNotionPaste && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
-          <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '1100px', height: '90vh', display: 'flex', flexDirection: 'column', border: '1px solid rgba(255, 179, 71, 0.3)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ width: '44px', height: '44px', borderRadius: '10px', background: 'rgba(255, 179, 71, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <ClipboardPaste size={22} color="#FFB347" />
-                </div>
-                <div>
-                  <h2 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', margin: 0 }}>Paste from Notion</h2>
-                  <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', margin: '4px 0 0' }}>Copy your Notion content and paste it here</p>
-                </div>
-              </div>
-              <button onClick={() => { 
-                setShowNotionPaste(false); 
-                setNotionContent(''); 
-                setUploadedImages([]); 
-                if (notionTextareaRef.current) notionTextareaRef.current.value = '';
-                textareaContentRef.current = '';
-              }} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '8px', padding: '8px', cursor: 'pointer' }}>
-                <X size={18} color="rgba(255,255,255,0.6)" />
-              </button>
-            </div>
-            
-            <div style={{ background: 'rgba(255, 179, 71, 0.1)', borderRadius: '8px', padding: '12px 16px', marginBottom: '16px', border: '1px solid rgba(255, 179, 71, 0.2)' }}>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '13px', margin: 0, lineHeight: 1.6 }}>
-                <strong style={{ color: '#FFB347' }}>Supported:</strong> Headings, paragraphs, lists, code blocks, quotes, callouts, <strong>**bold**</strong>, <em>*italic*</em>
-                <br />
-                <strong style={{ color: '#FFB347' }}>Images:</strong> Paste images directly (auto-uploads) or paste image URLs on their own line
-              </p>
-            </div>
-            
-            <div style={{ 
-              background: 'rgba(59, 130, 246, 0.1)', 
-              borderRadius: '8px', 
-              padding: '12px 16px', 
-              marginBottom: '16px', 
-              border: '1px solid rgba(59, 130, 246, 0.2)', 
-              display: uploadingImages ? 'flex' : 'none', 
-              alignItems: 'center', 
-              gap: '10px' 
-            }}>
-              <Loader size={16} className="spin" color="#60a5fa" />
-              <p style={{ color: '#60a5fa', fontSize: '13px', margin: 0 }}>Uploading image...</p>
-            </div>
-            
-            <div style={{ 
-              background: 'rgba(34, 197, 94, 0.1)', 
-              borderRadius: '8px', 
-              padding: '12px 16px', 
-              marginBottom: '16px', 
-              border: '1px solid rgba(34, 197, 94, 0.2)',
-              display: (uploadedImages.length > 0 && !uploadingImages) ? 'block' : 'none'
-            }}>
-              <p style={{ color: '#22c55e', fontSize: '13px', margin: 0 }}>✓ {uploadedImages.length} image{uploadedImages.length > 1 ? 's' : ''} uploaded</p>
-            </div>
-            
-            <textarea
-              key="notion-textarea"
-              ref={notionTextareaRef}
-              defaultValue=""
-              onInput={(e) => { textareaContentRef.current = e.target.value; }}
-              onChange={(e) => { textareaContentRef.current = e.target.value; }}
-              onPaste={handlePasteWithImages}
-              placeholder="Paste your Notion content here (Ctrl+V / Cmd+V)... You can also paste images directly!"
-              style={{
-                flex: 1,
-                minHeight: '200px',
-                width: '100%',
-                background: 'rgba(0,0,0,0.4)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                borderRadius: '8px',
-                padding: '16px',
-                color: '#fff',
-                fontSize: '14px',
-                lineHeight: 1.6,
-                resize: 'none',
-                outline: 'none',
-                fontFamily: 'monospace'
-              }}
-              autoFocus
-            />
-            
-            <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-              <button 
-                onClick={() => { 
-                  setShowNotionPaste(false); 
-                  setNotionContent(''); 
-                  setUploadedImages([]); 
-                  if (notionTextareaRef.current) notionTextareaRef.current.value = '';
-                  textareaContentRef.current = '';
-                }} 
-                style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '14px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={handleNotionPaste} 
-                disabled={uploadingImages}
-                style={{ 
-                  flex: 2, 
-                  background: !uploadingImages ? '#FFB347' : 'rgba(255, 179, 71, 0.3)', 
-                  border: 'none', 
-                  borderRadius: '8px', 
-                  padding: '14px', 
-                  color: !uploadingImages ? '#0a0a0a' : 'rgba(255,255,255,0.4)', 
-                  fontSize: '14px', 
-                  fontWeight: '600', 
-                  cursor: !uploadingImages ? 'pointer' : 'not-allowed',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px'
-                }}
-              >
-                <Zap size={16} />
-                Parse & Import
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {showNotionPaste && <NotionPasteModal />}
       {showScheduleModal && <ScheduleModal />}
-
-      <div style={{position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1}}>
+      
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0 }}>
         {nachos.map(nacho => (<div key={nacho.id} style={{ position: 'absolute', left: `${nacho.x}%`, top: `${nacho.y}%`, animation: `floatNacho ${nacho.duration}s ease-in-out infinite`, animationDelay: `${nacho.delay}s`, '--moveX': `${nacho.moveX}px`, '--moveY': `${nacho.moveY}px` }}><NachoTriangle size={nacho.size} opacity={nacho.opacity} /></div>))}
       </div>
       
