@@ -1338,7 +1338,7 @@ The 3-month program consists of:
             transform: translateY(0) rotate(0deg) scale(1); 
           }
           50% { 
-            transform: translateY(-30px) rotate(5deg) scale(1.05); 
+            transform: translateY(-25px) rotate(3deg) scale(1.02); 
           }
         }
 
@@ -1347,7 +1347,16 @@ The 3-month program consists of:
             transform: translateY(0) rotate(0deg); 
           }
           50% { 
-            transform: translateY(-20px) rotate(-3deg); 
+            transform: translateY(-18px) rotate(-2deg); 
+          }
+        }
+
+        @keyframes atmosphereDrift {
+          0%, 100% { 
+            transform: translate(0, 0) scale(1); 
+          }
+          50% { 
+            transform: translate(20px, -15px) scale(1.03); 
           }
         }
 
@@ -1373,9 +1382,10 @@ The 3-month program consists of:
           }
         }
 
+        /* Ghost Fade Mask - 75% solid, 25% fade */
         .hero-image-mask {
-          mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-          -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+          mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
+          -webkit-mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
         }
       `}</style>
 
@@ -1385,57 +1395,87 @@ The 3-month program consists of:
           position: 'relative',
           minHeight: '100vh',
           width: '100%',
-          overflow: 'hidden',
-          display: 'flex',
-          alignItems: 'center'
+          overflow: 'hidden'
         }}
       >
-        {/* === BACKGROUND LAYER: Cinematic Nachos (z-0) === */}
+        {/* === LAYER A: Atmospheric Shapes (z-0) - Deep Background === */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden', pointerEvents: 'none' }}>
-          {/* Large Nacho - Top Left */}
+          {/* Massive Atmospheric Shape - Top Right Corner */}
           <div style={{
             position: 'absolute',
-            top: '10%',
-            left: '5%',
-            width: '280px',
-            height: '280px',
-            opacity: 0.08,
-            filter: 'blur(40px)',
-            animation: 'cinematicFloat 12s ease-in-out infinite'
+            top: '-15%',
+            right: '-10%',
+            width: '800px',
+            height: '800px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 60%)',
+            filter: 'blur(80px)',
+            opacity: 0.5,
+            animation: 'atmosphereDrift 25s ease-in-out infinite'
+          }} />
+          
+          {/* Massive Atmospheric Shape - Bottom Left Corner */}
+          <div style={{
+            position: 'absolute',
+            bottom: '-20%',
+            left: '-15%',
+            width: '900px',
+            height: '900px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(255, 153, 0, 0.06) 0%, transparent 55%)',
+            filter: 'blur(100px)',
+            opacity: 0.5,
+            animation: 'atmosphereDrift 30s ease-in-out infinite',
+            animationDelay: '-10s'
+          }} />
+        </div>
+
+        {/* === LAYER B: Subtle Nacho Shapes (z-1) - Scattered to Edges === */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, overflow: 'hidden', pointerEvents: 'none' }}>
+          {/* Nacho 1 - Far Top Right (away from text) */}
+          <div style={{
+            position: 'absolute',
+            top: '8%',
+            right: '8%',
+            width: '180px',
+            height: '180px',
+            opacity: 0.06,
+            filter: 'blur(30px)',
+            animation: 'cinematicFloat 14s ease-in-out infinite'
           }}>
             <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
               <polygon points="50,5 95,95 5,95" fill="#D4AF37" />
             </svg>
           </div>
           
-          {/* Large Nacho - Mid Right */}
+          {/* Nacho 2 - Bottom Right (near coach feet area) */}
           <div style={{
             position: 'absolute',
-            top: '35%',
-            right: '15%',
-            width: '220px',
-            height: '220px',
-            opacity: 0.06,
-            filter: 'blur(50px)',
-            animation: 'cinematicFloat2 15s ease-in-out infinite',
-            animationDelay: '-3s'
+            bottom: '5%',
+            right: '25%',
+            width: '140px',
+            height: '140px',
+            opacity: 0.05,
+            filter: 'blur(35px)',
+            animation: 'cinematicFloat2 18s ease-in-out infinite',
+            animationDelay: '-5s'
           }}>
             <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
               <polygon points="50,5 95,95 5,95" fill="#FF9900" />
             </svg>
           </div>
           
-          {/* Large Nacho - Bottom Center-Left */}
+          {/* Nacho 3 - Far Bottom Left Corner (away from text) */}
           <div style={{
             position: 'absolute',
-            bottom: '15%',
-            left: '25%',
-            width: '200px',
-            height: '200px',
-            opacity: 0.07,
-            filter: 'blur(45px)',
-            animation: 'cinematicFloat 18s ease-in-out infinite',
-            animationDelay: '-7s'
+            bottom: '12%',
+            left: '3%',
+            width: '160px',
+            height: '160px',
+            opacity: 0.05,
+            filter: 'blur(40px)',
+            animation: 'cinematicFloat 20s ease-in-out infinite',
+            animationDelay: '-8s'
           }}>
             <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
               <polygon points="50,5 95,95 5,95" fill="#D4AF37" />
@@ -1443,139 +1483,29 @@ The 3-month program consists of:
           </div>
         </div>
 
-        {/* === HALO LIGHTING: Key Light Behind Coach (z-0) === */}
+        {/* === HALO LIGHTING: Key Light Behind Coach (z-2) === */}
         <div style={{
           position: 'absolute',
-          bottom: '-20%',
-          right: '-10%',
-          width: '900px',
-          height: '900px',
-          background: 'radial-gradient(circle, rgba(255, 153, 0, 0.35) 0%, rgba(212, 175, 55, 0.15) 40%, transparent 70%)',
-          filter: 'blur(150px)',
-          zIndex: 0,
-          pointerEvents: 'none'
-        }} />
-        
-        {/* Secondary ambient glow - upper */}
-        <div style={{
-          position: 'absolute',
-          bottom: '30%',
-          right: '10%',
-          width: '500px',
-          height: '500px',
-          background: 'radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, transparent 60%)',
-          filter: 'blur(100px)',
-          zIndex: 0,
+          bottom: '-15%',
+          right: '-5%',
+          width: '800px',
+          height: '800px',
+          background: 'radial-gradient(circle, rgba(255, 153, 0, 0.3) 0%, rgba(212, 175, 55, 0.12) 40%, transparent 70%)',
+          filter: 'blur(120px)',
+          zIndex: 2,
           pointerEvents: 'none'
         }} />
 
-        {/* === TEXT CONTENT (z-20) === */}
-        <div 
-          style={{
-            position: 'relative',
-            zIndex: 20,
-            maxWidth: '1400px',
-            width: '100%',
-            margin: '0 auto',
-            padding: '0 48px',
-            paddingTop: '80px'
-          }}
-        >
-          <div 
-            style={{
-              maxWidth: '600px',
-              animation: 'heroFadeIn 1s ease-out 0.2s both'
-            }}
-          >
-            {/* Badge */}
-            <div 
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                background: 'rgba(212, 175, 55, 0.08)',
-                border: '1px solid rgba(212, 175, 55, 0.25)',
-                borderRadius: '50px',
-                padding: '10px 20px',
-                marginBottom: '32px'
-              }}
-            >
-              <Users size={16} color="#D4AF37" />
-              <span style={{ 
-                fontSize: '13px', 
-                color: '#D4AF37', 
-                fontWeight: '500',
-                letterSpacing: '0.03em'
-              }}>
-                Trusted by 200+ Winning Regs
-              </span>
-            </div>
-            
-            {/* Headline */}
-            <h1 style={{
-              fontSize: 'clamp(42px, 5.5vw, 64px)',
-              fontWeight: '800',
-              color: '#FFFFFF',
-              marginBottom: '28px',
-              lineHeight: 1.05,
-              letterSpacing: '-0.025em',
-              fontFamily: 'Manrope, Inter, sans-serif'
-            }}>
-              Master High-Stakes<br />
-              Theory & <span style={{ 
-                color: '#D4AF37',
-                textShadow: '0 0 60px rgba(212, 175, 55, 0.3)'
-              }}>Exploit the<br />Population</span>.
-            </h1>
-            
-            {/* Subhead */}
-            <p style={{
-              fontSize: '18px',
-              color: '#A1A1AA',
-              maxWidth: '480px',
-              lineHeight: 1.8,
-              marginBottom: '44px',
-              fontWeight: '400'
-            }}>
-              Stop guessing. Start executing. The exact data-driven strategies I used to win at 1KNL+ and help my students generate <strong style={{ color: '#F0F0F0' }}>$5M+ in profits</strong>.
-            </p>
-            
-            {/* CTA Button */}
-            <a 
-              href="https://calendly.com/freenachos/intro" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="btn-hover cta-primary"
-              style={{
-                background: '#FF9900',
-                color: '#0a0a0a',
-                padding: '20px 44px',
-                borderRadius: '14px',
-                fontWeight: '700',
-                fontSize: '16px',
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '12px',
-                boxShadow: '0 4px 30px rgba(255, 153, 0, 0.4)',
-                letterSpacing: '0.01em'
-              }}
-            >
-              Apply for Mentorship <ArrowRight size={20} />
-            </a>
-          </div>
-        </div>
-
-        {/* === COACH IMAGE: Anchored Bottom-Right (z-10) === */}
+        {/* === COACH IMAGE: Anchored Bottom-Right (z-5) === */}
         <div 
           className="hero-image-mask"
           style={{
             position: 'absolute',
             bottom: 0,
-            right: '5%',
-            height: '85vh',
-            maxHeight: '950px',
-            zIndex: 10,
+            right: 0,
+            height: '88vh',
+            maxHeight: '920px',
+            zIndex: 5,
             animation: 'imageReveal 1.2s ease-out 0.5s both',
             pointerEvents: 'none'
           }}
@@ -1592,30 +1522,143 @@ The 3-month program consists of:
           />
         </div>
 
+        {/* === CINEMATIC VIGNETTE: Readability Overlay (z-10) === */}
+        <div 
+          style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 10,
+            background: 'linear-gradient(to right, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0.7) 35%, rgba(10, 10, 10, 0.3) 55%, transparent 75%)',
+            pointerEvents: 'none'
+          }}
+        />
+
+        {/* === CONTENT WRAPPER: Constrained Width (z-20) === */}
+        <div 
+          style={{
+            position: 'relative',
+            zIndex: 20,
+            width: '100%',
+            minHeight: '100vh',
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          {/* Max-Width Container - Prevents Ultra-Wide Stretch */}
+          <div 
+            style={{
+              width: '100%',
+              maxWidth: '1280px',
+              margin: '0 auto',
+              padding: '0 48px',
+              paddingTop: '60px',
+              paddingBottom: '80px'
+            }}
+          >
+            <div 
+              style={{
+                maxWidth: '580px',
+                animation: 'heroFadeIn 1s ease-out 0.2s both'
+              }}
+            >
+              {/* Badge */}
+              <div 
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  background: 'rgba(212, 175, 55, 0.1)',
+                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  borderRadius: '50px',
+                  padding: '10px 20px',
+                  marginBottom: '32px',
+                  backdropFilter: 'blur(8px)'
+                }}
+              >
+                <Users size={16} color="#D4AF37" />
+                <span style={{ 
+                  fontSize: '13px', 
+                  color: '#D4AF37', 
+                  fontWeight: '600',
+                  letterSpacing: '0.03em'
+                }}>
+                  Trusted by 200+ Winning Regs
+                </span>
+              </div>
+              
+              {/* Headline */}
+              <h1 style={{
+                fontSize: 'clamp(40px, 5vw, 60px)',
+                fontWeight: '800',
+                color: '#FFFFFF',
+                marginBottom: '28px',
+                lineHeight: 1.08,
+                letterSpacing: '-0.025em',
+                fontFamily: 'Manrope, Inter, sans-serif'
+              }}>
+                Master High-Stakes<br />
+                Theory & <span style={{ 
+                  color: '#D4AF37',
+                  textShadow: '0 0 80px rgba(212, 175, 55, 0.4)'
+                }}>Exploit the<br />Population</span>.
+              </h1>
+              
+              {/* Subhead */}
+              <p style={{
+                fontSize: '17px',
+                color: '#B0B0B8',
+                maxWidth: '460px',
+                lineHeight: 1.85,
+                marginBottom: '40px',
+                fontWeight: '400'
+              }}>
+                Stop guessing. Start executing. The exact data-driven strategies I used to win at 1KNL+ and help my students generate <strong style={{ color: '#FFFFFF', fontWeight: '500' }}>$5M+ in profits</strong>.
+              </p>
+              
+              {/* CTA Button */}
+              <a 
+                href="https://calendly.com/freenachos/intro" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="btn-hover cta-primary"
+                style={{
+                  background: '#FF9900',
+                  color: '#0a0a0a',
+                  padding: '20px 44px',
+                  borderRadius: '14px',
+                  fontWeight: '700',
+                  fontSize: '16px',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  boxShadow: '0 4px 30px rgba(255, 153, 0, 0.4)',
+                  letterSpacing: '0.01em'
+                }}
+              >
+                Apply for Mentorship <ArrowRight size={20} />
+              </a>
+            </div>
+          </div>
+        </div>
+
         {/* Responsive Styles for Hero */}
         <style>{`
+          @media (max-width: 1400px) {
+            .hero-image-mask {
+              right: -5% !important;
+            }
+          }
           @media (max-width: 1200px) {
             .hero-image-mask {
-              right: 0 !important;
-              height: 70vh !important;
+              right: -10% !important;
+              height: 75vh !important;
+              max-height: 800px !important;
             }
           }
           @media (max-width: 968px) {
             .hero-image-mask {
-              position: relative !important;
-              right: auto !important;
-              height: auto !important;
-              max-height: 500px !important;
-              width: 100% !important;
-              display: flex !important;
-              justify-content: center !important;
-              margin-top: 40px !important;
-            }
-            .hero-image-mask img {
-              height: auto !important;
-              max-height: 500px !important;
-              width: auto !important;
-              max-width: 100% !important;
+              display: none !important;
             }
           }
         `}</style>
