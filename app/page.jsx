@@ -324,40 +324,6 @@ The 3-month program consists of:
     return () => observer.disconnect();
   }, []);
 
-  // Liquid Gold scroll animation for Coach section headline
-  useEffect(() => {
-    const handleScroll = () => {
-      const headline = document.querySelector('.liquid-gold-headline');
-      if (!headline || !aboutSectionRef.current) return;
-      
-      const rect = aboutSectionRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      
-      // Calculate progress: 0 when section enters, 1 when headline reaches middle of viewport
-      const sectionTop = rect.top;
-      const triggerStart = windowHeight * 0.8;
-      const triggerEnd = windowHeight * 0.3;
-      
-      if (sectionTop < triggerStart && sectionTop > triggerEnd) {
-        const progress = 1 - ((sectionTop - triggerEnd) / (triggerStart - triggerEnd));
-        if (progress > 0.5) {
-          headline.classList.add('scrolled');
-        } else {
-          headline.classList.remove('scrolled');
-        }
-      } else if (sectionTop <= triggerEnd) {
-        headline.classList.add('scrolled');
-      } else {
-        headline.classList.remove('scrolled');
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Check initial state
-    
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const eyeOffset = getEyeOffset();
 
   // ============================================
@@ -2061,73 +2027,40 @@ The 3-month program consists of:
       {/* ==================== MAIN CONTENT CONTAINER ==================== */}
       <div style={{position: 'relative', zIndex: 10, maxWidth: '1400px', margin: '0 auto', padding: '0 24px'}}>
 
-        {/* ==================== COACH SECTION - Museum Exhibit Layout ==================== */}
+        {/* ==================== COACH SECTION - Floating Layout ==================== */}
         <div 
           ref={aboutSectionRef}
-          className="reveal-first coach-museum-section"
+          className="reveal-first"
           style={{
-            paddingTop: '256px',
-            paddingBottom: '256px',
-            marginBottom: '0',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            position: 'relative'
+            paddingTop: '60px',
+            paddingBottom: '120px',
+            marginBottom: '250px'
           }}
         >
-          {/* Liquid Gold Header - Centered */}
-          <div style={{ 
-            textAlign: 'center',
-            maxWidth: '768px',
-            marginBottom: '80px'
-          }}>
-            <h2 
-              className="liquid-gold-headline"
-              style={{
-                fontSize: 'clamp(36px, 4.5vw, 56px)',
-                fontWeight: '800',
-                color: '#FFFFFF',
-                marginBottom: '32px',
-                lineHeight: 1.08,
-                letterSpacing: '-0.025em',
-                fontFamily: 'Manrope, Inter, sans-serif',
-                transition: 'color 0.3s ease'
-              }}
-            >
-              The Coach Behind <span className="liquid-gold-accent" style={{ 
+          {/* Section Header - Left Aligned */}
+          <div style={{ marginBottom: '48px' }}>
+            <h2 style={{
+              fontSize: 'clamp(36px, 4.5vw, 52px)',
+              fontWeight: '800',
+              color: '#FFFFFF',
+              marginBottom: '16px',
+              lineHeight: 1.08,
+              letterSpacing: '-0.025em',
+              fontFamily: 'Manrope, Inter, sans-serif'
+            }}>
+              The Coach Behind <span style={{ 
                 color: '#D4AF37',
-                textShadow: '0 0 60px rgba(212, 175, 55, 0.4)',
-                transition: 'all 0.3s ease'
+                textShadow: '0 0 60px rgba(212, 175, 55, 0.4)'
               }}>$5M+</span> in Student Profits
             </h2>
-            
-            {/* Centered Subtext Block */}
-            <div style={{
-              color: 'rgba(240, 240, 240, 0.75)',
-              fontSize: '18px',
-              lineHeight: 1.85,
-              textAlign: 'center'
-            }}>
-              <p style={{ marginBottom: '20px' }}>
-                My students have generated over <strong style={{ color: '#D4AF37' }}>$5,000,000</strong> in combined profits. I maintain a <strong style={{ color: '#D4AF37' }}>6.2bb/100 win rate at 1KNL and above</strong>, with over 10 million hands of high-stakes experience. This isn't theory. It's a system that produces results.
-              </p>
-              <p style={{ marginBottom: '20px', color: 'rgba(240, 240, 240, 0.65)' }}>
-                I don't teach you to memorize solver outputs. I teach you to <strong style={{ color: '#D4AF37' }}>weaponize data</strong>. By identifying where real opponents deviate from equilibrium, we build strategies that exploit population tendencies in a controlled, repeatable way. GTO is the diagnostic tool. Exploitation is the profit engine.
-              </p>
-              <p style={{ color: 'rgba(240, 240, 240, 0.55)' }}>
-                I wasn't born winning. My early graph was filled with breakeven stretches and frustrating downswings. What changed wasn't more study. It was a better system. That same system is now the foundation of my mentorship, and it's responsible for the results you see above.
-              </p>
-            </div>
           </div>
 
-          {/* Stats Row - Centered Pills */}
+          {/* Stats Row - Floating Pills */}
           <div style={{ 
             display: 'flex',
             flexWrap: 'wrap',
-            justifyContent: 'center',
             gap: '16px',
-            marginBottom: '72px',
-            maxWidth: '768px'
+            marginBottom: '56px'
           }}>
             {[
               { value: '$5M+', label: 'Student Profits' },
@@ -2152,44 +2085,77 @@ The 3-month program consists of:
             ))}
           </div>
           
-          {/* The "Artifact" Graph Display - Glass Plinth */}
-          <div style={{
-            position: 'relative',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            maxWidth: '520px',
-            width: '100%'
-          }}>
-            {/* Amber Glow Anchor - Behind the frame */}
-            <div style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '120%',
-              height: '120%',
-              background: 'radial-gradient(ellipse at center, rgba(255, 153, 0, 0.20) 0%, rgba(212, 175, 55, 0.08) 40%, transparent 70%)',
-              filter: 'blur(60px)',
-              pointerEvents: 'none',
-              zIndex: 0
-            }} />
+          {/* Two Column Layout - Text Left, Graph Right */}
+          <div style={{ display: 'flex', gap: '64px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+            {/* Bio Text - Left Column */}
+            <div style={{ flex: 1, minWidth: '320px', maxWidth: '620px' }}>
+              {/* Paragraph 1: The Authority */}
+              <p style={{
+                color: 'rgba(240, 240, 240, 0.9)',
+                fontSize: '17px',
+                lineHeight: 1.9,
+                marginBottom: '24px'
+              }}>
+                My students have generated over <strong style={{ color: '#D4AF37' }}>$5,000,000</strong> in combined profits. I maintain a <strong style={{ color: '#D4AF37' }}>6.2bb/100 win rate at 1KNL and above</strong>, with over 10 million hands of high-stakes experience. This isn't theory. It's a system that produces results.
+              </p>
+              
+              {/* Paragraph 2: The Method */}
+              <p style={{
+                color: 'rgba(240, 240, 240, 0.8)',
+                fontSize: '17px',
+                lineHeight: 1.9,
+                marginBottom: '24px'
+              }}>
+                I don't teach you to memorize solver outputs. I teach you to <strong style={{ color: '#D4AF37' }}>weaponize data</strong>. By identifying where real opponents deviate from equilibrium, we build strategies that exploit population tendencies in a controlled, repeatable way. GTO is the diagnostic tool. Exploitation is the profit engine.
+              </p>
+              
+              {/* Paragraph 3: The Journey */}
+              <p style={{
+                color: 'rgba(240, 240, 240, 0.7)',
+                fontSize: '17px',
+                lineHeight: 1.9,
+                marginBottom: '40px'
+              }}>
+                I wasn't born winning. My early graph was filled with breakeven stretches and frustrating downswings. What changed wasn't more study. It was a better system. That same system is now the foundation of my mentorship, and it's responsible for the results you see above.
+              </p>
+
+              {/* CTA Button */}
+              <a 
+                href="https://calendly.com/freenachos/intro" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="btn-hover"
+                style={{
+                  background: 'transparent',
+                  color: '#D4AF37',
+                  padding: '18px 36px',
+                  borderRadius: '14px',
+                  fontWeight: '600',
+                  fontSize: '16px',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  border: '2px solid rgba(212, 175, 55, 0.5)',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                Book a Free Intro Call <ArrowRight size={18} />
+              </a>
+            </div>
             
-            {/* Glass Plinth Container */}
+            {/* Results Graph - Right Column */}
             <div style={{
-              position: 'relative',
-              zIndex: 1,
-              background: 'rgba(255, 255, 255, 0.03)',
-              backdropFilter: 'blur(64px)',
-              WebkitBackdropFilter: 'blur(64px)',
-              border: '1px solid rgba(255, 255, 255, 0.10)',
-              borderRadius: '24px',
-              padding: '20px',
-              boxShadow: '0 32px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+              flex: '0 0 380px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '14px'
             }}>
               <div style={{
-                borderRadius: '16px',
-                overflow: 'hidden'
+                borderRadius: '24px',
+                overflow: 'hidden',
+                border: '2px solid rgba(212, 175, 55, 0.35)',
+                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(212, 175, 55, 0.1)'
               }}>
                 <img 
                   src="https://static.runitonce.com/static/img/courses/dominate-with-data/chart.bcc69818f43c.jpg"
@@ -2201,69 +2167,23 @@ The 3-month program consists of:
                   }}
                 />
               </div>
-            </div>
-            
-            {/* Caption */}
-            <div style={{ 
-              textAlign: 'center',
-              fontSize: '13px',
-              color: 'rgba(240, 240, 240, 0.45)',
-              fontStyle: 'italic',
-              marginTop: '20px',
-              zIndex: 1
-            }}>
-              Verified results at 1KNL+
+              <div style={{ 
+                textAlign: 'center',
+                fontSize: '13px',
+                color: 'rgba(240, 240, 240, 0.45)',
+                fontStyle: 'italic'
+              }}>
+                Verified results at 1KNL+
+              </div>
             </div>
           </div>
 
-          {/* CTA Button - Centered */}
-          <a 
-            href="https://calendly.com/freenachos/intro" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="btn-hover"
-            style={{
-              marginTop: '64px',
-              background: 'transparent',
-              color: '#D4AF37',
-              padding: '18px 36px',
-              borderRadius: '14px',
-              fontWeight: '600',
-              fontSize: '16px',
-              textDecoration: 'none',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '10px',
-              border: '2px solid rgba(212, 175, 55, 0.5)',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            Book a Free Intro Call <ArrowRight size={18} />
-          </a>
-
-          {/* Liquid Gold Scroll Animation & Stat Pill Styles */}
+          {/* Stat pill hover style */}
           <style>{`
             .stat-pill:hover {
               background: rgba(212, 175, 55, 0.15) !important;
               border-color: rgba(212, 175, 55, 0.4) !important;
               transform: translateY(-2px);
-            }
-            
-            .liquid-gold-headline.scrolled {
-              color: #FF9900 !important;
-              text-shadow: 0 0 80px rgba(255, 153, 0, 0.5);
-            }
-            
-            .liquid-gold-headline.scrolled .liquid-gold-accent {
-              color: #FFB347 !important;
-              text-shadow: 0 0 100px rgba(255, 153, 0, 0.7);
-            }
-            
-            @media (max-width: 768px) {
-              .coach-museum-section {
-                padding-top: 160px !important;
-                padding-bottom: 160px !important;
-              }
             }
           `}</style>
         </div>
