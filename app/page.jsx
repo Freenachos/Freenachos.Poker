@@ -33,6 +33,7 @@ const PokerToolboxHome = () => {
   const [slideDirection, setSlideDirection] = useState('right');
   const [expandedFAQ, setExpandedFAQ] = useState(0);
   const [showStickyCta, setShowStickyCta] = useState(false);
+  const [showGraphLightbox, setShowGraphLightbox] = useState(false);
   const nachoRef = useRef(null);
   const aboutSectionRef = useRef(null);
   const heroSectionRef = useRef(null);
@@ -702,19 +703,19 @@ The 3-month program consists of:
         <div 
           className="benefit-icon"
           style={{
-            width: '60px',
-            height: '60px',
-            borderRadius: '14px',
-            background: 'rgba(212, 175, 55, 0.08)',
-            border: '1px solid rgba(212, 175, 55, 0.3)',
+            width: '64px',
+            height: '64px',
+            borderRadius: '20px',
+            background: 'rgba(211, 175, 57, 0.08)',
+            border: '1px solid rgba(211, 175, 57, 0.25)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginBottom: '24px',
+            marginBottom: '28px',
             pointerEvents: 'none'
           }}
         >
-          <Icon size={28} color="#D4AF37" strokeWidth={1.5} />
+          <Icon size={28} color="#D3AF39" strokeWidth={1.5} />
         </div>
         
         {/* Title */}
@@ -722,9 +723,9 @@ The 3-month program consists of:
           className="benefit-title"
           style={{
             color: '#F0F0F0',
-            fontSize: '18px',
+            fontSize: '20px',
             fontWeight: '700',
-            marginBottom: '14px',
+            marginBottom: '16px',
             lineHeight: 1.3,
             pointerEvents: 'none'
           }}
@@ -734,9 +735,9 @@ The 3-month program consists of:
         
         {/* Description */}
         <p style={{
-          color: 'rgba(240, 240, 240, 0.65)',
-          fontSize: '14px',
-          lineHeight: 1.75,
+          color: 'rgba(240, 240, 240, 0.6)',
+          fontSize: '15px',
+          lineHeight: 1.8,
           flex: 1,
           pointerEvents: 'none'
         }}>
@@ -1300,17 +1301,20 @@ The 3-month program consists of:
         }
 
         .benefit-card {
-          background: #1A1A1A;
-          border: 1px solid rgba(212, 175, 55, 0.2);
-          border-radius: 16px;
-          padding: 32px;
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(40px);
+          -webkit-backdrop-filter: blur(40px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 32px;
+          padding: 40px;
           position: relative;
           overflow: hidden;
           height: 100%;
           display: flex;
           flex-direction: column;
           cursor: default;
-          transition: border-color 0.4s ease;
+          transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
         }
 
         .benefit-card > * {
@@ -1324,7 +1328,7 @@ The 3-month program consists of:
           left: 0;
           right: 0;
           height: 3px;
-          background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+          background: linear-gradient(90deg, transparent, #D3AF39, transparent);
           opacity: 0;
           transition: opacity 0.4s ease;
         }
@@ -1334,7 +1338,9 @@ The 3-month program consists of:
         }
 
         .benefit-card:hover {
-          border-color: rgba(212, 175, 55, 0.4);
+          border-color: rgba(211, 175, 57, 0.4);
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(211, 175, 57, 0.1);
+          transform: translateY(-6px);
         }
 
         .benefit-card .benefit-icon {
@@ -1342,9 +1348,9 @@ The 3-month program consists of:
         }
 
         .benefit-card:hover .benefit-icon {
-          background: rgba(212, 175, 55, 0.15);
-          border-color: rgba(212, 175, 55, 0.6);
-          box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
+          background: rgba(211, 175, 57, 0.15);
+          border-color: rgba(211, 175, 57, 0.5);
+          box-shadow: 0 0 30px rgba(211, 175, 57, 0.25);
         }
 
         .benefit-card .benefit-title {
@@ -1352,7 +1358,7 @@ The 3-month program consists of:
         }
 
         .benefit-card:hover .benefit-title {
-          color: #D4AF37;
+          color: #D3AF39;
         }
 
         .pricing-card:hover {
@@ -2220,11 +2226,9 @@ The 3-month program consists of:
                   display: 'flex',
                   flexDirection: 'column'
                 }}>
-                  {/* Clickable Stealth Graph Image */}
-                  <a 
-                    href="https://static.runitonce.com/static/img/courses/dominate-with-data/chart.bcc69818f43c.jpg"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  {/* Clickable Stealth Graph Image - Opens Lightbox */}
+                  <div 
+                    onClick={() => setShowGraphLightbox(true)}
                     className="stealth-graph-container"
                     style={{
                       borderRadius: '24px',
@@ -2286,7 +2290,7 @@ The 3-month program consists of:
                       </div>
                       <span style={{ color: '#D3AF39', fontSize: '12px', fontWeight: '600' }}>View Full Results</span>
                     </div>
-                  </a>
+                  </div>
                   
                   {/* Caption */}
                   <div style={{ 
@@ -2420,45 +2424,35 @@ The 3-month program consists of:
           `}</style>
         </div>
 
-        {/* What You Get in the Mentorship Program Section */}
+        {/* ==================== WHAT YOU GET - Museum Standard ==================== */}
         <div 
           id="mentorship"
-          className="glass-card reveal"
+          className="reveal"
           style={{
-            borderRadius: '24px',
-            padding: '72px 56px',
+            paddingTop: '256px',
+            paddingBottom: '256px',
             marginBottom: '200px'
           }}
         >
-          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '10px',
-              background: 'rgba(212, 175, 55, 0.1)',
-              border: '1px solid rgba(212, 175, 55, 0.25)',
-              borderRadius: '30px',
-              padding: '8px 20px',
-              marginBottom: '20px'
-            }}>
-              <Sparkles size={16} color="#D4AF37" />
-              <span style={{ fontSize: '13px', color: '#D4AF37', fontWeight: '600', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-                Exclusive Access
-              </span>
-            </div>
+          {/* Header - Centered with Liquid Gold */}
+          <div style={{ textAlign: 'center', marginBottom: '80px' }}>
             <h2 style={{
-              fontSize: '36px',
+              fontSize: 'clamp(36px, 4vw, 52px)',
               fontWeight: '800',
-              color: '#F0F0F0',
-              marginBottom: '12px',
-              letterSpacing: '-0.02em'
+              marginBottom: '20px',
+              letterSpacing: '-0.025em',
+              fontFamily: 'Manrope, Inter, sans-serif'
             }}>
-              What You Get
+              <span style={{ color: '#FFFFFF' }}>What You </span>
+              <span style={{ 
+                color: '#D3AF39',
+                textShadow: '0 0 50px rgba(211, 175, 57, 0.3)'
+              }}>Get</span>
             </h2>
             <p style={{
-              fontSize: '17px',
-              color: 'rgba(240, 240, 240, 0.6)',
-              maxWidth: '550px',
+              fontSize: '18px',
+              color: 'rgba(240, 240, 240, 0.55)',
+              maxWidth: '600px',
               margin: '0 auto',
               lineHeight: 1.7
             }}>
@@ -2466,29 +2460,128 @@ The 3-month program consists of:
             </p>
           </div>
           
+          {/* 6 Obsidian Slab Cards - Directly on Background */}
           <div 
-            className="benefits-grid"
+            className="benefits-grid-museum"
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '24px'
+              gap: '48px'
             }}
           >
-            {mentorshipBenefits.map((benefit, idx) => (
-              <BenefitCard key={idx} benefit={benefit} index={idx} />
-            ))}
+            {mentorshipBenefits.map((benefit, idx) => {
+              const Icon = benefit.icon;
+              return (
+                <div 
+                  key={idx}
+                  className="obsidian-card"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    backdropFilter: 'blur(40px)',
+                    WebkitBackdropFilter: 'blur(40px)',
+                    borderRadius: '32px',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    padding: '40px',
+                    position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
+                  }}
+                >
+                  {/* Step Number - Metallic Gold */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '24px',
+                    right: '24px',
+                    fontSize: '12px',
+                    fontWeight: '700',
+                    color: '#D3AF39',
+                    letterSpacing: '0.1em',
+                    opacity: 0.6
+                  }}>
+                    {String(idx + 1).padStart(2, '0')}
+                  </div>
+                  
+                  {/* Icon */}
+                  <div style={{
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '20px',
+                    background: 'rgba(211, 175, 57, 0.08)',
+                    border: '1px solid rgba(211, 175, 57, 0.25)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '28px',
+                    transition: 'all 0.5s ease'
+                  }} className="obsidian-icon">
+                    <Icon size={28} color="#D3AF39" strokeWidth={1.5} />
+                  </div>
+                  
+                  {/* Title */}
+                  <h3 
+                    className="obsidian-title"
+                    style={{
+                      color: '#F0F0F0',
+                      fontSize: '20px',
+                      fontWeight: '700',
+                      marginBottom: '16px',
+                      lineHeight: 1.3,
+                      transition: 'color 0.4s ease'
+                    }}
+                  >
+                    {benefit.title}
+                  </h3>
+                  
+                  {/* Description */}
+                  <p style={{
+                    color: 'rgba(240, 240, 240, 0.6)',
+                    fontSize: '15px',
+                    lineHeight: 1.8,
+                    flex: 1
+                  }}>
+                    {benefit.description}
+                  </p>
+                </div>
+              );
+            })}
           </div>
           
-          {/* Responsive grid for smaller screens */}
+          {/* Obsidian Card Styles */}
           <style>{`
+            .obsidian-card {
+              box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            }
+            
+            .obsidian-card:hover {
+              border-color: rgba(211, 175, 57, 0.4) !important;
+              box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(211, 175, 57, 0.1) !important;
+              transform: translateY(-6px);
+            }
+            
+            .obsidian-card:hover .obsidian-icon {
+              background: rgba(211, 175, 57, 0.15) !important;
+              border-color: rgba(211, 175, 57, 0.5) !important;
+              box-shadow: 0 0 30px rgba(211, 175, 57, 0.25);
+            }
+            
+            .obsidian-card:hover .obsidian-title {
+              color: #D3AF39 !important;
+            }
+            
             @media (max-width: 1024px) {
-              .benefits-grid {
+              .benefits-grid-museum {
                 grid-template-columns: repeat(2, 1fr) !important;
+                gap: 32px !important;
               }
             }
+            
             @media (max-width: 680px) {
-              .benefits-grid {
+              .benefits-grid-museum {
                 grid-template-columns: 1fr !important;
+                gap: 24px !important;
               }
             }
           `}</style>
@@ -3563,6 +3656,116 @@ The 3-month program consists of:
           </p>
         </div>
       </div>
+
+      {/* ==================== GRAPH LIGHTBOX MODAL ==================== */}
+      {showGraphLightbox && (
+        <div 
+          className="graph-lightbox-overlay"
+          onClick={() => setShowGraphLightbox(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 99999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '40px',
+            background: 'rgba(0, 0, 0, 0.9)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            animation: 'lightboxFadeIn 0.3s ease'
+          }}
+        >
+          {/* Glass Container */}
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: 'relative',
+              maxWidth: '1200px',
+              width: '100%',
+              background: 'rgba(255, 255, 255, 0.03)',
+              backdropFilter: 'blur(40px)',
+              WebkitBackdropFilter: 'blur(40px)',
+              borderRadius: '32px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              padding: '24px',
+              boxShadow: '0 40px 100px rgba(0, 0, 0, 0.5), 0 0 80px rgba(211, 175, 57, 0.1)',
+              animation: 'lightboxScaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+            }}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowGraphLightbox(false)}
+              style={{
+                position: 'absolute',
+                top: '-20px',
+                right: '-20px',
+                width: '48px',
+                height: '48px',
+                borderRadius: '50%',
+                background: 'rgba(10, 10, 10, 0.9)',
+                border: '2px solid #D3AF39',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                zIndex: 10
+              }}
+              className="lightbox-close-btn"
+            >
+              <X size={24} color="#D3AF39" strokeWidth={2.5} />
+            </button>
+            
+            {/* Full Size Image */}
+            <img 
+              src="https://static.runitonce.com/static/img/courses/dominate-with-data/chart.bcc69818f43c.jpg"
+              alt="Freenachos Results Graph - Full Size"
+              style={{
+                width: '100%',
+                height: 'auto',
+                borderRadius: '20px',
+                display: 'block'
+              }}
+            />
+            
+            {/* Caption */}
+            <div style={{
+              textAlign: 'center',
+              marginTop: '20px',
+              fontSize: '14px',
+              color: 'rgba(240, 240, 240, 0.6)'
+            }}>
+              Verified results at 1KNL+ &nbsp;•&nbsp; 6.2bb/100 win rate &nbsp;•&nbsp; 10M+ hands
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Lightbox Animations */}
+      <style>{`
+        @keyframes lightboxFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes lightboxScaleIn {
+          from { 
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to { 
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        
+        .lightbox-close-btn:hover {
+          background: rgba(211, 175, 57, 0.15) !important;
+          transform: scale(1.1);
+          box-shadow: 0 0 30px rgba(211, 175, 57, 0.3);
+        }
+      `}</style>
     </div>
   );
 };
