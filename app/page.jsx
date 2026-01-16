@@ -2519,6 +2519,70 @@ The 3-month program consists of:
           </div>
         </div>
 
+        {/* YouTube Videos Section - Masterclass Vibe Check */}
+        <div 
+          className="glass-card reveal"
+          id="videos"
+          style={{
+            borderRadius: '24px',
+            padding: '56px',
+            marginBottom: '200px'
+          }}
+        >
+          <div className="section-title" style={{ marginBottom: '24px' }}>
+            <Youtube size={24} color="#ef4444" />
+            <h2>Latest Videos</h2>
+            <div className="line" />
+            <a 
+              href="https://www.youtube.com/@nachospoker" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{
+                fontSize: '13px',
+                color: '#D4AF37',
+                textDecoration: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontWeight: '500'
+              }}
+            >
+              View all <ExternalLink size={14} />
+            </a>
+          </div>
+
+          <div style={{ position: 'relative', overflow: 'hidden' }}>
+            <div 
+              style={{
+                display: 'flex',
+                gap: '20px',
+                padding: '10px 0',
+                transform: `translateX(-${currentVideoIndex * 320}px)`,
+                transition: 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+              }}
+            >
+              {videos.map((video, idx) => (
+                <VideoCard key={video.id} video={video} index={idx} />
+              ))}
+            </div>
+            
+            {/* Carousel Controls */}
+            <div style={{
+              display: 'flex',
+              gap: '12px',
+              justifyContent: 'center',
+              marginTop: '20px'
+            }}>
+              <button className="carousel-btn" onClick={prevVideo}>
+                <ChevronLeft size={20} color="#D4AF37" />
+              </button>
+              <button className="carousel-btn" onClick={nextVideo}>
+                <ChevronRight size={20} color="#D4AF37" />
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Pricing Section */}
         <div 
           className="glass-card reveal"
@@ -2759,151 +2823,6 @@ The 3-month program consists of:
           </div>
         </div>
 
-        {/* YouTube Videos Section */}
-        <div 
-          className="glass-card reveal"
-          id="videos"
-          style={{
-            borderRadius: '24px',
-            padding: '56px',
-            marginBottom: '200px'
-          }}
-        >
-          <div className="section-title" style={{ marginBottom: '24px' }}>
-            <Youtube size={24} color="#ef4444" />
-            <h2>Latest Videos</h2>
-            <div className="line" />
-            <a 
-              href="https://www.youtube.com/@nachospoker" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              style={{
-                fontSize: '13px',
-                color: '#D4AF37',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontWeight: '500'
-              }}
-            >
-              View all <ExternalLink size={14} />
-            </a>
-          </div>
-
-          <div style={{ position: 'relative', overflow: 'hidden' }}>
-            <div 
-              style={{
-                display: 'flex',
-                gap: '20px',
-                padding: '10px 0',
-                transform: `translateX(-${currentVideoIndex * 320}px)`,
-                transition: 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-              }}
-            >
-              {videos.map((video, idx) => (
-                <VideoCard key={video.id} video={video} index={idx} />
-              ))}
-            </div>
-            
-            {/* Carousel Controls */}
-            <div style={{
-              display: 'flex',
-              gap: '12px',
-              justifyContent: 'center',
-              marginTop: '20px'
-            }}>
-              <button className="carousel-btn" onClick={prevVideo}>
-                <ChevronLeft size={20} color="#D4AF37" />
-              </button>
-              <button className="carousel-btn" onClick={nextVideo}>
-                <ChevronRight size={20} color="#D4AF37" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Tools Section */}
-        <div 
-          className="glass-card reveal"
-          id="tools"
-          style={{
-            borderRadius: '24px',
-            padding: '56px',
-            marginBottom: '200px'
-          }}
-        >
-          <div className="section-title" style={{ marginBottom: '24px' }}>
-            <Calculator size={24} color="#D4AF37" />
-            <h2>Poker Tools</h2>
-            <div className="line" />
-            <a 
-              href="/tools"
-              style={{
-                fontSize: '13px',
-                color: '#D4AF37',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontWeight: '500'
-              }}
-            >
-              View all <ArrowRight size={14} />
-            </a>
-          </div>
-
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: '20px'
-          }}>
-            {tools.map(tool => (
-              <ToolCard key={tool.id} tool={tool} />
-            ))}
-          </div>
-        </div>
-
-        {/* Articles Section */}
-        <div 
-          className="glass-card reveal"
-          style={{
-            borderRadius: '24px',
-            padding: '56px',
-            marginBottom: '200px'
-          }}
-        >
-          <div className="section-title" style={{ marginBottom: '24px' }}>
-            <BookOpen size={24} color="#a855f7" />
-            <h2>Strategy Articles</h2>
-            <div className="line" />
-            <a 
-              href="/articles"
-              style={{
-                fontSize: '13px',
-                color: '#D4AF37',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontWeight: '500'
-              }}
-            >
-              View all <ArrowRight size={14} />
-            </a>
-          </div>
-
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-            gap: '20px'
-          }}>
-            {articles.map(article => (
-              <ArticleCard key={article.id} article={article} />
-            ))}
-          </div>
-        </div>
-
         {/* ==================== AUTHORITY VAULT SECTION ==================== */}
         <div 
           className="reveal"
@@ -3105,59 +3024,6 @@ The 3-month program consists of:
             }
           }
         `}</style>
-
-        {/* Footer CTA */}
-        <div 
-          className="spark-border reveal"
-          style={{
-            padding: '80px 56px',
-            textAlign: 'center',
-            marginBottom: '64px'
-          }}
-        >
-          <h2 style={{
-            fontSize: '36px',
-            fontWeight: '800',
-            color: '#F0F0F0',
-            marginBottom: '20px',
-            letterSpacing: '-0.01em'
-          }}>
-            Ready to Take Your Game to the Next Level?
-          </h2>
-          <p style={{
-            fontSize: '17px',
-            color: 'rgba(240, 240, 240, 0.65)',
-            marginBottom: '36px',
-            maxWidth: '520px',
-            margin: '0 auto 36px',
-            lineHeight: 1.7
-          }}>
-            Book a free intro call to see if the mentorship is right for you.
-          </p>
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a 
-              href="https://calendly.com/freenachos/intro" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="btn-hover cta-primary"
-              style={{
-                background: '#FF9900',
-                color: '#0a0a0a',
-                padding: '20px 44px',
-                borderRadius: '14px',
-                fontWeight: '700',
-                fontSize: '17px',
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '12px',
-                boxShadow: '0 6px 30px rgba(255, 153, 0, 0.5)'
-              }}
-            >
-              Apply for Mentorship <ArrowRight size={20} />
-            </a>
-          </div>
-        </div>
 
         {/* Footer */}
         <div style={{
