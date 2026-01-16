@@ -1083,17 +1083,6 @@ The 3-month program consists of:
           background: #FFa31a;
         }
 
-        /* Hero specific styles */
-        .hero-glow {
-          position: absolute;
-          width: 700px;
-          height: 700px;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(212, 175, 55, 0.3) 0%, rgba(255, 153, 0, 0.15) 35%, transparent 70%);
-          filter: blur(120px);
-          animation: glowPulse 4s ease-in-out infinite;
-        }
-
         .sticky-cta {
           position: fixed;
           bottom: 24px;
@@ -1342,43 +1331,172 @@ The 3-month program consists of:
           opacity: 0.7 !important;
           transform: scale(0.95) !important;
         }
+
+        /* Cinematic Nacho Float Animation */
+        @keyframes cinematicFloat {
+          0%, 100% { 
+            transform: translateY(0) rotate(0deg) scale(1); 
+          }
+          50% { 
+            transform: translateY(-30px) rotate(5deg) scale(1.05); 
+          }
+        }
+
+        @keyframes cinematicFloat2 {
+          0%, 100% { 
+            transform: translateY(0) rotate(0deg); 
+          }
+          50% { 
+            transform: translateY(-20px) rotate(-3deg); 
+          }
+        }
+
+        @keyframes heroFadeIn {
+          from { 
+            opacity: 0; 
+            transform: translateY(40px); 
+          }
+          to { 
+            opacity: 1; 
+            transform: translateY(0); 
+          }
+        }
+
+        @keyframes imageReveal {
+          from { 
+            opacity: 0; 
+            transform: translateX(60px); 
+          }
+          to { 
+            opacity: 1; 
+            transform: translateX(0); 
+          }
+        }
+
+        .hero-image-mask {
+          mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+          -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+        }
       `}</style>
 
-      <div style={{position: 'relative', zIndex: 2, maxWidth: '1400px', margin: '0 auto', padding: '0 24px'}}>
-        {/* Hero Section - Full Width, Immersive */}
-        <section 
-          className="hero-section-grid"
+      {/* ==================== CINEMATIC HERO SECTION ==================== */}
+      <section 
+        style={{
+          position: 'relative',
+          minHeight: '100vh',
+          width: '100%',
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center'
+        }}
+      >
+        {/* === BACKGROUND LAYER: Cinematic Nachos (z-0) === */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+          {/* Large Nacho - Top Left */}
+          <div style={{
+            position: 'absolute',
+            top: '10%',
+            left: '5%',
+            width: '280px',
+            height: '280px',
+            opacity: 0.08,
+            filter: 'blur(40px)',
+            animation: 'cinematicFloat 12s ease-in-out infinite'
+          }}>
+            <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+              <polygon points="50,5 95,95 5,95" fill="#D4AF37" />
+            </svg>
+          </div>
+          
+          {/* Large Nacho - Mid Right */}
+          <div style={{
+            position: 'absolute',
+            top: '35%',
+            right: '15%',
+            width: '220px',
+            height: '220px',
+            opacity: 0.06,
+            filter: 'blur(50px)',
+            animation: 'cinematicFloat2 15s ease-in-out infinite',
+            animationDelay: '-3s'
+          }}>
+            <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+              <polygon points="50,5 95,95 5,95" fill="#FF9900" />
+            </svg>
+          </div>
+          
+          {/* Large Nacho - Bottom Center-Left */}
+          <div style={{
+            position: 'absolute',
+            bottom: '15%',
+            left: '25%',
+            width: '200px',
+            height: '200px',
+            opacity: 0.07,
+            filter: 'blur(45px)',
+            animation: 'cinematicFloat 18s ease-in-out infinite',
+            animationDelay: '-7s'
+          }}>
+            <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+              <polygon points="50,5 95,95 5,95" fill="#D4AF37" />
+            </svg>
+          </div>
+        </div>
+
+        {/* === HALO LIGHTING: Key Light Behind Coach (z-0) === */}
+        <div style={{
+          position: 'absolute',
+          bottom: '-20%',
+          right: '-10%',
+          width: '900px',
+          height: '900px',
+          background: 'radial-gradient(circle, rgba(255, 153, 0, 0.35) 0%, rgba(212, 175, 55, 0.15) 40%, transparent 70%)',
+          filter: 'blur(150px)',
+          zIndex: 0,
+          pointerEvents: 'none'
+        }} />
+        
+        {/* Secondary ambient glow - upper */}
+        <div style={{
+          position: 'absolute',
+          bottom: '30%',
+          right: '10%',
+          width: '500px',
+          height: '500px',
+          background: 'radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, transparent 60%)',
+          filter: 'blur(100px)',
+          zIndex: 0,
+          pointerEvents: 'none'
+        }} />
+
+        {/* === TEXT CONTENT (z-20) === */}
+        <div 
           style={{
-            minHeight: '90vh',
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            alignItems: 'center',
-            gap: '60px',
-            paddingTop: '80px',
-            paddingBottom: '128px',
-            position: 'relative'
+            position: 'relative',
+            zIndex: 20,
+            maxWidth: '1400px',
+            width: '100%',
+            margin: '0 auto',
+            padding: '0 48px',
+            paddingTop: '80px'
           }}
         >
-          {/* Left Column - Copy Stack */}
           <div 
-            className="hero-copy"
-            style={{ 
-              animation: 'fadeInUp 0.8s ease-out 0.2s both',
-              position: 'relative',
-              zIndex: 2
+            style={{
+              maxWidth: '600px',
+              animation: 'heroFadeIn 1s ease-out 0.2s both'
             }}
           >
             {/* Badge */}
             <div 
-              className="hero-badge"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                background: 'rgba(212, 175, 55, 0.05)',
-                border: '1px solid rgba(212, 175, 55, 0.2)',
+                background: 'rgba(212, 175, 55, 0.08)',
+                border: '1px solid rgba(212, 175, 55, 0.25)',
                 borderRadius: '50px',
-                padding: '10px 18px',
+                padding: '10px 20px',
                 marginBottom: '32px'
               }}
             >
@@ -1387,7 +1505,7 @@ The 3-month program consists of:
                 fontSize: '13px', 
                 color: '#D4AF37', 
                 fontWeight: '500',
-                letterSpacing: '0.02em'
+                letterSpacing: '0.03em'
               }}>
                 Trusted by 200+ Winning Regs
               </span>
@@ -1395,30 +1513,30 @@ The 3-month program consists of:
             
             {/* Headline */}
             <h1 style={{
-              fontSize: 'clamp(40px, 5vw, 60px)',
+              fontSize: 'clamp(42px, 5.5vw, 64px)',
               fontWeight: '800',
               color: '#FFFFFF',
               marginBottom: '28px',
-              lineHeight: 1.08,
-              letterSpacing: '-0.02em',
+              lineHeight: 1.05,
+              letterSpacing: '-0.025em',
               fontFamily: 'Manrope, Inter, sans-serif'
             }}>
               Master High-Stakes<br />
-              Theory & <span style={{ color: '#D4AF37' }}>Exploit the<br />Population</span>.
+              Theory & <span style={{ 
+                color: '#D4AF37',
+                textShadow: '0 0 60px rgba(212, 175, 55, 0.3)'
+              }}>Exploit the<br />Population</span>.
             </h1>
             
             {/* Subhead */}
-            <p 
-              className="hero-subhead"
-              style={{
-                fontSize: '18px',
-                color: '#A1A1AA',
-                maxWidth: '520px',
-                lineHeight: 1.8,
-                marginBottom: '44px',
-                fontWeight: '400'
-              }}
-            >
+            <p style={{
+              fontSize: '18px',
+              color: '#A1A1AA',
+              maxWidth: '480px',
+              lineHeight: 1.8,
+              marginBottom: '44px',
+              fontWeight: '400'
+            }}>
               Stop guessing. Start executing. The exact data-driven strategies I used to win at 1KNL+ and help my students generate <strong style={{ color: '#F0F0F0' }}>$5M+ in profits</strong>.
             </p>
             
@@ -1431,99 +1549,80 @@ The 3-month program consists of:
               style={{
                 background: '#FF9900',
                 color: '#0a0a0a',
-                padding: '20px 40px',
-                borderRadius: '12px',
+                padding: '20px 44px',
+                borderRadius: '14px',
                 fontWeight: '700',
                 fontSize: '16px',
                 textDecoration: 'none',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '12px',
-                boxShadow: '0 4px 20px rgba(255, 153, 0, 0.3)',
+                boxShadow: '0 4px 30px rgba(255, 153, 0, 0.4)',
                 letterSpacing: '0.01em'
               }}
             >
               Apply for Mentorship <ArrowRight size={20} />
             </a>
           </div>
-          
-          {/* Right Column - Hero Image with Halo */}
-          <div 
-            className="hero-image-container"
-            style={{ 
-              position: 'relative',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'flex-end',
-              animation: 'fadeInUp 0.8s ease-out 0.4s both'
+        </div>
+
+        {/* === COACH IMAGE: Anchored Bottom-Right (z-10) === */}
+        <div 
+          className="hero-image-mask"
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            right: '5%',
+            height: '85vh',
+            maxHeight: '950px',
+            zIndex: 10,
+            animation: 'imageReveal 1.2s ease-out 0.5s both',
+            pointerEvents: 'none'
+          }}
+        >
+          <img 
+            src="https://i.gyazo.com/ad823c265c17c21f61996bb3aa3283e2.png"
+            alt="Freenachos - High Stakes Poker Coach"
+            style={{
+              height: '100%',
+              width: 'auto',
+              objectFit: 'contain',
+              objectPosition: 'bottom right'
             }}
-          >
-            {/* Halo Glow Effect */}
-            <div 
-              className="hero-glow"
-              style={{
-                position: 'absolute',
-                bottom: '10%',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                zIndex: 0
-              }}
-            />
-            
-            {/* Secondary ambient glow */}
-            <div style={{
-              position: 'absolute',
-              bottom: '20%',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '400px',
-              height: '400px',
-              borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(255, 153, 0, 0.15) 0%, transparent 60%)',
-              filter: 'blur(60px)',
-              zIndex: 0
-            }} />
-            
-            {/* Coach Image - Cutout */}
-            <img 
-              src="https://i.gyazo.com/ad823c265c17c21f61996bb3aa3283e2.png"
-              alt="Freenachos - High Stakes Poker Coach"
-              style={{
-                width: '100%',
-                maxWidth: '550px',
-                height: 'auto',
-                position: 'relative',
-                zIndex: 1,
-                animation: 'float 6s ease-in-out infinite'
-              }}
-            />
-          </div>
-          
-          {/* Responsive styles */}
-          <style>{`
-            @media (max-width: 1024px) {
-              .hero-section-grid {
-                grid-template-columns: 1fr !important;
-                text-align: center;
-                padding-top: 60px !important;
-                gap: 40px !important;
-              }
-              .hero-section-grid > .hero-copy {
-                order: 2;
-              }
-              .hero-section-grid > .hero-image-container {
-                order: 1;
-              }
-              .hero-section-grid .hero-subhead {
-                margin-left: auto;
-                margin-right: auto;
-              }
-              .hero-section-grid .hero-badge {
-                justify-content: center;
-              }
+          />
+        </div>
+
+        {/* Responsive Styles for Hero */}
+        <style>{`
+          @media (max-width: 1200px) {
+            .hero-image-mask {
+              right: 0 !important;
+              height: 70vh !important;
             }
-          `}</style>
-        </section>
+          }
+          @media (max-width: 968px) {
+            .hero-image-mask {
+              position: relative !important;
+              right: auto !important;
+              height: auto !important;
+              max-height: 500px !important;
+              width: 100% !important;
+              display: flex !important;
+              justify-content: center !important;
+              margin-top: 40px !important;
+            }
+            .hero-image-mask img {
+              height: auto !important;
+              max-height: 500px !important;
+              width: auto !important;
+              max-width: 100% !important;
+            }
+          }
+        `}</style>
+      </section>
+
+      {/* ==================== MAIN CONTENT CONTAINER ==================== */}
+      <div style={{position: 'relative', zIndex: 2, maxWidth: '1400px', margin: '0 auto', padding: '0 24px'}}>
 
         {/* About Section */}
         <div 
