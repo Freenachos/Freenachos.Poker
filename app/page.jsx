@@ -1498,23 +1498,59 @@ The 3-month program consists of:
         {/* Sparse at top (distant stars), denser toward bottom */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 10, overflow: 'hidden', pointerEvents: 'none' }}>
           
-          {/* === TOP ZONE: Very Sparse - "Distant Stars" === */}
-          {/* Nacho - Far Top Left (away from headline) */}
+          {/* === TOP-LEFT CORNER: Distant Star === */}
+          {/* Nacho - Tucked into top-left corner */}
           <div style={{
             position: 'absolute',
-            top: '5%',
-            left: '3%',
-            width: '80px',
-            height: '80px',
-            opacity: 0.04,
-            filter: 'blur(20px)',
-            animation: 'cinematicFloat 18s ease-in-out infinite'
+            top: '3%',
+            left: '2%',
+            width: '65px',
+            height: '65px',
+            opacity: 0.035,
+            filter: 'blur(25px)',
+            animation: 'cinematicFloat 20s ease-in-out infinite'
           }}>
             <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
               <polygon points="50,5 95,95 5,95" fill="#D4AF37" />
             </svg>
           </div>
 
+          {/* === LEFT MARGIN: Peripheral Stars === */}
+          {/* Nacho - Left margin, upper-mid */}
+          <div style={{
+            position: 'absolute',
+            top: '52%',
+            left: '1.5%',
+            width: '75px',
+            height: '75px',
+            opacity: 0.04,
+            filter: 'blur(28px)',
+            animation: 'cinematicFloat2 24s ease-in-out infinite',
+            animationDelay: '-8s'
+          }}>
+            <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+              <polygon points="50,5 95,95 5,95" fill="#FF9900" />
+            </svg>
+          </div>
+
+          {/* Nacho - Left margin, lower */}
+          <div style={{
+            position: 'absolute',
+            top: '72%',
+            left: '3%',
+            width: '85px',
+            height: '85px',
+            opacity: 0.045,
+            filter: 'blur(30px)',
+            animation: 'cinematicFloat 22s ease-in-out infinite',
+            animationDelay: '-12s'
+          }}>
+            <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+              <polygon points="50,5 95,95 5,95" fill="#D4AF37" />
+            </svg>
+          </div>
+
+          {/* === TOP ZONE: Very Sparse - "Distant Stars" === */}
           {/* Nacho - Top Right Corner (away from coach face) */}
           <div style={{
             position: 'absolute',
