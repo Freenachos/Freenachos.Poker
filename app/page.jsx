@@ -3043,81 +3043,64 @@ The 3-month program consists of:
             }
           `}</style>
         </div>
-        {/* ==================== YOUTUBE CINEMA SECTION ==================== */}
-        {/* Premium Masterclass Library - No Box, Museum Spacing */}
+        {/* ==================== PROOF IN THE PROCESS - YouTube Cinema ==================== */}
         <div 
           className="reveal"
           id="videos"
           style={{
             position: 'relative',
             zIndex: 30,
-            padding: '120px 0 160px 0',
+            paddingTop: '256px',
+            paddingBottom: '256px',
             marginBottom: '200px'
           }}
         >
-          {/* Cinematic Heading - Hero Typography */}
+          {/* Centered Liquid Gold Header */}
           <div style={{ 
-            maxWidth: '800px', 
-            marginBottom: '64px',
-            paddingLeft: '24px'
+            textAlign: 'center',
+            marginBottom: '80px'
           }}>
             <h2 style={{
               fontSize: 'clamp(36px, 4vw, 52px)',
               fontWeight: '800',
-              color: '#FFFFFF',
-              marginBottom: '20px',
+              marginBottom: '24px',
               lineHeight: 1.1,
               letterSpacing: '-0.025em',
               fontFamily: 'Manrope, Inter, sans-serif'
             }}>
-              Inside the <span style={{ 
-                color: '#D4AF37',
-                textShadow: '0 0 60px rgba(212, 175, 55, 0.4)'
-              }}>High-Stakes Lab</span>.
+              <span style={{ color: '#FFFFFF' }}>Proof in the </span>
+              <span style={{ 
+                color: '#D3AF39',
+                textShadow: '0 0 50px rgba(211, 175, 57, 0.35)'
+              }}>Process</span>
             </h2>
             <p style={{
               fontSize: '18px',
-              color: '#8A8A8A',
+              color: 'rgba(240, 240, 240, 0.55)',
               maxWidth: '560px',
-              lineHeight: 1.8,
-              fontWeight: '400'
+              margin: '0 auto',
+              lineHeight: 1.8
             }}>
-              Watch the data-driven methodology that generates elite-level win rates.
+              Watch the data-driven methodology that generates elite-level win rates
             </p>
           </div>
 
-          {/* Cinema Carousel Container */}
-          <div style={{ position: 'relative' }}>
-            {/* Gradient Fade Edges */}
-            <div style={{
-              position: 'absolute',
-              left: 0,
-              top: 0,
-              bottom: 0,
-              width: '80px',
-              background: 'linear-gradient(to right, #0A0A0A 0%, transparent 100%)',
-              zIndex: 10,
-              pointerEvents: 'none'
-            }} />
-            <div style={{
-              position: 'absolute',
-              right: 0,
-              top: 0,
-              bottom: 0,
-              width: '80px',
-              background: 'linear-gradient(to left, #0A0A0A 0%, transparent 100%)',
-              zIndex: 10,
-              pointerEvents: 'none'
-            }} />
-
+          {/* Cinema Carousel Container with Edge Fade Mask */}
+          <div 
+            style={{ 
+              position: 'relative',
+              maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)'
+            }}
+          >
             {/* Snap Scroll Carousel */}
             <div 
               ref={cinemaCarouselRef}
-              className="cinema-carousel"
+              className="cinema-carousel-stealth"
               style={{
                 display: 'flex',
-                gap: '32px',
-                padding: '40px 24px',
+                gap: '40px',
+                padding: '40px 80px',
                 overflowX: 'auto',
                 scrollSnapType: 'x mandatory',
                 scrollBehavior: 'smooth',
@@ -3131,232 +3114,279 @@ The 3-month program consists of:
                   href={video.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="cinema-video-card"
+                  className="stealth-video-card"
                   style={{
-                    flex: '0 0 380px',
-                    scrollSnapAlign: 'start',
+                    flex: '0 0 400px',
+                    scrollSnapAlign: 'center',
                     textDecoration: 'none',
                     position: 'relative'
                   }}
                 >
                   {/* Gold Bloom Glow Layer */}
                   <div 
-                    className="cinema-bloom"
+                    className="stealth-bloom"
                     style={{
                       position: 'absolute',
-                      inset: '-30px',
-                      background: 'radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.35) 0%, transparent 70%)',
+                      inset: '-40px',
+                      background: 'radial-gradient(circle at 50% 50%, rgba(211, 175, 57, 0.3) 0%, transparent 70%)',
                       opacity: 0,
-                      transition: 'opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
-                      filter: 'blur(30px)',
+                      transition: 'opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+                      filter: 'blur(40px)',
                       zIndex: 0,
                       pointerEvents: 'none'
                     }}
                   />
                   
-                  {/* Thumbnail Container */}
+                  {/* Obsidian Slab Card Container */}
                   <div 
-                    className="cinema-thumbnail-wrap"
+                    className="stealth-card-frame"
                     style={{
                       position: 'relative',
+                      background: 'rgba(255, 255, 255, 0.03)',
+                      backdropFilter: 'blur(40px)',
+                      WebkitBackdropFilter: 'blur(40px)',
                       borderRadius: '32px',
-                      overflow: 'hidden',
                       border: '1px solid rgba(255, 255, 255, 0.1)',
-                      transition: 'all 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+                      overflow: 'hidden',
+                      transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
                       zIndex: 1
                     }}
                   >
-                    {/* Thumbnail Image */}
+                    {/* Thumbnail with Stealth Filter */}
                     <div 
-                      className="cinema-thumbnail"
+                      className="stealth-thumbnail"
                       style={{
                         width: '100%',
-                        height: '220px',
+                        height: '240px',
                         backgroundImage: `url(${video.thumbnail})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
-                        transition: 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)'
+                        filter: 'saturate(0.2) brightness(0.5) contrast(1.1)',
+                        transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+                        position: 'relative'
                       }}
                     />
                     
-                    {/* Play Icon Overlay - Gold Triangle Outline */}
+                    {/* Custom Gold Play Button - Minimalist */}
                     <div 
-                      className="cinema-play-icon"
+                      className="stealth-play-btn"
                       style={{
                         position: 'absolute',
-                        inset: 0,
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '72px',
+                        height: '72px',
+                        borderRadius: '50%',
+                        background: 'rgba(10, 10, 10, 0.7)',
+                        backdropFilter: 'blur(12px)',
+                        border: '2px solid rgba(211, 175, 57, 0.5)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        background: 'rgba(0, 0, 0, 0.3)',
                         opacity: 0,
-                        transition: 'opacity 0.4s ease'
+                        transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                        zIndex: 5
                       }}
                     >
                       <svg 
-                        width="64" 
-                        height="64" 
-                        viewBox="0 0 64 64" 
+                        width="28" 
+                        height="28" 
+                        viewBox="0 0 24 24" 
                         fill="none"
                         style={{
-                          filter: 'drop-shadow(0 0 20px rgba(212, 175, 55, 0.6))'
+                          marginLeft: '3px',
+                          filter: 'drop-shadow(0 0 15px rgba(211, 175, 57, 0.5))'
                         }}
                       >
                         <polygon 
-                          points="24,16 24,48 48,32" 
-                          fill="none" 
-                          stroke="#D4AF37" 
-                          strokeWidth="2.5"
-                          strokeLinejoin="round"
+                          points="5,3 5,21 19,12" 
+                          fill="#D3AF39"
                         />
                       </svg>
                     </div>
-                  </div>
-                  
-                  {/* Video Title - Parallax Layer */}
-                  <div 
-                    className="cinema-title-wrap"
-                    style={{
-                      padding: '20px 8px 0',
-                      transition: 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
-                      zIndex: 1,
-                      position: 'relative'
-                    }}
-                  >
-                    <h4 style={{
-                      color: '#F0F0F0',
-                      fontSize: '16px',
-                      fontWeight: '600',
-                      lineHeight: 1.5,
-                      marginBottom: '8px'
-                    }}>
-                      {video.title}
-                    </h4>
+                    
+                    {/* Video Title Section */}
                     <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      color: '#6B6B6B',
-                      fontSize: '13px'
+                      padding: '24px',
+                      borderTop: '1px solid rgba(255, 255, 255, 0.05)'
                     }}>
-                      <Youtube size={14} color="#D4AF37" />
-                      <span>Nachos Poker</span>
+                      <h4 
+                        className="stealth-title"
+                        style={{
+                          color: '#F0F0F0',
+                          fontSize: '16px',
+                          fontWeight: '600',
+                          lineHeight: 1.5,
+                          marginBottom: '12px',
+                          transition: 'color 0.4s ease'
+                        }}
+                      >
+                        {video.title}
+                      </h4>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}>
+                        <div style={{
+                          width: '24px',
+                          height: '24px',
+                          borderRadius: '50%',
+                          background: 'rgba(211, 175, 57, 0.15)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          <Play size={12} color="#D3AF39" fill="#D3AF39" />
+                        </div>
+                        <span style={{
+                          color: 'rgba(240, 240, 240, 0.5)',
+                          fontSize: '13px',
+                          fontWeight: '500'
+                        }}>
+                          Nachos Poker
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </a>
               ))}
             </div>
-
-            {/* Navigation Controls */}
-            <div style={{
-              display: 'flex',
-              gap: '16px',
-              justifyContent: 'center',
-              marginTop: '48px'
-            }}>
-              <button 
-                className="cinema-nav-btn"
-                onClick={prevVideo}
-                style={{
-                  width: '56px',
-                  height: '56px',
-                  borderRadius: '50%',
-                  background: 'rgba(212, 175, 55, 0.1)',
-                  border: '1px solid rgba(212, 175, 55, 0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                <ChevronLeft size={24} color="#D4AF37" />
-              </button>
-              <button 
-                className="cinema-nav-btn"
-                onClick={nextVideo}
-                style={{
-                  width: '56px',
-                  height: '56px',
-                  borderRadius: '50%',
-                  background: 'rgba(212, 175, 55, 0.1)',
-                  border: '1px solid rgba(212, 175, 55, 0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                <ChevronRight size={24} color="#D4AF37" />
-              </button>
-            </div>
-
-            {/* View All Link */}
-            <div style={{ textAlign: 'center', marginTop: '32px' }}>
-              <a 
-                href="https://www.youtube.com/@nachospoker" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                style={{
-                  color: '#D4AF37',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  textDecoration: 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  opacity: 0.8,
-                  transition: 'opacity 0.3s ease'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-                onMouseLeave={(e) => e.currentTarget.style.opacity = '0.8'}
-              >
-                View all on YouTube <ExternalLink size={14} />
-              </a>
-            </div>
           </div>
 
-          {/* Cinema Carousel Styles */}
+          {/* Navigation Controls - Glass Circles */}
+          <div style={{
+            display: 'flex',
+            gap: '20px',
+            justifyContent: 'center',
+            marginTop: '56px'
+          }}>
+            <button 
+              className="youtube-nav-btn"
+              onClick={prevVideo}
+              style={{
+                width: '56px',
+                height: '56px',
+                borderRadius: '50%',
+                background: 'rgba(255, 255, 255, 0.03)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+              }}
+            >
+              <ChevronLeft size={24} color="#D3AF39" />
+            </button>
+            <button 
+              className="youtube-nav-btn"
+              onClick={nextVideo}
+              style={{
+                width: '56px',
+                height: '56px',
+                borderRadius: '50%',
+                background: 'rgba(255, 255, 255, 0.03)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+              }}
+            >
+              <ChevronRight size={24} color="#D3AF39" />
+            </button>
+          </div>
+
+          {/* View All Link */}
+          <div style={{ textAlign: 'center', marginTop: '40px' }}>
+            <a 
+              href="https://www.youtube.com/@nachospoker" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="youtube-view-all"
+              style={{
+                color: '#D3AF39',
+                fontSize: '14px',
+                fontWeight: '600',
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '12px 24px',
+                borderRadius: '30px',
+                border: '1px solid rgba(211, 175, 57, 0.3)',
+                background: 'rgba(211, 175, 57, 0.05)',
+                transition: 'all 0.4s ease'
+              }}
+            >
+              View all on YouTube <ExternalLink size={14} />
+            </a>
+          </div>
+
+          {/* Stealth Video Card Styles */}
           <style>{`
-            .cinema-carousel::-webkit-scrollbar {
+            .cinema-carousel-stealth::-webkit-scrollbar {
               display: none;
             }
             
-            .cinema-video-card:hover .cinema-bloom {
+            /* Stealth-to-Vibrant Reveal */
+            .stealth-video-card:hover .stealth-thumbnail {
+              filter: saturate(1) brightness(1) contrast(1) !important;
+              transform: scale(1.02);
+            }
+            
+            .stealth-video-card:hover .stealth-bloom {
               opacity: 1 !important;
             }
             
-            .cinema-video-card:hover .cinema-thumbnail-wrap {
-              transform: scale(1.05);
-              border-color: rgba(212, 175, 55, 0.4);
-              box-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+            .stealth-video-card:hover .stealth-card-frame {
+              border-color: rgba(211, 175, 57, 0.4) !important;
+              box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(211, 175, 57, 0.2) !important;
+              transform: translateY(-8px);
             }
             
-            .cinema-video-card:hover .cinema-thumbnail {
-              transform: scale(1.08);
-            }
-            
-            .cinema-video-card:hover .cinema-play-icon {
+            .stealth-video-card:hover .stealth-play-btn {
               opacity: 1 !important;
+              transform: translate(-50%, -50%) scale(1.1);
+              border-color: rgba(211, 175, 57, 0.8) !important;
+              box-shadow: 0 0 40px rgba(211, 175, 57, 0.4);
             }
             
-            .cinema-video-card:hover .cinema-title-wrap {
-              transform: translateY(-4px);
+            .stealth-video-card:hover .stealth-title {
+              color: #D3AF39 !important;
             }
             
-            .cinema-nav-btn:hover {
-              background: rgba(212, 175, 55, 0.2) !important;
-              border-color: rgba(212, 175, 55, 0.5) !important;
-              transform: scale(1.05);
+            /* Navigation Buttons */
+            .youtube-nav-btn:hover {
+              border-color: rgba(211, 175, 57, 0.5) !important;
+              background: rgba(211, 175, 57, 0.1) !important;
+              box-shadow: 0 0 30px rgba(211, 175, 57, 0.2);
+              transform: scale(1.1);
+            }
+            
+            .youtube-view-all:hover {
+              background: rgba(211, 175, 57, 0.15) !important;
+              border-color: rgba(211, 175, 57, 0.5) !important;
+              box-shadow: 0 0 30px rgba(211, 175, 57, 0.2);
             }
             
             @media (max-width: 768px) {
-              .cinema-video-card {
+              .stealth-video-card {
                 flex: 0 0 320px !important;
               }
-              .cinema-thumbnail {
+              .stealth-thumbnail {
                 height: 180px !important;
+              }
+              .stealth-play-btn {
+                width: 56px !important;
+                height: 56px !important;
               }
             }
           `}</style>
