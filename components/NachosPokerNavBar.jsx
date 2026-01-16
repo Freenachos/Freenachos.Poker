@@ -78,6 +78,20 @@ const NachosPokerNavBar = () => {
           justify-content: space-between;
           flex-wrap: wrap;
           gap: 12px;
+          isolation: isolate;
+        }
+        
+        .nachospoker-navbar::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 12px;
+          z-index: -1;
+          background: rgba(255, 255, 255, calc(0.03 * var(--scroll-progress, 0)));
+          border: 1px solid rgba(255, 255, 255, calc(0.08 * var(--scroll-progress, 0)));
+          backdrop-filter: blur(calc(10px * var(--scroll-progress, 0)));
+          -webkit-backdrop-filter: blur(calc(10px * var(--scroll-progress, 0)));
+          transition: all 0.15s ease;
         }
         
         .nachospoker-navbar-brand {
@@ -215,10 +229,7 @@ const NachosPokerNavBar = () => {
       <nav 
         className="nachospoker-navbar"
         style={{
-          background: `rgba(255, 255, 255, ${0.03 * scrollProgress})`,
-          border: `1px solid rgba(255, 255, 255, ${0.08 * scrollProgress})`,
-          backdropFilter: `blur(${10 * scrollProgress}px)`,
-          WebkitBackdropFilter: `blur(${10 * scrollProgress}px)`,
+          '--scroll-progress': scrollProgress
         }}
       >
         {/* Logo & Brand */}
