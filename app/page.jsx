@@ -35,6 +35,7 @@ const PokerToolboxHome = () => {
   const [showStickyCta, setShowStickyCta] = useState(false);
   const nachoRef = useRef(null);
   const aboutSectionRef = useRef(null);
+  const heroSectionRef = useRef(null);
 
   // ============================================
   // DATA
@@ -303,22 +304,20 @@ The 3-month program consists of:
     setNachos(newNachos);
   }, []);
 
-  // Show sticky CTA only after scrolling to About section
+  // Show sticky CTA when Hero section is mostly scrolled out (only 20% visible)
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setShowStickyCta(true);
-        }
+        // Show CTA when Hero is NOT intersecting (less than 20% visible)
+        setShowStickyCta(!entry.isIntersecting);
       },
       { 
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
+        threshold: 0.2
       }
     );
 
-    if (aboutSectionRef.current) {
-      observer.observe(aboutSectionRef.current);
+    if (heroSectionRef.current) {
+      observer.observe(heroSectionRef.current);
     }
 
     return () => observer.disconnect();
@@ -1484,6 +1483,7 @@ The 3-month program consists of:
 
       {/* ==================== CINEMATIC HERO SECTION ==================== */}
       <section 
+        ref={heroSectionRef}
         className="hero-section-fade"
         style={{
           position: 'relative',
@@ -1533,87 +1533,33 @@ The 3-month program consists of:
             </svg>
           </div>
 
-          {/* === TOP ZONE: Very Sparse - "Distant Stars" === */}
-          {/* Nacho - Top Right Corner (away from coach face) */}
+          {/* Nacho - Bottom Left Corner */}
           <div style={{
             position: 'absolute',
-            top: '8%',
-            right: '3%',
-            width: '60px',
-            height: '60px',
-            opacity: 0.03,
-            filter: 'blur(25px)',
-            animation: 'cinematicFloat2 22s ease-in-out infinite',
-            animationDelay: '-5s'
-          }}>
-            <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-              <polygon points="50,5 95,95 5,95" fill="#FF9900" />
-            </svg>
-          </div>
-
-          {/* === MIDDLE ZONE: Medium Density === */}
-          {/* Nacho - Mid Left */}
-          <div style={{
-            position: 'absolute',
-            top: '40%',
-            left: '8%',
-            width: '120px',
-            height: '120px',
-            opacity: 0.05,
-            filter: 'blur(25px)',
+            bottom: '18%',
+            left: '4%',
+            width: '35px',
+            height: '35px',
+            opacity: 0.2,
+            filter: 'blur(3px)',
             animation: 'cinematicFloat 20s ease-in-out infinite',
-            animationDelay: '-8s'
-          }}>
-            <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-              <polygon points="50,5 95,95 5,95" fill="#D4AF37" />
-            </svg>
-          </div>
-
-          {/* === BOTTOM ZONE: Higher Density === */}
-          {/* Nacho - Bottom Left */}
-          <div style={{
-            position: 'absolute',
-            bottom: '25%',
-            left: '5%',
-            width: '150px',
-            height: '150px',
-            opacity: 0.06,
-            filter: 'blur(20px)',
-            animation: 'cinematicFloat 16s ease-in-out infinite',
             animationDelay: '-4s'
           }}>
             <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-              <polygon points="50,5 95,95 5,95" fill="#D4AF37" />
-            </svg>
-          </div>
-
-          {/* Nacho - Bottom Center-Left */}
-          <div style={{
-            position: 'absolute',
-            bottom: '15%',
-            left: '20%',
-            width: '130px',
-            height: '130px',
-            opacity: 0.05,
-            filter: 'blur(25px)',
-            animation: 'cinematicFloat2 19s ease-in-out infinite',
-            animationDelay: '-7s'
-          }}>
-            <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
               <polygon points="50,5 95,95 5,95" fill="#FF9900" />
             </svg>
           </div>
 
-          {/* Nacho - Bottom Right (edge, behind coach) */}
+          {/* Nacho - Mid Right (above coach shoulder) */}
           <div style={{
             position: 'absolute',
-            bottom: '10%',
-            right: '2%',
-            width: '140px',
-            height: '140px',
-            opacity: 0.05,
-            filter: 'blur(22px)',
-            animation: 'cinematicFloat 21s ease-in-out infinite',
+            top: '25%',
+            right: '22%',
+            width: '30px',
+            height: '30px',
+            opacity: 0.15,
+            filter: 'blur(3px)',
+            animation: 'cinematicFloat2 24s ease-in-out infinite',
             animationDelay: '-10s'
           }}>
             <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
@@ -1621,20 +1567,20 @@ The 3-month program consists of:
             </svg>
           </div>
 
-          {/* Nacho - Very Bottom Left */}
+          {/* Nacho - Lower Center-Left */}
           <div style={{
             position: 'absolute',
-            bottom: '5%',
-            left: '35%',
-            width: '100px',
-            height: '100px',
-            opacity: 0.04,
-            filter: 'blur(28px)',
-            animation: 'cinematicFloat2 25s ease-in-out infinite',
-            animationDelay: '-15s'
+            bottom: '30%',
+            left: '28%',
+            width: '28px',
+            height: '28px',
+            opacity: 0.18,
+            filter: 'blur(2px)',
+            animation: 'cinematicFloat 19s ease-in-out infinite',
+            animationDelay: '-8s'
           }}>
             <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-              <polygon points="50,5 95,95 5,95" fill="#FF9900" />
+              <polygon points="50,5 95,95 5,95" fill="#D4AF37" />
             </svg>
           </div>
         </div>
