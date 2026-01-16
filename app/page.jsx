@@ -975,18 +975,19 @@ The 3-month program consists of:
 
   return (
     <div style={{minHeight: '100vh', background: '#0A0A0A', position: 'relative', overflow: 'hidden', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'}}>
-      {/* Noise/Grain Texture Overlay */}
+      {/* High-End Film Grain Overlay - Cinematic Projector Effect */}
       <div 
-        className="noise-overlay"
+        className="film-grain-overlay"
         style={{
           position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
+          top: '-50%',
+          left: '-50%',
+          width: '200%',
+          height: '200%',
           pointerEvents: 'none',
           zIndex: 9999,
-          opacity: 0.03
+          opacity: 0.035,
+          mixBlendMode: 'overlay'
         }}
       />
 
@@ -1013,9 +1014,25 @@ The 3-month program consists of:
           scroll-behavior: smooth;
         }
 
-        /* Noise Texture Overlay */
-        .noise-overlay {
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        /* High-End Film Grain - Cinematic Projector Effect */
+        .film-grain-overlay {
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='filmGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='5' stitchTiles='stitch' seed='0'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23filmGrain)'/%3E%3C/svg%3E");
+          animation: filmGrainJitter 0.08s steps(1) infinite;
+        }
+        
+        /* Subtle High-Speed Jitter - Cinematic Projector Feel */
+        @keyframes filmGrainJitter {
+          0% { transform: translate(0, 0); }
+          10% { transform: translate(-1%, -1%); }
+          20% { transform: translate(1%, 0.5%); }
+          30% { transform: translate(-0.5%, 1%); }
+          40% { transform: translate(0.5%, -0.5%); }
+          50% { transform: translate(-1%, 0.5%); }
+          60% { transform: translate(1%, -1%); }
+          70% { transform: translate(0, 1%); }
+          80% { transform: translate(-0.5%, -0.5%); }
+          90% { transform: translate(0.5%, 0.5%); }
+          100% { transform: translate(0, 0); }
         }
 
         /* Scroll Reveal Animation - Museum Float (Buttery Momentum) */
@@ -2203,8 +2220,11 @@ The 3-month program consists of:
                   display: 'flex',
                   flexDirection: 'column'
                 }}>
-                  {/* Stealth Graph Image */}
-                  <div 
+                  {/* Clickable Stealth Graph Image */}
+                  <a 
+                    href="https://static.runitonce.com/static/img/courses/dominate-with-data/chart.bcc69818f43c.jpg"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="stealth-graph-container"
                     style={{
                       borderRadius: '24px',
@@ -2212,7 +2232,9 @@ The 3-month program consists of:
                       position: 'relative',
                       boxShadow: '0 8px 40px rgba(0, 0, 0, 0.4)',
                       flex: 1,
-                      minHeight: '200px'
+                      minHeight: '200px',
+                      display: 'block',
+                      cursor: 'pointer'
                     }}
                   >
                     <img 
@@ -2264,7 +2286,7 @@ The 3-month program consists of:
                       </div>
                       <span style={{ color: '#D3AF39', fontSize: '12px', fontWeight: '600' }}>View Full Results</span>
                     </div>
-                  </div>
+                  </a>
                   
                   {/* Caption */}
                   <div style={{ 
