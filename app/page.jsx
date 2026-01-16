@@ -1513,118 +1513,179 @@ The 3-month program consists of:
           zIndex: 2
         }}
       >
-        {/* === LAYER 17: SHARP BOKEH EMBERS (z-17) - Above Vignette, Behind Coach === */}
-        {/* Tiny glowing embers that create parallax depth */}
-        <div style={{ position: 'absolute', inset: 0, zIndex: 17, overflow: 'hidden', pointerEvents: 'none' }}>
+        {/* === LAYER 15: CINEMATIC EMBERS - BEHIND COACH (z-15) === */}
+        {/* 5 organic glowing embers behind the coach for depth */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 15, overflow: 'hidden', pointerEvents: 'none' }}>
           
-          {/* Ember 1 - Near top-left headline */}
+          {/* Ember - Near top-left headline */}
           <div style={{
             position: 'absolute',
-            top: '32%',
-            left: '12%',
+            top: '30%',
+            left: '10%',
             width: '8px',
             height: '8px',
-            filter: 'drop-shadow(0 0 8px rgba(255, 215, 0, 0.8))',
+            opacity: 0.9,
+            filter: 'blur(0.5px) drop-shadow(0 0 4px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 12px rgba(255, 153, 0, 0.4))',
+            transform: 'rotate(15deg)',
             animation: 'cinematicFloat 8s ease-in-out infinite'
           }}>
             <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-              <polygon points="50,5 95,95 5,95" fill="#FFD700" />
+              <defs>
+                <radialGradient id="emberGlow1" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#FFFFFF" />
+                  <stop offset="100%" stopColor="#FFD700" />
+                </radialGradient>
+              </defs>
+              <polygon points="50,5 95,95 5,95" fill="url(#emberGlow1)" />
             </svg>
           </div>
 
-          {/* Ember 2 - Near top-left headline (slightly higher) */}
+          {/* Ember - Lower-left void (larger) */}
           <div style={{
             position: 'absolute',
-            top: '28%',
-            left: '18%',
-            width: '5px',
-            height: '5px',
-            filter: 'drop-shadow(0 0 6px rgba(255, 215, 0, 0.8))',
-            animation: 'cinematicFloat2 10s ease-in-out infinite',
+            bottom: '25%',
+            left: '6%',
+            width: '10px',
+            height: '10px',
+            opacity: 0.9,
+            filter: 'blur(1px) drop-shadow(0 0 4px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 12px rgba(255, 153, 0, 0.4))',
+            transform: 'rotate(-20deg)',
+            animation: 'cinematicFloat2 7s ease-in-out infinite',
             animationDelay: '-2s'
           }}>
             <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-              <polygon points="50,5 95,95 5,95" fill="#FFD700" />
+              <defs>
+                <radialGradient id="emberGlow2" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#FFFFFF" />
+                  <stop offset="100%" stopColor="#FFD700" />
+                </radialGradient>
+              </defs>
+              <polygon points="50,5 95,95 5,95" fill="url(#emberGlow2)" />
             </svg>
           </div>
 
-          {/* Ember 3 - Near coach's right shoulder */}
+          {/* Ember - Lower-left void (tiny) */}
           <div style={{
             position: 'absolute',
-            top: '35%',
-            right: '28%',
-            width: '6px',
-            height: '6px',
-            filter: 'drop-shadow(0 0 7px rgba(255, 215, 0, 0.8))',
-            animation: 'cinematicFloat 9s ease-in-out infinite',
-            animationDelay: '-4s'
-          }}>
-            <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-              <polygon points="50,5 95,95 5,95" fill="#FFD700" />
-            </svg>
-          </div>
-
-          {/* Ember 4 - Lower-left void */}
-          <div style={{
-            position: 'absolute',
-            bottom: '28%',
-            left: '8%',
-            width: '10px',
-            height: '10px',
-            filter: 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.8))',
-            animation: 'cinematicFloat2 7s ease-in-out infinite',
-            animationDelay: '-1s'
-          }}>
-            <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-              <polygon points="50,5 95,95 5,95" fill="#FFD700" />
-            </svg>
-          </div>
-
-          {/* Ember 5 - Lower-left void (second) */}
-          <div style={{
-            position: 'absolute',
-            bottom: '22%',
-            left: '15%',
+            bottom: '32%',
+            left: '18%',
             width: '4px',
             height: '4px',
-            filter: 'drop-shadow(0 0 5px rgba(255, 215, 0, 0.8))',
-            animation: 'cinematicFloat 11s ease-in-out infinite',
-            animationDelay: '-6s'
+            opacity: 0.9,
+            filter: 'blur(0.5px) drop-shadow(0 0 3px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 8px rgba(255, 153, 0, 0.4))',
+            transform: 'rotate(45deg)',
+            animation: 'cinematicFloat 10s ease-in-out infinite',
+            animationDelay: '-5s'
           }}>
             <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-              <polygon points="50,5 95,95 5,95" fill="#FFD700" />
+              <defs>
+                <radialGradient id="emberGlow3" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#FFFFFF" />
+                  <stop offset="100%" stopColor="#FFD700" />
+                </radialGradient>
+              </defs>
+              <polygon points="50,5 95,95 5,95" fill="url(#emberGlow3)" />
             </svg>
           </div>
 
-          {/* Ember 6 - Near CTA button */}
+          {/* Ember - Mid-left */}
           <div style={{
             position: 'absolute',
-            top: '68%',
-            left: '22%',
-            width: '7px',
-            height: '7px',
-            filter: 'drop-shadow(0 0 8px rgba(255, 215, 0, 0.8))',
+            top: '55%',
+            left: '4%',
+            width: '6px',
+            height: '6px',
+            opacity: 0.9,
+            filter: 'blur(0.5px) drop-shadow(0 0 4px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 10px rgba(255, 153, 0, 0.4))',
+            transform: 'rotate(-35deg)',
             animation: 'cinematicFloat2 9s ease-in-out infinite',
             animationDelay: '-3s'
           }}>
             <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-              <polygon points="50,5 95,95 5,95" fill="#FFD700" />
+              <defs>
+                <radialGradient id="emberGlow4" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#FFFFFF" />
+                  <stop offset="100%" stopColor="#FFD700" />
+                </radialGradient>
+              </defs>
+              <polygon points="50,5 95,95 5,95" fill="url(#emberGlow4)" />
             </svg>
           </div>
 
-          {/* Ember 7 - Floating accent (mid-left) */}
+          {/* Ember - Near CTA area */}
           <div style={{
             position: 'absolute',
-            top: '50%',
-            left: '5%',
-            width: '12px',
-            height: '12px',
-            filter: 'drop-shadow(0 0 12px rgba(255, 215, 0, 0.8))',
-            animation: 'cinematicFloat 6s ease-in-out infinite',
-            animationDelay: '-5s'
+            top: '70%',
+            left: '25%',
+            width: '5px',
+            height: '5px',
+            opacity: 0.9,
+            filter: 'blur(0.5px) drop-shadow(0 0 3px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 10px rgba(255, 153, 0, 0.4))',
+            transform: 'rotate(60deg)',
+            animation: 'cinematicFloat 11s ease-in-out infinite',
+            animationDelay: '-7s'
           }}>
             <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-              <polygon points="50,5 95,95 5,95" fill="#FFD700" />
+              <defs>
+                <radialGradient id="emberGlow5" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#FFFFFF" />
+                  <stop offset="100%" stopColor="#FFD700" />
+                </radialGradient>
+              </defs>
+              <polygon points="50,5 95,95 5,95" fill="url(#emberGlow5)" />
+            </svg>
+          </div>
+        </div>
+
+        {/* === LAYER 25: CINEMATIC EMBERS - IN FRONT OF COACH (z-25) === */}
+        {/* 2 embers in front of coach for "sandwich" depth effect */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 25, overflow: 'hidden', pointerEvents: 'none' }}>
+          
+          {/* Ember - Floating near coach shoulder (foreground) */}
+          <div style={{
+            position: 'absolute',
+            top: '38%',
+            right: '32%',
+            width: '5px',
+            height: '5px',
+            opacity: 0.9,
+            filter: 'blur(0.5px) drop-shadow(0 0 4px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 12px rgba(255, 153, 0, 0.4))',
+            transform: 'rotate(25deg)',
+            animation: 'cinematicFloat 6s ease-in-out infinite',
+            animationDelay: '-1s'
+          }}>
+            <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+              <defs>
+                <radialGradient id="emberGlowFront1" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#FFFFFF" />
+                  <stop offset="100%" stopColor="#FFD700" />
+                </radialGradient>
+              </defs>
+              <polygon points="50,5 95,95 5,95" fill="url(#emberGlowFront1)" />
+            </svg>
+          </div>
+
+          {/* Ember - Lower foreground accent */}
+          <div style={{
+            position: 'absolute',
+            bottom: '20%',
+            left: '12%',
+            width: '7px',
+            height: '7px',
+            opacity: 0.9,
+            filter: 'blur(1px) drop-shadow(0 0 5px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 14px rgba(255, 153, 0, 0.4))',
+            transform: 'rotate(-10deg)',
+            animation: 'cinematicFloat2 5s ease-in-out infinite',
+            animationDelay: '-4s'
+          }}>
+            <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+              <defs>
+                <radialGradient id="emberGlowFront2" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#FFFFFF" />
+                  <stop offset="100%" stopColor="#FFD700" />
+                </radialGradient>
+              </defs>
+              <polygon points="50,5 95,95 5,95" fill="url(#emberGlowFront2)" />
             </svg>
           </div>
         </div>
