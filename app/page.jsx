@@ -458,15 +458,30 @@ The 3-month program consists of:
         backdropFilter: 'blur(10px)',
         WebkitBackdropFilter: 'blur(10px)',
         border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px',
+        borderRadius: '24px',
         overflow: 'hidden',
         cursor: 'pointer',
         flex: '0 0 300px',
-        transition: 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-        textDecoration: 'none'
+        transition: 'all 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+        textDecoration: 'none',
+        position: 'relative'
       }}
     >
-      <div style={{ position: 'relative', overflow: 'hidden' }}>
+      {/* Gold Bloom Glow - appears on hover */}
+      <div 
+        className="video-gold-bloom"
+        style={{
+          position: 'absolute',
+          inset: '-20px',
+          background: 'radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.25) 0%, transparent 70%)',
+          opacity: 0,
+          transition: 'opacity 0.5s ease',
+          pointerEvents: 'none',
+          zIndex: 0,
+          filter: 'blur(20px)'
+        }}
+      />
+      <div style={{ position: 'relative', overflow: 'hidden', zIndex: 1 }}>
         <div 
           className="video-thumbnail"
           style={{
@@ -479,7 +494,8 @@ The 3-month program consists of:
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transition: 'transform 0.4s ease'
+            transition: 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+            borderRadius: '24px 24px 0 0'
           }}
         >
           <div className="play-button" style={{
@@ -490,7 +506,7 @@ The 3-month program consists of:
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transition: 'all 0.3s ease',
+            transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
             boxShadow: '0 4px 20px rgba(255, 179, 71, 0.4)'
           }}>
             <Play size={24} color="#0a0a0a" fill="#0a0a0a" style={{ marginLeft: '3px' }} />
@@ -512,7 +528,7 @@ The 3-month program consists of:
           </div>
         )}
       </div>
-      <div style={{ padding: '16px' }}>
+      <div style={{ padding: '16px', position: 'relative', zIndex: 1 }}>
         <h4 style={{
           color: '#ffffff',
           fontSize: '14px',
@@ -997,11 +1013,11 @@ The 3-month program consists of:
           background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
         }
 
-        /* Scroll Reveal Animation - Museum Float */
+        /* Scroll Reveal Animation - Museum Float (Buttery Momentum) */
         .reveal {
           opacity: 0;
-          transform: translateY(48px);
-          transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+          transform: translateY(60px);
+          transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
         }
         
         .reveal.visible {
@@ -1012,8 +1028,8 @@ The 3-month program consists of:
         /* First Section - Extra Dramatic Entrance */
         .reveal-first {
           opacity: 0;
-          transform: translateY(60px);
-          transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+          transform: translateY(80px);
+          transition: opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1), transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
         }
         
         .reveal-first.visible {
@@ -1246,16 +1262,19 @@ The 3-month program consists of:
           transform: translateX(0);
         }
         .video-card:hover {
-          transform: translateY(-8px) scale(1.02);
-          box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
-          border-color: rgba(212, 175, 55, 0.4);
+          transform: translateY(-8px) scale(1.05);
+          box-shadow: 0 30px 60px rgba(212, 175, 55, 0.25), 0 0 40px rgba(212, 175, 55, 0.15);
+          border-color: rgba(212, 175, 55, 0.5);
         }
         .video-card:hover .video-thumbnail {
           transform: scale(1.05);
         }
         .video-card:hover .play-button {
           transform: scale(1.15);
-          box-shadow: 0 8px 30px rgba(212, 175, 55, 0.6);
+          box-shadow: 0 8px 40px rgba(212, 175, 55, 0.7);
+        }
+        .video-card:hover .video-gold-bloom {
+          opacity: 1 !important;
         }
 
         .benefit-card {
@@ -1483,9 +1502,9 @@ The 3-month program consists of:
         }} />
       </div>
 
-      {/* ==================== DYNAMIC FLOATING NACHOS (Fixed, z-1) ==================== */}
-      {/* Sparse ambient layer visible across all sections */}
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1, overflow: 'hidden' }}>
+      {/* ==================== DYNAMIC FLOATING NACHOS (Fixed, z-0) ==================== */}
+      {/* Deep background layer - nachos pass behind all sections */}
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
         {nachos.map(nacho => (
           <div
             key={nacho.id}
@@ -2010,7 +2029,7 @@ The 3-month program consists of:
           style={{
             borderRadius: '24px',
             padding: '64px',
-            marginBottom: '96px'
+            marginBottom: '200px'
           }}
         >
           {/* New Headline */}
@@ -2155,7 +2174,7 @@ The 3-month program consists of:
           style={{
             borderRadius: '24px',
             padding: '72px 56px',
-            marginBottom: '96px'
+            marginBottom: '200px'
           }}
         >
           <div style={{ textAlign: 'center', marginBottom: '56px' }}>
@@ -2229,7 +2248,7 @@ The 3-month program consists of:
           style={{
             borderRadius: '24px',
             padding: '64px',
-            marginBottom: '96px',
+            marginBottom: '200px',
             overflow: 'hidden'
           }}
         >
@@ -2506,7 +2525,7 @@ The 3-month program consists of:
           style={{
             borderRadius: '24px',
             padding: '72px 56px',
-            marginBottom: '96px'
+            marginBottom: '200px'
           }}
         >
           <div style={{ textAlign: 'center', marginBottom: '56px' }}>
@@ -2548,7 +2567,7 @@ The 3-month program consists of:
           style={{
             borderRadius: '24px',
             padding: '72px 56px',
-            marginBottom: '96px'
+            marginBottom: '200px'
           }}
         >
           <div style={{ textAlign: 'center', marginBottom: '56px' }}>
@@ -2698,7 +2717,7 @@ The 3-month program consists of:
           style={{
             borderRadius: '24px',
             padding: '72px 56px',
-            marginBottom: '96px',
+            marginBottom: '200px',
             animation: 'fadeInUp 0.6s ease-out 0.45s both'
           }}
         >
@@ -2747,7 +2766,7 @@ The 3-month program consists of:
           style={{
             borderRadius: '24px',
             padding: '56px',
-            marginBottom: '96px'
+            marginBottom: '200px'
           }}
         >
           <div className="section-title" style={{ marginBottom: '24px' }}>
@@ -2811,7 +2830,7 @@ The 3-month program consists of:
           style={{
             borderRadius: '24px',
             padding: '56px',
-            marginBottom: '96px'
+            marginBottom: '200px'
           }}
         >
           <div className="section-title" style={{ marginBottom: '24px' }}>
@@ -2851,7 +2870,7 @@ The 3-month program consists of:
           style={{
             borderRadius: '24px',
             padding: '56px',
-            marginBottom: '96px'
+            marginBottom: '200px'
           }}
         >
           <div className="section-title" style={{ marginBottom: '24px' }}>
@@ -2884,6 +2903,208 @@ The 3-month program consists of:
             ))}
           </div>
         </div>
+
+        {/* ==================== AUTHORITY VAULT SECTION ==================== */}
+        <div 
+          className="reveal"
+          style={{
+            marginBottom: '200px'
+          }}
+        >
+          <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+            <h2 style={{
+              fontSize: '42px',
+              fontWeight: '800',
+              color: '#D4AF37',
+              marginBottom: '16px',
+              letterSpacing: '-0.02em',
+              textShadow: '0 0 60px rgba(212, 175, 55, 0.3)'
+            }}>
+              Still looking for the edge?
+            </h2>
+            <p style={{
+              color: '#A1A1AA',
+              fontSize: '18px',
+              maxWidth: '500px',
+              margin: '0 auto',
+              lineHeight: 1.7
+            }}>
+              Free resources to sharpen your game before you commit
+            </p>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+            gap: '32px',
+            maxWidth: '1000px',
+            margin: '0 auto'
+          }}>
+            {/* Card A - Strategy Vault (Articles) */}
+            <a 
+              href="/articles"
+              className="authority-vault-card"
+              style={{
+                display: 'block',
+                background: 'rgba(18, 18, 18, 0.4)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1px solid rgba(212, 175, 55, 0.15)',
+                borderRadius: '28px',
+                padding: '56px 48px',
+                textDecoration: 'none',
+                transition: 'all 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.08) 0%, transparent 60%)',
+                opacity: 0,
+                transition: 'opacity 0.5s ease',
+                pointerEvents: 'none'
+              }} className="vault-card-glow" />
+              
+              <div style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '16px',
+                background: 'rgba(168, 85, 247, 0.15)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '28px'
+              }}>
+                <BookOpen size={32} color="#a855f7" />
+              </div>
+              
+              <h3 style={{
+                fontSize: '28px',
+                fontWeight: '700',
+                color: '#F0F0F0',
+                marginBottom: '12px',
+                letterSpacing: '-0.01em'
+              }}>
+                The Strategy Vault
+              </h3>
+              
+              <p style={{
+                fontSize: '16px',
+                color: 'rgba(240, 240, 240, 0.6)',
+                lineHeight: 1.7,
+                marginBottom: '24px'
+              }}>
+                Deep-dives into high-stakes theory and population exploits.
+              </p>
+              
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                color: '#D4AF37',
+                fontSize: '15px',
+                fontWeight: '600'
+              }}>
+                Explore articles <ArrowRight size={18} />
+              </div>
+            </a>
+
+            {/* Card B - Performance Toolkit (Tools) */}
+            <a 
+              href="/tools"
+              className="authority-vault-card"
+              style={{
+                display: 'block',
+                background: 'rgba(18, 18, 18, 0.4)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1px solid rgba(212, 175, 55, 0.15)',
+                borderRadius: '28px',
+                padding: '56px 48px',
+                textDecoration: 'none',
+                transition: 'all 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.08) 0%, transparent 60%)',
+                opacity: 0,
+                transition: 'opacity 0.5s ease',
+                pointerEvents: 'none'
+              }} className="vault-card-glow" />
+              
+              <div style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '16px',
+                background: 'rgba(212, 175, 55, 0.15)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '28px'
+              }}>
+                <Calculator size={32} color="#D4AF37" />
+              </div>
+              
+              <h3 style={{
+                fontSize: '28px',
+                fontWeight: '700',
+                color: '#F0F0F0',
+                marginBottom: '12px',
+                letterSpacing: '-0.01em'
+              }}>
+                The Performance Toolkit
+              </h3>
+              
+              <p style={{
+                fontSize: '16px',
+                color: 'rgba(240, 240, 240, 0.6)',
+                lineHeight: 1.7,
+                marginBottom: '24px'
+              }}>
+                Proprietary bankroll, variance, and win-rate calculators.
+              </p>
+              
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                color: '#D4AF37',
+                fontSize: '15px',
+                fontWeight: '600'
+              }}>
+                Access tools <ArrowRight size={18} />
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <style>{`
+          .authority-vault-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(212, 175, 55, 0.35);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(212, 175, 55, 0.1);
+          }
+          .authority-vault-card:hover .vault-card-glow {
+            opacity: 1 !important;
+          }
+          @media (max-width: 860px) {
+            .authority-vault-card {
+              padding: 40px 32px !important;
+            }
+          }
+        `}</style>
 
         {/* Footer CTA */}
         <div 
