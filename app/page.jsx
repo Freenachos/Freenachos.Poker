@@ -2524,46 +2524,52 @@ The 3-month program consists of:
           </div>
         </div>
 
+        {/* ==================== DEAD SPACE: Cinema Transition Zone ==================== */}
+        {/* 40vh of darkness with drifting nachos before YouTube section */}
+        <div style={{ height: '40vh', position: 'relative', zIndex: 0 }} />
+
         {/* ==================== YOUTUBE CINEMA SECTION ==================== */}
-        {/* Premium Masterclass Library - No Box, Museum Spacing */}
+        {/* Premium Masterclass Library - Golden Axis Alignment */}
         <div 
           className="reveal"
           id="videos"
           style={{
             position: 'relative',
             zIndex: 30,
-            padding: '120px 0 160px 0',
+            paddingTop: '80px',
+            paddingBottom: '160px',
             marginBottom: '200px'
           }}
         >
-          {/* Cinematic Heading - Hero Typography */}
+          {/* Cinematic Heading - Locked to Hero's Golden Axis */}
           <div style={{ 
-            maxWidth: '800px', 
-            marginBottom: '64px',
-            paddingLeft: '24px'
+            maxWidth: '1400px',
+            margin: '0 auto',
+            padding: '0 24px',
+            marginBottom: '64px'
           }}>
             <h2 style={{
-              fontSize: 'clamp(36px, 4vw, 52px)',
+              fontSize: 'clamp(36px, 4.5vw, 56px)',
               fontWeight: '800',
               color: '#FFFFFF',
               marginBottom: '20px',
-              lineHeight: 1.1,
+              lineHeight: 1.08,
               letterSpacing: '-0.025em',
               fontFamily: 'Manrope, Inter, sans-serif'
             }}>
-              Inside the <span style={{ 
+              Proof in the <span style={{ 
                 color: '#D4AF37',
                 textShadow: '0 0 60px rgba(212, 175, 55, 0.4)'
-              }}>High-Stakes Lab</span>.
+              }}>Process</span>.
             </h2>
             <p style={{
-              fontSize: '18px',
+              fontSize: '17px',
               color: '#8A8A8A',
-              maxWidth: '560px',
-              lineHeight: 1.8,
+              maxWidth: '520px',
+              lineHeight: 1.85,
               fontWeight: '400'
             }}>
-              Watch the data-driven methodology that generates elite-level win rates.
+              Watch the high-stakes logic in action. No theory—just raw execution and population exploits.
             </p>
           </div>
 
@@ -2575,7 +2581,7 @@ The 3-month program consists of:
               left: 0,
               top: 0,
               bottom: 0,
-              width: '80px',
+              width: '100px',
               background: 'linear-gradient(to right, #0A0A0A 0%, transparent 100%)',
               zIndex: 10,
               pointerEvents: 'none'
@@ -2585,7 +2591,7 @@ The 3-month program consists of:
               right: 0,
               top: 0,
               bottom: 0,
-              width: '80px',
+              width: '100px',
               background: 'linear-gradient(to left, #0A0A0A 0%, transparent 100%)',
               zIndex: 10,
               pointerEvents: 'none'
@@ -2647,7 +2653,7 @@ The 3-month program consists of:
                       zIndex: 1
                     }}
                   >
-                    {/* Thumbnail Image */}
+                    {/* Thumbnail Image - Desaturated Default */}
                     <div 
                       className="cinema-thumbnail"
                       style={{
@@ -2656,7 +2662,8 @@ The 3-month program consists of:
                         backgroundImage: `url(${video.thumbnail})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
-                        transition: 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)'
+                        filter: 'saturate(0.2) brightness(0.8) contrast(1.1)',
+                        transition: 'all 0.5s cubic-bezier(0.22, 1, 0.36, 1)'
                       }}
                     />
                     
@@ -2669,7 +2676,7 @@ The 3-month program consists of:
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        background: 'rgba(0, 0, 0, 0.3)',
+                        background: 'rgba(0, 0, 0, 0.2)',
                         opacity: 0,
                         transition: 'opacity 0.4s ease'
                       }}
@@ -2816,6 +2823,7 @@ The 3-month program consists of:
             
             .cinema-video-card:hover .cinema-thumbnail {
               transform: scale(1.08);
+              filter: saturate(1) brightness(1) contrast(1) !important;
             }
             
             .cinema-video-card:hover .cinema-play-icon {
