@@ -26,7 +26,6 @@ const PokerToolboxHome = () => {
   // STATE
   // ============================================
   
-  const [nachos, setNachos] = useState([]);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
@@ -289,22 +288,6 @@ The 3-month program consists of:
     };
   };
 
-  useEffect(() => {
-    const newNachos = Array.from({ length: 18 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: 14 + Math.random() * 24,
-      duration: 50 + Math.random() * 30,
-      delay: Math.random() * 40,
-      rotation: Math.random() * 360,
-      opacity: 0.20 + Math.random() * 0.2,
-      moveX: Math.random() * 80 - 40,
-      moveY: Math.random() * 100 - 50
-    }));
-    setNachos(newNachos);
-  }, []);
-
   // Show sticky CTA when Hero section is mostly scrolled out (only 20% visible)
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -378,12 +361,6 @@ The 3-month program consists of:
       <circle cx="70" cy="35" r="2.5" fill="#8B7339" opacity="0.5" />
       <circle cx="35" cy="80" r="2" fill="#8B7339" opacity="0.5" />
       <circle cx="65" cy="78" r="1.5" fill="#8B7339" opacity="0.5" />
-    </svg>
-  );
-
-  const NachoTriangle = ({ size, opacity }) => (
-    <svg width={size} height={size} viewBox="0 0 20 20" style={{ opacity }}>
-      <path d="M10 2 L18 17 L2 17 Z" fill="#A78A43" opacity="0.8"/>
     </svg>
   );
 
@@ -1455,6 +1432,90 @@ The 3-month program consists of:
           100% { transform: translate(0, 0) rotate(0deg); }
         }
 
+        /* === DEPTH-OF-FIELD BOKEH ANIMATIONS === */
+        
+        /* FOREGROUND: Large, Heavy, Slow - Pressurized Float */
+        @keyframes foregroundDrift1 {
+          0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+          20% { transform: translate(8px, -12px) rotate(8deg) scale(1.02); }
+          40% { transform: translate(15px, -8px) rotate(15deg) scale(0.98); }
+          60% { transform: translate(10px, -18px) rotate(22deg) scale(1.01); }
+          80% { transform: translate(5px, -5px) rotate(12deg) scale(0.99); }
+          100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+        }
+        
+        @keyframes foregroundDrift2 {
+          0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+          25% { transform: translate(-10px, -15px) rotate(-12deg) scale(1.03); }
+          50% { transform: translate(-5px, -25px) rotate(-20deg) scale(0.97); }
+          75% { transform: translate(-12px, -10px) rotate(-8deg) scale(1.02); }
+          100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+        }
+        
+        @keyframes foregroundDrift3 {
+          0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+          30% { transform: translate(12px, -20px) rotate(18deg) scale(0.98); }
+          60% { transform: translate(6px, -10px) rotate(10deg) scale(1.02); }
+          100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+        }
+        
+        /* MIDGROUND: Medium, Moderate Float */
+        @keyframes midgroundDrift1 {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          20% { transform: translate(20px, -30px) rotate(25deg); }
+          40% { transform: translate(35px, -20px) rotate(50deg); }
+          60% { transform: translate(25px, -40px) rotate(75deg); }
+          80% { transform: translate(10px, -15px) rotate(55deg); }
+          100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        
+        @keyframes midgroundDrift2 {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          25% { transform: translate(-25px, -35px) rotate(-40deg); }
+          50% { transform: translate(-15px, -50px) rotate(-80deg); }
+          75% { transform: translate(-30px, -25px) rotate(-50deg); }
+          100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        
+        @keyframes midgroundDrift3 {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          33% { transform: translate(30px, -25px) rotate(60deg); }
+          66% { transform: translate(15px, -45px) rotate(120deg); }
+          100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        
+        /* BACKGROUND (FOCAL): Small, Sharp, Fast Darting - Like distant particles */
+        @keyframes backgroundDart1 {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          10% { transform: translate(25px, -40px) rotate(45deg); }
+          25% { transform: translate(50px, -25px) rotate(90deg); }
+          40% { transform: translate(35px, -60px) rotate(150deg); }
+          55% { transform: translate(60px, -35px) rotate(200deg); }
+          70% { transform: translate(40px, -55px) rotate(270deg); }
+          85% { transform: translate(20px, -30px) rotate(320deg); }
+          100% { transform: translate(0, 0) rotate(360deg); }
+        }
+        
+        @keyframes backgroundDart2 {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          15% { transform: translate(-35px, -50px) rotate(-60deg); }
+          30% { transform: translate(-20px, -30px) rotate(-120deg); }
+          50% { transform: translate(-50px, -45px) rotate(-180deg); }
+          70% { transform: translate(-30px, -60px) rotate(-250deg); }
+          85% { transform: translate(-15px, -25px) rotate(-310deg); }
+          100% { transform: translate(0, 0) rotate(-360deg); }
+        }
+        
+        @keyframes backgroundDart3 {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          12% { transform: translate(40px, -35px) rotate(70deg); }
+          28% { transform: translate(20px, -55px) rotate(140deg); }
+          45% { transform: translate(55px, -40px) rotate(210deg); }
+          62% { transform: translate(30px, -65px) rotate(280deg); }
+          78% { transform: translate(45px, -30px) rotate(330deg); }
+          100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
         @keyframes heroFadeIn {
           from { 
             opacity: 0; 
@@ -1532,125 +1593,39 @@ The 3-month program consists of:
         }} />
       </div>
 
-      {/* ==================== DYNAMIC FLOATING NACHOS (Fixed, z-0) ==================== */}
-      {/* Deep background layer - nachos pass behind all sections */}
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
-        {nachos.map(nacho => (
-          <div
-            key={nacho.id}
-            style={{
-              position: 'absolute',
-              left: `${nacho.x}%`,
-              top: `${nacho.y}%`,
-              animation: `floatNacho ${nacho.duration}s ease-in-out infinite`,
-              animationDelay: `${nacho.delay}s`,
-              '--moveX': `${nacho.moveX}px`,
-              '--moveY': `${nacho.moveY}px`
-            }}
-          >
-            <NachoTriangle size={nacho.size} opacity={nacho.opacity} />
-          </div>
-        ))}
-      </div>
-
-      {/* ==================== BOKEH NACHOS LAYER (Fixed, z-1) ==================== */}
-      {/* Cinematic blurred nachos visible across entire page */}
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1, overflow: 'hidden' }}>
+      {/* ==================== GLOBAL BOKEH BACKGROUND SYSTEM ==================== */}
+      {/* Unified depth-of-field nacho field - persists across entire page */}
+      {/* Depth Logic: Large=Blurry/Slow (foreground), Small=Sharp/Fast (background focal point) */}
+      
+      {/* === LAYER 1: FOREGROUND - Large, Very Blurry, Slow Heavy Drift === */}
+      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 1, overflow: 'hidden' }}>
         
-        {/* Nacho - Top Left Area (medium) */}
-        <div style={{
+        {/* Foreground Nacho 1 - Top Left */}
+        <div className="bokeh-foreground" style={{
           position: 'absolute',
-          top: '15%',
-          left: '6%',
-          width: '45px',
-          height: '45px',
-          opacity: 0.25,
-          filter: 'blur(4px)',
-          animation: 'cinematicFloat 38s ease-in-out infinite'
+          top: '5%',
+          left: '3%',
+          width: '90px',
+          height: '90px',
+          opacity: 0.12,
+          filter: 'blur(12px)',
+          animation: 'foregroundDrift1 80s ease-in-out infinite'
         }}>
           <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
             <polygon points="50,5 95,95 5,95" fill="#A78A43" />
           </svg>
         </div>
 
-        {/* Nacho - Top Center (large/blurry - slowest) */}
-        <div style={{
+        {/* Foreground Nacho 2 - Bottom Right */}
+        <div className="bokeh-foreground" style={{
           position: 'absolute',
-          top: '8%',
-          left: '45%',
-          width: '70px',
-          height: '70px',
-          opacity: 0.2,
-          filter: 'blur(8px)',
-          animation: 'cinematicFloat2 55s ease-in-out infinite',
-          animationDelay: '-20s'
-        }}>
-          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
-          </svg>
-        </div>
-
-        {/* Nacho - Left Side Mid (medium) */}
-        <div style={{
-          position: 'absolute',
-          top: '40%',
-          left: '4%',
-          width: '35px',
-          height: '35px',
-          opacity: 0.2,
-          filter: 'blur(3px)',
-          animation: 'cinematicFloat 42s ease-in-out infinite',
-          animationDelay: '-15s'
-        }}>
-          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
-          </svg>
-        </div>
-
-        {/* Nacho - Right Side Upper (medium) */}
-        <div style={{
-          position: 'absolute',
-          top: '25%',
-          right: '12%',
-          width: '30px',
-          height: '30px',
-          opacity: 0.15,
-          filter: 'blur(3px)',
-          animation: 'cinematicFloat2 40s ease-in-out infinite',
-          animationDelay: '-25s'
-        }}>
-          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
-          </svg>
-        </div>
-
-        {/* Nacho - Center Left Lower (medium) */}
-        <div style={{
-          position: 'absolute',
-          top: '55%',
-          left: '18%',
-          width: '28px',
-          height: '28px',
-          opacity: 0.18,
-          filter: 'blur(2px)',
-          animation: 'cinematicFloat 36s ease-in-out infinite',
-          animationDelay: '-8s'
-        }}>
-          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
-          </svg>
-        </div>
-
-        {/* Nacho - Bottom Right (large/very blurry) */}
-        <div style={{
-          position: 'absolute',
-          bottom: '20%',
-          right: '8%',
-          width: '55px',
-          height: '55px',
-          opacity: 0.15,
-          filter: 'blur(6px)',
-          animation: 'cinematicFloat2 48s ease-in-out infinite',
+          bottom: '10%',
+          right: '5%',
+          width: '110px',
+          height: '110px',
+          opacity: 0.10,
+          filter: 'blur(14px)',
+          animation: 'foregroundDrift2 90s ease-in-out infinite',
           animationDelay: '-30s'
         }}>
           <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
@@ -1658,16 +1633,226 @@ The 3-month program consists of:
           </svg>
         </div>
 
-        {/* Nacho - Bottom Left (medium) */}
-        <div style={{
+        {/* Foreground Nacho 3 - Center Left */}
+        <div className="bokeh-foreground" style={{
           position: 'absolute',
-          bottom: '15%',
-          left: '10%',
+          top: '45%',
+          left: '-2%',
+          width: '80px',
+          height: '80px',
+          opacity: 0.08,
+          filter: 'blur(10px)',
+          animation: 'foregroundDrift3 70s ease-in-out infinite',
+          animationDelay: '-45s'
+        }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
+          </svg>
+        </div>
+
+        {/* Foreground Nacho 4 - Top Right */}
+        <div className="bokeh-foreground" style={{
+          position: 'absolute',
+          top: '15%',
+          right: '8%',
+          width: '70px',
+          height: '70px',
+          opacity: 0.09,
+          filter: 'blur(11px)',
+          animation: 'foregroundDrift1 85s ease-in-out infinite',
+          animationDelay: '-60s'
+        }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
+          </svg>
+        </div>
+      </div>
+
+      {/* === LAYER 2: MIDGROUND - Medium, Soft Blur, Moderate Drift === */}
+      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 2, overflow: 'hidden' }}>
+        
+        {/* Midground Nacho 1 */}
+        <div className="bokeh-midground" style={{
+          position: 'absolute',
+          top: '20%',
+          left: '15%',
+          width: '40px',
+          height: '40px',
+          opacity: 0.18,
+          filter: 'blur(4px)',
+          animation: 'midgroundDrift1 45s ease-in-out infinite'
+        }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
+          </svg>
+        </div>
+
+        {/* Midground Nacho 2 */}
+        <div className="bokeh-midground" style={{
+          position: 'absolute',
+          top: '60%',
+          right: '20%',
+          width: '35px',
+          height: '35px',
+          opacity: 0.16,
+          filter: 'blur(5px)',
+          animation: 'midgroundDrift2 50s ease-in-out infinite',
+          animationDelay: '-15s'
+        }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
+          </svg>
+        </div>
+
+        {/* Midground Nacho 3 */}
+        <div className="bokeh-midground" style={{
+          position: 'absolute',
+          bottom: '30%',
+          left: '8%',
+          width: '45px',
+          height: '45px',
+          opacity: 0.15,
+          filter: 'blur(4px)',
+          animation: 'midgroundDrift3 55s ease-in-out infinite',
+          animationDelay: '-25s'
+        }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
+          </svg>
+        </div>
+
+        {/* Midground Nacho 4 */}
+        <div className="bokeh-midground" style={{
+          position: 'absolute',
+          top: '35%',
+          right: '12%',
+          width: '38px',
+          height: '38px',
+          opacity: 0.14,
+          filter: 'blur(3px)',
+          animation: 'midgroundDrift1 48s ease-in-out infinite',
+          animationDelay: '-35s'
+        }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
+          </svg>
+        </div>
+
+        {/* Midground Nacho 5 */}
+        <div className="bokeh-midground" style={{
+          position: 'absolute',
+          top: '75%',
+          left: '25%',
           width: '32px',
           height: '32px',
-          opacity: 0.2,
+          opacity: 0.17,
           filter: 'blur(4px)',
-          animation: 'cinematicFloat 44s ease-in-out infinite',
+          animation: 'midgroundDrift2 42s ease-in-out infinite',
+          animationDelay: '-40s'
+        }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
+          </svg>
+        </div>
+
+        {/* Midground Nacho 6 */}
+        <div className="bokeh-midground" style={{
+          position: 'absolute',
+          top: '10%',
+          left: '55%',
+          width: '42px',
+          height: '42px',
+          opacity: 0.13,
+          filter: 'blur(5px)',
+          animation: 'midgroundDrift3 52s ease-in-out infinite',
+          animationDelay: '-10s'
+        }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
+          </svg>
+        </div>
+      </div>
+
+      {/* === LAYER 3: BACKGROUND (FOCAL POINT) - Small, Sharp, Fast Darting === */}
+      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 3, overflow: 'hidden' }}>
+        
+        {/* Background Nacho 1 - Sharp, Fast */}
+        <div className="bokeh-background" style={{
+          position: 'absolute',
+          top: '12%',
+          left: '22%',
+          width: '12px',
+          height: '12px',
+          opacity: 0.35,
+          filter: 'blur(0px) drop-shadow(0 0 3px rgba(167, 138, 67, 0.6))',
+          animation: 'backgroundDart1 18s ease-in-out infinite'
+        }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
+          </svg>
+        </div>
+
+        {/* Background Nacho 2 */}
+        <div className="bokeh-background" style={{
+          position: 'absolute',
+          top: '55%',
+          right: '30%',
+          width: '10px',
+          height: '10px',
+          opacity: 0.40,
+          filter: 'blur(0px) drop-shadow(0 0 2px rgba(167, 138, 67, 0.5))',
+          animation: 'backgroundDart2 15s ease-in-out infinite',
+          animationDelay: '-5s'
+        }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
+          </svg>
+        </div>
+
+        {/* Background Nacho 3 */}
+        <div className="bokeh-background" style={{
+          position: 'absolute',
+          bottom: '20%',
+          left: '35%',
+          width: '14px',
+          height: '14px',
+          opacity: 0.32,
+          filter: 'blur(0px) drop-shadow(0 0 4px rgba(167, 138, 67, 0.5))',
+          animation: 'backgroundDart3 20s ease-in-out infinite',
+          animationDelay: '-8s'
+        }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
+          </svg>
+        </div>
+
+        {/* Background Nacho 4 */}
+        <div className="bokeh-background" style={{
+          position: 'absolute',
+          top: '30%',
+          right: '15%',
+          width: '8px',
+          height: '8px',
+          opacity: 0.45,
+          filter: 'blur(0px) drop-shadow(0 0 2px rgba(167, 138, 67, 0.7))',
+          animation: 'backgroundDart1 14s ease-in-out infinite',
+          animationDelay: '-3s'
+        }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
+          </svg>
+        </div>
+
+        {/* Background Nacho 5 */}
+        <div className="bokeh-background" style={{
+          position: 'absolute',
+          top: '70%',
+          left: '12%',
+          width: '11px',
+          height: '11px',
+          opacity: 0.38,
+          filter: 'blur(0px) drop-shadow(0 0 3px rgba(167, 138, 67, 0.6))',
+          animation: 'backgroundDart2 16s ease-in-out infinite',
           animationDelay: '-12s'
         }}>
           <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
@@ -1675,17 +1860,85 @@ The 3-month program consists of:
           </svg>
         </div>
 
-        {/* Nacho - Center Right (small) */}
-        <div style={{
+        {/* Background Nacho 6 */}
+        <div className="bokeh-background" style={{
           position: 'absolute',
-          top: '65%',
-          right: '20%',
-          width: '22px',
-          height: '22px',
-          opacity: 0.12,
-          filter: 'blur(2px)',
-          animation: 'cinematicFloat2 34s ease-in-out infinite',
-          animationDelay: '-18s'
+          top: '42%',
+          left: '45%',
+          width: '9px',
+          height: '9px',
+          opacity: 0.42,
+          filter: 'blur(0px) drop-shadow(0 0 2px rgba(167, 138, 67, 0.6))',
+          animation: 'backgroundDart3 13s ease-in-out infinite',
+          animationDelay: '-6s'
+        }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
+          </svg>
+        </div>
+
+        {/* Background Nacho 7 */}
+        <div className="bokeh-background" style={{
+          position: 'absolute',
+          bottom: '40%',
+          right: '8%',
+          width: '13px',
+          height: '13px',
+          opacity: 0.36,
+          filter: 'blur(0px) drop-shadow(0 0 3px rgba(167, 138, 67, 0.5))',
+          animation: 'backgroundDart1 17s ease-in-out infinite',
+          animationDelay: '-9s'
+        }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
+          </svg>
+        </div>
+
+        {/* Background Nacho 8 */}
+        <div className="bokeh-background" style={{
+          position: 'absolute',
+          top: '85%',
+          left: '60%',
+          width: '10px',
+          height: '10px',
+          opacity: 0.40,
+          filter: 'blur(0px) drop-shadow(0 0 2px rgba(167, 138, 67, 0.6))',
+          animation: 'backgroundDart2 12s ease-in-out infinite',
+          animationDelay: '-4s'
+        }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
+          </svg>
+        </div>
+
+        {/* Background Nacho 9 - Tiny, very fast */}
+        <div className="bokeh-background" style={{
+          position: 'absolute',
+          top: '25%',
+          left: '70%',
+          width: '6px',
+          height: '6px',
+          opacity: 0.50,
+          filter: 'blur(0px) drop-shadow(0 0 2px rgba(167, 138, 67, 0.8))',
+          animation: 'backgroundDart3 10s ease-in-out infinite',
+          animationDelay: '-2s'
+        }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
+            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
+          </svg>
+        </div>
+
+        {/* Background Nacho 10 - Tiny, very fast */}
+        <div className="bokeh-background" style={{
+          position: 'absolute',
+          bottom: '15%',
+          right: '45%',
+          width: '7px',
+          height: '7px',
+          opacity: 0.48,
+          filter: 'blur(0px) drop-shadow(0 0 2px rgba(167, 138, 67, 0.7))',
+          animation: 'backgroundDart1 11s ease-in-out infinite',
+          animationDelay: '-7s'
         }}>
           <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
             <polygon points="50,5 95,95 5,95" fill="#A78A43" />
@@ -1720,8 +1973,8 @@ The 3-month program consists of:
           minHeight: '100vh',
           width: '100%',
           overflow: 'hidden',
-          background: '#0A0A0A',
-          zIndex: 2
+          background: 'transparent',
+          zIndex: 10
         }}
       >
         {/* === LAYER 15: CINEMATIC EMBERS - BEHIND COACH (z-15) === */}
