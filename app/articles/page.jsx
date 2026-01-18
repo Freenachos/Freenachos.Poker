@@ -39,7 +39,8 @@ import {
   EyeOff,
   Image,
   ClipboardPaste,
-  Calendar
+  Calendar,
+  Mail
 } from 'lucide-react';
 import { articlesApi, authApi, storageApi } from '@/lib/supabaseClient';
 
@@ -603,6 +604,9 @@ export default function FreenachosArticles() {
   const [scheduleDate, setScheduleDate] = useState('');
   const [scheduleTime, setScheduleTime] = useState('');
   
+  // Newsletter
+  const [sendNewsletter, setSendNewsletter] = useState(true);
+  
   // Image upload
   const [uploadingImages, setUploadingImages] = useState(false);
   const [uploadedImages, setUploadedImages] = useState([]);
@@ -695,12 +699,53 @@ export default function FreenachosArticles() {
     setError(null);
     try {
       const slug = editorArticle.slug || generateSlug(editorArticle.title);
-      const articleData = { ...editorArticle, slug, published: publish !== null ? publish : editorArticle.published };
-      if (isEditing && editorArticle.id) { await articlesApi.update(editorArticle.id, articleData); }
-      else { await articlesApi.create(articleData); }
+      const articleData = { 
+        ...editorArticle, 
+        slug, 
+        published: publish !== null ? publish : editorArticle.published,
+        sendNewsletter: publish === true ? sendNewsletter : false
+      };
+      
+      let savedArticle;
+      if (isEditing && editorArticle.id) { 
+        savedArticle = await articlesApi.update(editorArticle.id, articleData); 
+      } else { 
+        savedArticle = await articlesApi.create(articleData); 
+      }
+      
+      // Send newsletter if publishing and checkbox is ticked
+      if (publish === true && sendNewsletter && savedArticle) {
+        try {
+          const session = await authApi.getSession();
+          const response = await fetch('/api/newsletter/send', {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${session?.access_token || ''}`
+            },
+            body: JSON.stringify({
+              articleId: savedArticle.id,
+              articleTitle: savedArticle.title,
+              articleExcerpt: savedArticle.excerpt,
+              articleSlug: savedArticle.slug
+            })
+          });
+          
+          if (!response.ok) {
+            const data = await response.json();
+            console.warn('Newsletter send warning:', data.error);
+            // Don't fail the whole save if newsletter fails
+          }
+        } catch (newsletterErr) {
+          console.error('Newsletter error:', newsletterErr);
+          // Continue anyway - article is saved
+        }
+      }
+      
       await fetchArticles();
       setView('library');
       setEditorArticle(null);
+      setSendNewsletter(true); // Reset for next article
     } catch (err) {
       console.error('Error saving article:', err);
       setError(err.message || 'Failed to save article');
@@ -723,7 +768,8 @@ export default function FreenachosArticles() {
         ...editorArticle, 
         slug, 
         published: true, 
-        scheduledFor 
+        scheduledFor,
+        sendNewsletter: sendNewsletter
       };
       if (isEditing && editorArticle.id) { 
         await articlesApi.update(editorArticle.id, articleData); 
@@ -736,6 +782,7 @@ export default function FreenachosArticles() {
       setShowScheduleModal(false);
       setScheduleDate('');
       setScheduleTime('');
+      setSendNewsletter(true); // Reset for next article
     } catch (err) {
       console.error('Error scheduling article:', err);
       setError(err.message || 'Failed to schedule article');
@@ -1823,7 +1870,7 @@ Supported formats:
               {view === 'editor' ? (isEditing ? 'Edit Article' : 'New Article') : (<>Knowledge <span style={{ color: '#a88b46' }}>Hub</span></>)}
             </h2>
             <p style={{fontSize: '15px', color: 'rgba(255,255,255,0.55)', marginBottom: '0', lineHeight: 1.6}}>
-              {view === 'editor' ? 'Construct data driven articles with precision.' : 'Technical deep dives into poker strategy, solver analysis, and population exploits. Ready for structured guidance? Explore the Mentorship Program.'}
+              {view === 'editor' ? 'Construct data driven articles with precision.' : 'Technical deep dives into poker strategy, solver analysis, and population exploits.'}
             </p>
           </div>
           <div style={{display: 'flex', gap: '12px', flexShrink: 0, flexWrap: 'wrap'}}>
@@ -1866,6 +1913,19 @@ Supported formats:
             {user ? (<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}><span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>{user.email}</span><button onClick={handleLogout} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '8px', padding: '8px 12px', color: 'rgba(255,255,255,0.6)', fontSize: '12px', cursor: 'pointer' }}><LogOut size={14} /></button></div>) : (<button onClick={() => setShowLogin(true)} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '10px', padding: '10px 16px', color: 'rgba(255,255,255,0.6)', fontSize: '13px', fontWeight: '500', cursor: 'pointer' }}><LogIn size={14} />Admin</button>)}
             {view === 'editor' && user && (<>
               <button onClick={() => { setView('library'); setEditorArticle(null); }} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '10px', padding: '10px 16px', color: '#ef4444', fontSize: '13px', fontWeight: '500', cursor: 'pointer' }}><X size={14} />Cancel</button>
+              
+              {/* Newsletter Checkbox */}
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '10px 16px', background: sendNewsletter ? 'rgba(168, 139, 70, 0.15)' : 'rgba(255,255,255,0.05)', border: sendNewsletter ? '1px solid rgba(168, 139, 70, 0.4)' : '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', transition: 'all 0.2s ease' }}>
+                <input 
+                  type="checkbox" 
+                  checked={sendNewsletter} 
+                  onChange={(e) => setSendNewsletter(e.target.checked)}
+                  style={{ width: '16px', height: '16px', accentColor: '#a88b46', cursor: 'pointer' }}
+                />
+                <Mail size={14} color={sendNewsletter ? '#a88b46' : 'rgba(255,255,255,0.5)'} />
+                <span style={{ color: sendNewsletter ? '#a88b46' : 'rgba(255,255,255,0.6)', fontSize: '13px', fontWeight: '500' }}>Newsletter</span>
+              </label>
+              
               <button onClick={() => saveArticle(false)} disabled={!editorArticle?.title || saving} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '10px', padding: '10px 16px', color: 'rgba(255,255,255,0.8)', fontSize: '13px', fontWeight: '500', cursor: !editorArticle?.title || saving ? 'not-allowed' : 'pointer', opacity: !editorArticle?.title ? 0.5 : 1 }}><EyeOff size={14} />Save Draft</button>
               <button onClick={() => setShowScheduleModal(true)} disabled={!editorArticle?.title || saving} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(59, 130, 246, 0.15)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '10px', padding: '10px 16px', color: '#60a5fa', fontSize: '13px', fontWeight: '500', cursor: !editorArticle?.title || saving ? 'not-allowed' : 'pointer', opacity: !editorArticle?.title ? 0.5 : 1 }}><Calendar size={14} />Schedule</button>
               <button onClick={() => saveArticle(true)} disabled={!editorArticle?.title || saving} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: !editorArticle?.title || saving ? 'rgba(34, 197, 94, 0.3)' : '#22c55e', border: 'none', borderRadius: '10px', padding: '10px 20px', color: !editorArticle?.title || saving ? 'rgba(255,255,255,0.4)' : '#0a0a0a', fontSize: '13px', fontWeight: '600', cursor: !editorArticle?.title || saving ? 'not-allowed' : 'pointer' }}>{saving ? (<><Loader size={14} className="spin" />Saving...</>) : (<><Globe size={14} />Publish</>)}</button>
