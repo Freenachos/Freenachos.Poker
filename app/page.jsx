@@ -33,6 +33,7 @@ const PokerToolboxHome = () => {
   const [expandedFAQ, setExpandedFAQ] = useState(0);
   const [showStickyCta, setShowStickyCta] = useState(false);
   const [showGraphModal, setShowGraphModal] = useState(false);
+  const [showTestimonialGraphModal, setShowTestimonialGraphModal] = useState(null);
   const nachoRef = useRef(null);
   const aboutSectionRef = useRef(null);
   const heroSectionRef = useRef(null);
@@ -144,7 +145,7 @@ const PokerToolboxHome = () => {
         'Personalized Study Plan',
         'Lifetime Discord Access'
       ],
-      buttonText: 'Book Intro Call'
+      buttonText: 'Book Free Introcall'
     },
     {
       name: '6-Month Accelerator',
@@ -161,7 +162,7 @@ const PokerToolboxHome = () => {
         'Lifetime Discord Access',
         '2-Month Pause Option'
       ],
-      buttonText: 'Book Priority Call'
+      buttonText: 'Book Free Introcall'
     },
     {
       name: '12-Month Mastery',
@@ -178,7 +179,7 @@ const PokerToolboxHome = () => {
         'Lifetime Discord Access',
         'Priority Scheduling'
       ],
-      buttonText: 'Book Mastery Call'
+      buttonText: 'Book Free Introcall'
     }
   ];
 
@@ -726,40 +727,55 @@ The 3-month program consists of:
 
   const PricingCard = React.memo(({ plan }) => (
     <div 
-      className={`pricing-card ${plan.featured ? 'featured' : ''}`}
+      className={`pricing-card-authority ${plan.featured ? 'featured' : ''}`}
       style={{
-        background: '#121212',
-        border: plan.featured ? '2px solid #A78A43' : '1px solid rgba(255, 255, 255, 0.1)',
-        borderRadius: '20px',
-        padding: '40px 32px',
         position: 'relative',
-        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-        transform: plan.featured ? 'scale(1.03)' : 'scale(1)',
-        zIndex: plan.featured ? 2 : 1,
+        background: 'rgba(18, 18, 18, 0.4)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: plan.featured ? '1px solid rgba(168, 139, 70, 0.4)' : '1px solid rgba(255, 255, 255, 0.08)',
+        borderRadius: '24px',
+        padding: '40px 32px',
+        transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
         display: 'flex',
         flexDirection: 'column',
         minHeight: '560px',
-        boxShadow: plan.featured 
-          ? '0 0 40px rgba(167, 138, 67, 0.2), 0 20px 50px rgba(0, 0, 0, 0.4)' 
-          : '0 10px 30px rgba(0, 0, 0, 0.3)'
+        overflow: 'hidden'
       }}
     >
+      {/* Radial glow for featured card */}
+      {plan.featured && (
+        <div style={{
+          position: 'absolute',
+          top: '0',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '150%',
+          height: '200px',
+          background: 'radial-gradient(ellipse at center top, rgba(168, 139, 70, 0.15) 0%, rgba(168, 139, 70, 0.05) 40%, transparent 70%)',
+          filter: 'blur(30px)',
+          pointerEvents: 'none',
+          zIndex: 0
+        }} />
+      )}
+
       {/* Badge */}
       {plan.badge && (
         <div style={{
           position: 'absolute',
-          top: '-12px',
+          top: '-1px',
           left: '50%',
           transform: 'translateX(-50%)',
-          background: plan.featured ? '#A78A43' : 'rgba(167, 138, 67, 0.15)',
-          color: plan.featured ? '#0a0a0a' : '#A78A43',
-          fontSize: '11px',
+          background: plan.featured ? '#a88b46' : 'rgba(168, 139, 70, 0.15)',
+          color: plan.featured ? '#0a0a0a' : '#a88b46',
+          fontSize: '10px',
           fontWeight: '700',
-          padding: '6px 16px',
-          borderRadius: '20px',
+          padding: '8px 20px',
+          borderRadius: '0 0 12px 12px',
           textTransform: 'uppercase',
-          letterSpacing: '0.08em',
-          whiteSpace: 'nowrap'
+          letterSpacing: '0.1em',
+          whiteSpace: 'nowrap',
+          zIndex: 2
         }}>
           {plan.badge}
         </div>
@@ -767,25 +783,28 @@ The 3-month program consists of:
       
       {/* Plan Name */}
       <div style={{
-        color: '#A78A43',
-        fontSize: '13px',
+        color: '#a88b46',
+        fontSize: '12px',
         fontWeight: '600',
-        marginBottom: '24px',
-        marginTop: '8px',
+        marginBottom: '20px',
+        marginTop: plan.badge ? '16px' : '0',
         textTransform: 'uppercase',
-        letterSpacing: '0.1em',
-        height: '16px'
+        letterSpacing: '0.12em',
+        position: 'relative',
+        zIndex: 1
       }}>
         {plan.name}
       </div>
       
       {/* Price */}
       <div style={{
-        marginBottom: '8px'
+        marginBottom: '8px',
+        position: 'relative',
+        zIndex: 1
       }}>
         <span style={{
-          color: '#F0F0F0',
-          fontSize: '48px',
+          color: '#FFFFFF',
+          fontSize: '52px',
           fontWeight: '800',
           lineHeight: 1,
           letterSpacing: '-0.02em'
@@ -796,23 +815,27 @@ The 3-month program consists of:
       
       {/* Payment Note */}
       <div style={{
-        color: 'rgba(240, 240, 240, 0.5)',
+        color: 'rgba(240, 240, 240, 0.45)',
         fontSize: '13px',
         marginBottom: '8px',
-        lineHeight: 1.4,
-        minHeight: '18px'
+        lineHeight: 1.5,
+        minHeight: '20px',
+        position: 'relative',
+        zIndex: 1
       }}>
         {plan.paymentNote}
       </div>
       
-      {/* Savings text - fixed height container */}
+      {/* Savings text */}
       <div style={{
-        height: '20px',
-        marginBottom: '20px'
+        height: '22px',
+        marginBottom: '24px',
+        position: 'relative',
+        zIndex: 1
       }}>
         {plan.savings && (
           <span style={{
-            color: '#A78A43',
+            color: '#a88b46',
             fontSize: '13px',
             fontWeight: '600'
           }}>
@@ -824,29 +847,33 @@ The 3-month program consists of:
       {/* Divider */}
       <div style={{
         height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(167, 138, 67, 0.3), transparent)',
-        marginBottom: '24px'
+        background: 'linear-gradient(90deg, transparent, rgba(168, 139, 70, 0.25), transparent)',
+        marginBottom: '28px',
+        position: 'relative',
+        zIndex: 1
       }} />
       
       {/* Features */}
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '14px',
+        gap: '16px',
         flex: 1,
-        marginBottom: '28px'
+        marginBottom: '32px',
+        position: 'relative',
+        zIndex: 1
       }}>
         {plan.features.map((feature, idx) => (
           <div key={idx} style={{
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             gap: '12px'
           }}>
-            <Check size={16} color="#A78A43" style={{ flexShrink: 0 }} />
+            <Check size={15} color="#a88b46" style={{ flexShrink: 0, marginTop: '2px' }} strokeWidth={2.5} />
             <span style={{
-              color: 'rgba(240, 240, 240, 0.8)',
+              color: 'rgba(240, 240, 240, 0.75)',
               fontSize: '14px',
-              lineHeight: 1.4
+              lineHeight: 1.5
             }}>
               {feature}
             </span>
@@ -854,30 +881,29 @@ The 3-month program consists of:
         ))}
       </div>
       
-      {/* CTA Button */}
+      {/* CTA Button - Outline style matching Book Free Introcall */}
       <a
         href="https://calendly.com/freenachos/intro"
         target="_blank"
         rel="noopener noreferrer"
-        className="btn-hover"
+        className="pricing-cta-btn"
         style={{
           display: 'block',
           width: '100%',
-          padding: plan.featured ? '18px 20px' : '16px 20px',
+          padding: '16px 24px',
           borderRadius: '12px',
-          fontWeight: '700',
-          fontSize: plan.featured ? '15px' : '14px',
+          fontWeight: '600',
+          fontSize: '15px',
           textAlign: 'center',
           textDecoration: 'none',
           cursor: 'pointer',
-          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-          background: '#A78A43',
-          color: '#0a0a0a',
-          border: 'none',
+          transition: 'all 0.3s ease',
+          background: plan.featured ? '#a88b46' : 'transparent',
+          color: plan.featured ? '#0a0a0a' : '#a88b46',
+          border: plan.featured ? 'none' : '1.5px solid #a88b46',
           marginTop: 'auto',
-          boxShadow: plan.featured 
-            ? '0 4px 20px rgba(167, 138, 67, 0.4)' 
-            : '0 2px 10px rgba(167, 138, 67, 0.2)'
+          position: 'relative',
+          zIndex: 1
         }}
       >
         {plan.buttonText}
@@ -3045,7 +3071,7 @@ The 3-month program consists of:
               className="main-testimonial-card"
               style={{
                 flex: '0 0 550px',
-                height: '520px',
+                minHeight: '420px',
                 background: 'rgba(18, 18, 18, 0.5)',
                 backdropFilter: 'blur(16px)',
                 WebkitBackdropFilter: 'blur(16px)',
@@ -3064,33 +3090,58 @@ The 3-month program consists of:
                 fontSize: '16px',
                 lineHeight: 1.8,
                 fontStyle: 'italic',
-                marginBottom: '24px',
-                flex: '1',
-                overflow: 'auto'
+                marginBottom: '24px'
               }}>
                 "{testimonials[currentTestimonialIndex].quote}"
               </p>
               
-              {/* Results Image */}
+              {/* Results Image - Clickable */}
               {(testimonials[currentTestimonialIndex].image || testimonials[currentTestimonialIndex].imageAfter) && (
-                <div style={{
-                  borderRadius: '12px',
-                  overflow: 'hidden',
-                  marginBottom: '24px',
-                  border: '1px solid rgba(167, 138, 67, 0.2)',
-                  maxHeight: '180px',
-                  flexShrink: 0
-                }}>
+                <div 
+                  onClick={() => setShowTestimonialGraphModal(testimonials[currentTestimonialIndex].image || testimonials[currentTestimonialIndex].imageAfter)}
+                  className="testimonial-graph-clickable"
+                  style={{
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    marginBottom: '24px',
+                    border: '1px solid rgba(167, 138, 67, 0.2)',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    position: 'relative'
+                  }}>
                   <img 
                     src={testimonials[currentTestimonialIndex].image || testimonials[currentTestimonialIndex].imageAfter}
                     alt="Results graph"
                     style={{ width: '100%', height: 'auto', display: 'block' }}
                   />
+                  {/* Hover overlay */}
+                  <div className="testimonial-graph-overlay" style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(168, 139, 70, 0.08)',
+                    opacity: 0,
+                    transition: 'opacity 0.3s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    pointerEvents: 'none'
+                  }}>
+                    <span style={{
+                      color: '#a88b46',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      letterSpacing: '0.05em',
+                      textTransform: 'uppercase'
+                    }}>Click to expand</span>
+                  </div>
                 </div>
               )}
               
               {/* Author Info */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: 'auto' }}>
                 <div style={{
                   width: '48px',
                   height: '48px',
@@ -3228,12 +3279,100 @@ The 3-month program consists of:
             </button>
           </div>
 
+          {/* Testimonial Graph Modal */}
+          {showTestimonialGraphModal && (
+            <div 
+              onClick={() => setShowTestimonialGraphModal(null)}
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'rgba(0, 0, 0, 0.85)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                zIndex: 10000,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '40px',
+                animation: 'modalFadeIn 0.3s ease'
+              }}
+            >
+              <div 
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  position: 'relative',
+                  maxWidth: '900px',
+                  width: '100%',
+                  background: 'rgba(18, 18, 18, 0.6)',
+                  backdropFilter: 'blur(40px)',
+                  WebkitBackdropFilter: 'blur(40px)',
+                  border: '1px solid rgba(168, 139, 70, 0.25)',
+                  borderRadius: '24px',
+                  padding: '24px',
+                  boxShadow: '0 40px 100px rgba(0, 0, 0, 0.6), 0 0 80px rgba(168, 139, 70, 0.1)',
+                  animation: 'modalScaleIn 0.3s ease'
+                }}
+              >
+                {/* Close Button */}
+                <button
+                  onClick={() => setShowTestimonialGraphModal(null)}
+                  style={{
+                    position: 'absolute',
+                    top: '16px',
+                    right: '16px',
+                    width: '40px',
+                    height: '40px',
+                    background: 'rgba(168, 139, 70, 0.1)',
+                    border: '1px solid rgba(168, 139, 70, 0.3)',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s ease',
+                    zIndex: 10
+                  }}
+                  className="modal-close-btn"
+                >
+                  <X size={20} color="#a88b46" />
+                </button>
+                
+                {/* Graph Image */}
+                <div style={{
+                  borderRadius: '16px',
+                  overflow: 'hidden'
+                }}>
+                  <img 
+                    src={showTestimonialGraphModal}
+                    alt="Results graph"
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      display: 'block'
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Testimonial styles */}
           <style>{`
             .testimonial-preview-card:hover {
               opacity: 0.8 !important;
               transform: scale(0.95) !important;
               border-color: rgba(167, 138, 67, 0.2) !important;
+            }
+            .testimonial-graph-clickable:hover {
+              border-color: rgba(168, 139, 70, 0.4) !important;
+              transform: translateY(-2px);
+              box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            }
+            .testimonial-graph-clickable:hover .testimonial-graph-overlay {
+              opacity: 1 !important;
             }
             @media (max-width: 1024px) {
               .testimonial-preview-card {
@@ -3242,12 +3381,10 @@ The 3-month program consists of:
               .main-testimonial-card {
                 flex: 1 !important;
                 max-width: 600px !important;
-                height: 480px !important;
               }
             }
             @media (max-width: 600px) {
               .main-testimonial-card {
-                height: 520px !important;
                 padding: 28px !important;
               }
             }
@@ -3298,7 +3435,7 @@ The 3-month program consists of:
               lineHeight: 1.85,
               fontWeight: '400'
             }}>
-              Before you commit, you need to know if our ways of thinking actually align. These videos give you a clear look at how I break down the game and use data to find an edge. If this approach makes sense to you, you're in the right place.
+              See my thought process in action. If this approach makes sense to you, you're in the right place.
             </p>
           </div>
 
@@ -3610,8 +3747,9 @@ The 3-month program consists of:
           `}</style>
         </div>
 
-        {/* ==================== PRICING SECTION - Centered Anchor ==================== */}
+        {/* ==================== PRICING SECTION - Authority Style ==================== */}
         <div 
+          id="pricing"
           className="reveal"
           style={{
             paddingTop: '60px',
@@ -3620,44 +3758,81 @@ The 3-month program consists of:
           }}
         >
           {/* Centered Header */}
-          <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '72px' }}>
             <h2 style={{
               fontSize: 'clamp(38px, 5vw, 56px)',
               fontWeight: '800',
               color: '#FFFFFF',
-              marginBottom: '16px',
+              marginBottom: '20px',
               lineHeight: 1.08,
               letterSpacing: '-0.025em',
               fontFamily: 'Manrope, Inter, sans-serif'
             }}>
-              <span style={{ 
-                color: '#A78A43',
-                textShadow: '0 0 60px rgba(167, 138, 67, 0.4)'
-              }}>Investment</span>
+              Choose Your <span style={{ 
+                color: '#a88b46',
+                textShadow: '0 0 60px rgba(168, 139, 70, 0.4)'
+              }}>Commitment</span>
             </h2>
             <p style={{
-              color: '#8A8A8A',
+              color: 'rgba(240, 240, 240, 0.5)',
               fontSize: '17px',
               lineHeight: 1.7,
               maxWidth: '480px',
               margin: '0 auto'
             }}>
-              Choose the commitment level that fits your goals
+              Select the path that fits your goals and timeline.
             </p>
           </div>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '28px',
-            alignItems: 'stretch',
-            maxWidth: '1100px',
-            margin: '0 auto'
-          }}>
+          <div 
+            className="pricing-grid-authority"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: '24px',
+              alignItems: 'stretch',
+              maxWidth: '1100px',
+              margin: '0 auto'
+            }}>
             {pricingPlans.map((plan, idx) => (
               <PricingCard key={idx} plan={plan} />
             ))}
           </div>
+
+          {/* Pricing card styles */}
+          <style>{`
+            .pricing-card-authority {
+              box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+            }
+            .pricing-card-authority:hover {
+              transform: translateY(-4px);
+              border-color: rgba(168, 139, 70, 0.3) !important;
+              box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4), 0 0 30px rgba(168, 139, 70, 0.08);
+            }
+            .pricing-card-authority.featured {
+              box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 50px rgba(168, 139, 70, 0.12);
+            }
+            .pricing-card-authority.featured:hover {
+              transform: translateY(-6px);
+              box-shadow: 0 28px 72px rgba(0, 0, 0, 0.5), 0 0 60px rgba(168, 139, 70, 0.15);
+            }
+            .pricing-cta-btn:hover {
+              transform: translateY(-2px);
+            }
+            .pricing-card-authority:not(.featured) .pricing-cta-btn:hover {
+              background: rgba(168, 139, 70, 0.08) !important;
+              box-shadow: 0 8px 24px rgba(168, 139, 70, 0.15);
+            }
+            .pricing-card-authority.featured .pricing-cta-btn:hover {
+              box-shadow: 0 8px 24px rgba(168, 139, 70, 0.4);
+            }
+            @media (max-width: 960px) {
+              .pricing-grid-authority {
+                grid-template-columns: 1fr !important;
+                max-width: 420px !important;
+              }
+            }
+          `}</style>
         </div>
 
         {/* ==================== GOOD FIT SECTION - Floating Layout ==================== */}
@@ -3872,89 +4047,101 @@ The 3-month program consists of:
           </div>
         </div>
 
-        {/* ==================== AUTHORITY VAULT SECTION ==================== */}
+        {/* ==================== SAFETY NET SECTION ==================== */}
         <div 
           className="reveal"
           style={{
             marginBottom: '200px'
           }}
         >
-          <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+          {/* Header */}
+          <div style={{ textAlign: 'center', marginBottom: '72px' }}>
             <h2 style={{
-              fontSize: '42px',
+              fontSize: 'clamp(38px, 5vw, 52px)',
               fontWeight: '800',
-              color: '#A78A43',
-              marginBottom: '16px',
-              letterSpacing: '-0.02em',
-              textShadow: '0 0 60px rgba(167, 138, 67, 0.3)'
+              color: '#FFFFFF',
+              marginBottom: '20px',
+              lineHeight: 1.08,
+              letterSpacing: '-0.025em',
+              fontFamily: 'Manrope, Inter, sans-serif'
             }}>
-              Still looking for the edge?
+              Verify the <span style={{ 
+                color: '#a88b46',
+                textShadow: '0 0 60px rgba(168, 139, 70, 0.4)'
+              }}>approach.</span>
             </h2>
             <p style={{
-              color: '#A1A1AA',
-              fontSize: '18px',
-              maxWidth: '500px',
+              color: 'rgba(240, 240, 240, 0.55)',
+              fontSize: '17px',
+              maxWidth: '580px',
               margin: '0 auto',
-              lineHeight: 1.7
+              lineHeight: 1.8
             }}>
-              Free resources to sharpen your game before you commit
+              If you aren't ready for a full program, explore these professional tools and technical deep dives. See for yourself if this logic aligns with your game before we work together.
             </p>
           </div>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-            gap: '32px',
-            maxWidth: '1000px',
-            margin: '0 auto'
-          }}>
+          {/* Two-Card Grid */}
+          <div 
+            className="safety-net-grid"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: '28px',
+              maxWidth: '900px',
+              margin: '0 auto'
+            }}>
             {/* Card A - Strategy Vault (Articles) */}
             <a 
               href="/articles"
-              className="authority-vault-card"
+              className="safety-net-card"
               style={{
-                display: 'block',
+                display: 'flex',
+                flexDirection: 'column',
                 background: 'rgba(18, 18, 18, 0.4)',
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
-                border: '1px solid rgba(167, 138, 67, 0.15)',
-                borderRadius: '28px',
-                padding: '56px 48px',
+                border: '1px solid rgba(168, 139, 70, 0.25)',
+                borderRadius: '24px',
+                padding: '48px 40px',
                 textDecoration: 'none',
-                transition: 'all 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+                transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
                 position: 'relative',
                 overflow: 'hidden'
               }}
             >
+              {/* Hover glow */}
               <div style={{
                 position: 'absolute',
                 top: 0,
                 left: 0,
                 right: 0,
                 bottom: 0,
-                background: 'radial-gradient(circle at 50% 0%, rgba(167, 138, 67, 0.08) 0%, transparent 60%)',
+                background: 'radial-gradient(circle at 50% 0%, rgba(168, 139, 70, 0.1) 0%, transparent 60%)',
                 opacity: 0,
-                transition: 'opacity 0.5s ease',
+                transition: 'opacity 0.4s ease',
                 pointerEvents: 'none'
-              }} className="vault-card-glow" />
+              }} className="safety-net-glow" />
               
+              {/* Gold-line icon */}
               <div style={{
-                width: '64px',
-                height: '64px',
-                borderRadius: '16px',
-                background: 'rgba(168, 85, 247, 0.15)',
+                width: '56px',
+                height: '56px',
+                borderRadius: '14px',
+                border: '1.5px solid rgba(168, 139, 70, 0.4)',
+                background: 'rgba(168, 139, 70, 0.08)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '28px'
               }}>
-                <BookOpen size={32} color="#a855f7" />
+                <BookOpen size={26} color="#a88b46" strokeWidth={1.5} />
               </div>
               
               <h3 style={{
-                fontSize: '28px',
+                fontSize: '24px',
                 fontWeight: '700',
-                color: '#F0F0F0',
+                color: '#FFFFFF',
                 marginBottom: '12px',
                 letterSpacing: '-0.01em'
               }}>
@@ -3962,73 +4149,79 @@ The 3-month program consists of:
               </h3>
               
               <p style={{
-                fontSize: '16px',
-                color: 'rgba(240, 240, 240, 0.6)',
+                fontSize: '15px',
+                color: 'rgba(240, 240, 240, 0.55)',
                 lineHeight: 1.7,
-                marginBottom: '24px'
+                marginBottom: '28px',
+                flex: 1
               }}>
-                Deep-dives into high-stakes theory and population exploits.
+                Technical deep dives into high-stakes theory and population exploits.
               </p>
               
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                color: '#A78A43',
-                fontSize: '15px',
-                fontWeight: '600'
+                color: '#a88b46',
+                fontSize: '14px',
+                fontWeight: '600',
+                letterSpacing: '0.02em'
               }}>
-                Explore articles <ArrowRight size={18} />
+                Explore Articles <ArrowRight size={16} />
               </div>
             </a>
 
             {/* Card B - Performance Toolkit (Tools) */}
             <a 
               href="/tools"
-              className="authority-vault-card"
+              className="safety-net-card"
               style={{
-                display: 'block',
+                display: 'flex',
+                flexDirection: 'column',
                 background: 'rgba(18, 18, 18, 0.4)',
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
-                border: '1px solid rgba(167, 138, 67, 0.15)',
-                borderRadius: '28px',
-                padding: '56px 48px',
+                border: '1px solid rgba(168, 139, 70, 0.25)',
+                borderRadius: '24px',
+                padding: '48px 40px',
                 textDecoration: 'none',
-                transition: 'all 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+                transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
                 position: 'relative',
                 overflow: 'hidden'
               }}
             >
+              {/* Hover glow */}
               <div style={{
                 position: 'absolute',
                 top: 0,
                 left: 0,
                 right: 0,
                 bottom: 0,
-                background: 'radial-gradient(circle at 50% 0%, rgba(167, 138, 67, 0.08) 0%, transparent 60%)',
+                background: 'radial-gradient(circle at 50% 0%, rgba(168, 139, 70, 0.1) 0%, transparent 60%)',
                 opacity: 0,
-                transition: 'opacity 0.5s ease',
+                transition: 'opacity 0.4s ease',
                 pointerEvents: 'none'
-              }} className="vault-card-glow" />
+              }} className="safety-net-glow" />
               
+              {/* Gold-line icon */}
               <div style={{
-                width: '64px',
-                height: '64px',
-                borderRadius: '16px',
-                background: 'rgba(167, 138, 67, 0.15)',
+                width: '56px',
+                height: '56px',
+                borderRadius: '14px',
+                border: '1.5px solid rgba(168, 139, 70, 0.4)',
+                background: 'rgba(168, 139, 70, 0.08)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '28px'
               }}>
-                <Calculator size={32} color="#A78A43" />
+                <Calculator size={26} color="#a88b46" strokeWidth={1.5} />
               </div>
               
               <h3 style={{
-                fontSize: '28px',
+                fontSize: '24px',
                 fontWeight: '700',
-                color: '#F0F0F0',
+                color: '#FFFFFF',
                 marginBottom: '12px',
                 letterSpacing: '-0.01em'
               }}>
@@ -4036,26 +4229,52 @@ The 3-month program consists of:
               </h3>
               
               <p style={{
-                fontSize: '16px',
-                color: 'rgba(240, 240, 240, 0.6)',
+                fontSize: '15px',
+                color: 'rgba(240, 240, 240, 0.55)',
                 lineHeight: 1.7,
-                marginBottom: '24px'
+                marginBottom: '28px',
+                flex: 1
               }}>
-                Proprietary bankroll, variance, and win-rate calculators.
+                Professional-grade bankroll, variance, and win-rate calculators.
               </p>
               
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                color: '#A78A43',
-                fontSize: '15px',
-                fontWeight: '600'
+                color: '#a88b46',
+                fontSize: '14px',
+                fontWeight: '600',
+                letterSpacing: '0.02em'
               }}>
-                Access tools <ArrowRight size={18} />
+                Access Tools <ArrowRight size={16} />
               </div>
             </a>
           </div>
+
+          {/* Safety Net Styles */}
+          <style>{`
+            .safety-net-card {
+              box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+            }
+            .safety-net-card:hover {
+              transform: translateY(-6px);
+              border-color: rgba(168, 139, 70, 0.45) !important;
+              box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4), 0 0 40px rgba(168, 139, 70, 0.1);
+            }
+            .safety-net-card:hover .safety-net-glow {
+              opacity: 1 !important;
+            }
+            @media (max-width: 768px) {
+              .safety-net-grid {
+                grid-template-columns: 1fr !important;
+                max-width: 420px !important;
+              }
+              .safety-net-card {
+                padding: 40px 32px !important;
+              }
+            }
+          `}</style>
         </div>
 
         <style>{`
@@ -4085,7 +4304,7 @@ The 3-month program consists of:
             fontSize: '13px',
             color: 'rgba(240, 240, 240, 0.4)'
           }}>
-            © 2025 Freenachos Poker. All rights reserved.
+            © 2026 Freenachos Poker. All rights reserved.
           </p>
         </div>
       </div>
