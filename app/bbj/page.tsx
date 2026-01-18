@@ -1289,30 +1289,26 @@ const BBJDashboard: React.FC = () => {
               </div>
 
               {/* BBJ Probability Grid */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-6">
-                <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-4 text-center">
-                  <div className="text-2xl mb-2">🏆</div>
-                  <div className="text-[11px] text-zinc-500 uppercase tracking-wide mb-1">Win Jackpot</div>
-                  <div className="text-lg font-bold text-emerald-400">1 in {PROBABILITY_DATA.handsToWinJackpot.toLocaleString()}</div>
-                  <div className="text-[10px] text-zinc-600 mt-1">hands to be the loser with quads+</div>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mt-6">
+                <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-xl p-3 text-center">
+                  <div className="text-base mb-1">🏆</div>
+                  <div className="text-[10px] text-zinc-500 uppercase tracking-wide mb-0.5">Win Jackpot</div>
+                  <div className="text-sm font-bold text-[#a88b46]">1 in {PROBABILITY_DATA.handsToWinJackpot.toLocaleString()}</div>
                 </div>
-                <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-4 text-center">
-                  <div className="text-2xl mb-2">🥈</div>
-                  <div className="text-[11px] text-zinc-500 uppercase tracking-wide mb-1">Opponent Win</div>
-                  <div className="text-lg font-bold text-blue-400">1 in {PROBABILITY_DATA.handsToBeOpponent.toLocaleString()}</div>
-                  <div className="text-[10px] text-zinc-600 mt-1">hands to beat the quads+</div>
+                <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-xl p-3 text-center">
+                  <div className="text-base mb-1">🥈</div>
+                  <div className="text-[10px] text-zinc-500 uppercase tracking-wide mb-0.5">Opponent Win</div>
+                  <div className="text-sm font-bold text-[#a88b46]">1 in {PROBABILITY_DATA.handsToBeOpponent.toLocaleString()}</div>
                 </div>
-                <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-4 text-center">
-                  <div className="text-2xl mb-2">🎫</div>
-                  <div className="text-[11px] text-zinc-500 uppercase tracking-wide mb-1">Table Share</div>
-                  <div className="text-lg font-bold text-purple-400">1 in {PROBABILITY_DATA.handsToGetTableShare.toLocaleString()}</div>
-                  <div className="text-[10px] text-zinc-600 mt-1">hands to be at a BBJ table</div>
+                <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-xl p-3 text-center">
+                  <div className="text-base mb-1">🎫</div>
+                  <div className="text-[10px] text-zinc-500 uppercase tracking-wide mb-0.5">Table Share</div>
+                  <div className="text-sm font-bold text-[#a88b46]">1 in {PROBABILITY_DATA.handsToGetTableShare.toLocaleString()}</div>
                 </div>
-                <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-4 text-center">
-                  <div className="text-2xl mb-2">👀</div>
-                  <div className="text-[11px] text-zinc-500 uppercase tracking-wide mb-1">Witness Any BBJ</div>
-                  <div className="text-lg font-bold text-[#a88b46]">1 in {PROBABILITY_DATA.handsToSeeOneBBJ.toLocaleString()}</div>
-                  <div className="text-[10px] text-zinc-600 mt-1">hands to see a BBJ trigger</div>
+                <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-xl p-3 text-center">
+                  <div className="text-base mb-1">👀</div>
+                  <div className="text-[10px] text-zinc-500 uppercase tracking-wide mb-0.5">Witness Any BBJ</div>
+                  <div className="text-sm font-bold text-[#a88b46]">1 in {PROBABILITY_DATA.handsToSeeOneBBJ.toLocaleString()}</div>
                 </div>
               </div>
             </div>
