@@ -32,6 +32,7 @@ const PokerToolboxHome = () => {
   const [slideDirection, setSlideDirection] = useState('right');
   const [expandedFAQ, setExpandedFAQ] = useState(0);
   const [showStickyCta, setShowStickyCta] = useState(false);
+  const [showGraphModal, setShowGraphModal] = useState(false);
   const nachoRef = useRef(null);
   const aboutSectionRef = useRef(null);
   const heroSectionRef = useRef(null);
@@ -2338,8 +2339,25 @@ The 3-month program consists of:
           >
             The Coach Behind <span style={{ 
               color: '#a88b46',
-              textShadow: '0 0 60px rgba(168, 139, 70, 0.4)'
-            }}>$5M+</span> in Student Profits
+              textShadow: '0 0 60px rgba(168, 139, 70, 0.4)',
+              position: 'relative',
+              display: 'inline-block'
+            }}>
+              {/* Subtle radial glow anchor */}
+              <span style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '180%',
+                height: '300%',
+                background: 'radial-gradient(ellipse at center, rgba(168, 139, 70, 0.15) 0%, rgba(168, 139, 70, 0.05) 40%, transparent 70%)',
+                filter: 'blur(20px)',
+                pointerEvents: 'none',
+                zIndex: -1
+              }} />
+              $5M+
+            </span> in Student Profits
           </h2>
 
           {/* Two-Column Authority Split */}
@@ -2431,15 +2449,20 @@ The 3-month program consists of:
                   zIndex: 0
                 }} />
                 
-                {/* Graph Frame */}
-                <div style={{
-                  position: 'relative',
-                  zIndex: 1,
-                  border: '1px solid rgba(168, 139, 70, 0.2)',
-                  borderRadius: '16px',
-                  overflow: 'hidden',
-                  boxShadow: '0 24px 64px rgba(0, 0, 0, 0.4)'
-                }}>
+                {/* Graph Frame - Clickable */}
+                <div 
+                  onClick={() => setShowGraphModal(true)}
+                  className="graph-frame-clickable"
+                  style={{
+                    position: 'relative',
+                    zIndex: 1,
+                    border: '1px solid rgba(168, 139, 70, 0.2)',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    boxShadow: '0 24px 64px rgba(0, 0, 0, 0.4)',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}>
                   <img 
                     src="https://static.runitonce.com/static/img/courses/dominate-with-data/chart.bcc69818f43c.jpg"
                     alt="Freenachos Results Graph - 6.2bb/100 at High Stakes"
@@ -2449,6 +2472,29 @@ The 3-month program consists of:
                       display: 'block'
                     }}
                   />
+                  {/* Hover overlay */}
+                  <div className="graph-hover-overlay" style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(168, 139, 70, 0.08)',
+                    opacity: 0,
+                    transition: 'opacity 0.3s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    pointerEvents: 'none'
+                  }}>
+                    <span style={{
+                      color: '#a88b46',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      letterSpacing: '0.05em',
+                      textTransform: 'uppercase'
+                    }}>Click to expand</span>
+                  </div>
                 </div>
                 
                 {/* Caption */}
@@ -2482,9 +2528,9 @@ The 3-month program consists of:
                 gap: '16px'
               }}>
                 {[
-                  { value: '$5M+', label: 'Student Profits' },
-                  { value: '200+', label: 'Players Coached' },
-                  { value: '6.2bb/100', label: 'Win Rate' },
+                  { value: '$5M+', label: 'CFP Profits' },
+                  { value: '200+', label: 'Students' },
+                  { value: '6.2bb', label: 'Win Rate' },
                   { value: '10M+', label: 'Hands' }
                 ].map((stat, idx) => (
                   <div 
@@ -2520,6 +2566,97 @@ The 3-month program consists of:
             </div>
           </div>
 
+          {/* Graph Modal */}
+          {showGraphModal && (
+            <div 
+              onClick={() => setShowGraphModal(false)}
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'rgba(0, 0, 0, 0.85)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                zIndex: 10000,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '40px',
+                animation: 'modalFadeIn 0.3s ease'
+              }}
+            >
+              <div 
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  position: 'relative',
+                  maxWidth: '900px',
+                  width: '100%',
+                  background: 'rgba(18, 18, 18, 0.6)',
+                  backdropFilter: 'blur(40px)',
+                  WebkitBackdropFilter: 'blur(40px)',
+                  border: '1px solid rgba(168, 139, 70, 0.25)',
+                  borderRadius: '24px',
+                  padding: '24px',
+                  boxShadow: '0 40px 100px rgba(0, 0, 0, 0.6), 0 0 80px rgba(168, 139, 70, 0.1)',
+                  animation: 'modalScaleIn 0.3s ease'
+                }}
+              >
+                {/* Close Button */}
+                <button
+                  onClick={() => setShowGraphModal(false)}
+                  style={{
+                    position: 'absolute',
+                    top: '16px',
+                    right: '16px',
+                    width: '40px',
+                    height: '40px',
+                    background: 'rgba(168, 139, 70, 0.1)',
+                    border: '1px solid rgba(168, 139, 70, 0.3)',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s ease',
+                    zIndex: 10
+                  }}
+                  className="modal-close-btn"
+                >
+                  <X size={20} color="#a88b46" />
+                </button>
+                
+                {/* Graph Image */}
+                <div style={{
+                  borderRadius: '16px',
+                  overflow: 'hidden'
+                }}>
+                  <img 
+                    src="https://static.runitonce.com/static/img/courses/dominate-with-data/chart.bcc69818f43c.jpg"
+                    alt="Freenachos Results Graph - 6.2bb/100 at High Stakes"
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      display: 'block'
+                    }}
+                  />
+                </div>
+                
+                {/* Modal Caption */}
+                <div style={{
+                  textAlign: 'center',
+                  fontSize: '13px',
+                  color: 'rgba(240, 240, 240, 0.5)',
+                  marginTop: '16px',
+                  fontStyle: 'italic'
+                }}>
+                  Verified results · 6.2bb/100 at 1KNL+
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Authority Split Responsive Styles */}
           <style>{`
             .authority-cta-btn:hover {
@@ -2527,6 +2664,38 @@ The 3-month program consists of:
               border-color: #a88b46 !important;
               transform: translateY(-2px);
               box-shadow: 0 8px 24px rgba(168, 139, 70, 0.15);
+            }
+            
+            .graph-frame-clickable:hover {
+              border-color: rgba(168, 139, 70, 0.4) !important;
+              transform: translateY(-2px);
+              box-shadow: 0 28px 72px rgba(0, 0, 0, 0.5), 0 0 30px rgba(168, 139, 70, 0.1) !important;
+            }
+            
+            .graph-frame-clickable:hover .graph-hover-overlay {
+              opacity: 1 !important;
+            }
+            
+            .modal-close-btn:hover {
+              background: rgba(168, 139, 70, 0.2) !important;
+              border-color: rgba(168, 139, 70, 0.5) !important;
+              transform: scale(1.05);
+            }
+            
+            @keyframes modalFadeIn {
+              from { opacity: 0; }
+              to { opacity: 1; }
+            }
+            
+            @keyframes modalScaleIn {
+              from { 
+                opacity: 0;
+                transform: scale(0.95);
+              }
+              to { 
+                opacity: 1;
+                transform: scale(1);
+              }
             }
             
             @media (max-width: 960px) {
