@@ -21,7 +21,7 @@ import {
 /**
  * Poker Profit Calculator Tool
  * 
- * Part of the FreeNachos App Suite
+ * Part of the Freenachos App Suite
  * Calculates projected profits based on:
  * - Volume (hands or hours)
  * - Win rate (bb/100)
@@ -236,12 +236,12 @@ const PokerProfitCalculator = () => {
   // ============================================
 
   const CartoonNacho = () => (
-    <svg ref={nachoRef} width="90" height="90" viewBox="0 0 100 100" className="drop-shadow-[0_4px_12px_rgba(234,179,8,0.4)]">
-      <path d="M50 8 L88 85 Q90 92 82 92 L18 92 Q10 92 12 85 Z" fill="#facc15" stroke="#eab308" strokeWidth="2"/>
-      <path d="M25 70 Q20 75 22 82 Q24 88 28 85 Q30 80 28 75 Z" fill="#fde047" opacity="0.9"/>
-      <path d="M72 65 Q78 72 76 80 Q74 86 70 82 Q68 76 70 70 Z" fill="#fde047" opacity="0.9"/>
-      <path d="M48 75 Q45 82 48 88 Q52 92 55 86 Q56 80 52 76 Z" fill="#fde047" opacity="0.9"/>
-      <ellipse cx="50" cy="50" rx="22" ry="18" fill="#facc15" />
+    <svg ref={nachoRef} width="90" height="90" viewBox="0 0 100 100" className="drop-shadow-[0_4px_12px_rgba(168,139,70,0.4)]">
+      <path d="M50 8 L88 85 Q90 92 82 92 L18 92 Q10 92 12 85 Z" fill="#a88b46" stroke="#8b7339" strokeWidth="2"/>
+      <path d="M25 70 Q20 75 22 82 Q24 88 28 85 Q30 80 28 75 Z" fill="#c4a85c" opacity="0.9"/>
+      <path d="M72 65 Q78 72 76 80 Q74 86 70 82 Q68 76 70 70 Z" fill="#c4a85c" opacity="0.9"/>
+      <path d="M48 75 Q45 82 48 88 Q52 92 55 86 Q56 80 52 76 Z" fill="#c4a85c" opacity="0.9"/>
+      <ellipse cx="50" cy="50" rx="22" ry="18" fill="#a88b46" />
       <ellipse cx="40" cy="48" rx="8" ry="9" fill="white" />
       <ellipse cx="60" cy="48" rx="8" ry="9" fill="white" />
       <circle cx={40 + eyeOffset.x} cy={48 + eyeOffset.y} r="4" fill="#09090b" className="transition-all duration-100 ease-out"/>
@@ -251,16 +251,16 @@ const PokerProfitCalculator = () => {
       <path d="M38 62 Q50 72 62 62" fill="none" stroke="#09090b" strokeWidth="3" strokeLinecap="round"/>
       <path d="M33 38 Q40 35 47 38" fill="none" stroke="#09090b" strokeWidth="2" strokeLinecap="round" />
       <path d="M53 38 Q60 35 67 38" fill="none" stroke="#09090b" strokeWidth="2" strokeLinecap="round" />
-      <circle cx="30" cy="30" r="2" fill="#ca8a04" opacity="0.5" />
-      <circle cx="70" cy="35" r="2.5" fill="#ca8a04" opacity="0.5" />
-      <circle cx="35" cy="80" r="2" fill="#ca8a04" opacity="0.5" />
-      <circle cx="65" cy="78" r="1.5" fill="#ca8a04" opacity="0.5" />
+      <circle cx="30" cy="30" r="2" fill="#8b7339" opacity="0.5" />
+      <circle cx="70" cy="35" r="2.5" fill="#8b7339" opacity="0.5" />
+      <circle cx="35" cy="80" r="2" fill="#8b7339" opacity="0.5" />
+      <circle cx="65" cy="78" r="1.5" fill="#8b7339" opacity="0.5" />
     </svg>
   );
 
   const NachoTriangle = ({ size, opacity }) => (
     <svg width={size} height={size} viewBox="0 0 20 20" style={{ opacity }}>
-      <path d="M10 2 L18 17 L2 17 Z" fill="#facc15" opacity="0.8"/>
+      <path d="M10 2 L18 17 L2 17 Z" fill="#a88b46" opacity="0.8"/>
     </svg>
   );
 
@@ -331,36 +331,170 @@ const PokerProfitCalculator = () => {
   // ============================================
 
   return (
-    <div className="min-h-screen bg-zinc-950 relative overflow-hidden font-sans">
-      {/* Floating Nachos Background */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        {nachos.map(nacho => (
-          <motion.div
-            key={nacho.id}
-            className="absolute"
-            style={{
-              left: `${nacho.x}%`,
-              top: `${nacho.y}%`,
-            }}
-            animate={{
-              x: [0, nacho.moveX, 0],
-              y: [0, nacho.moveY, 0],
-              rotate: [0, 180, 360],
-            }}
-            transition={{
-              duration: nacho.duration,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: nacho.delay,
-            }}
-          >
-            <NachoTriangle size={nacho.size} opacity={nacho.opacity * 0.3} />
-          </motion.div>
-        ))}
+    <div className="min-h-screen bg-[#0A0A0A] relative overflow-hidden font-sans">
+      {/* Noise/Grain Texture Overlay */}
+      <div 
+        className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`
+        }}
+      />
+
+      {/* Background Glows */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute -top-[10%] -right-[8%] w-[900px] h-[900px] rounded-full opacity-60" 
+             style={{ background: 'radial-gradient(circle, rgba(168, 139, 70, 0.08) 0%, transparent 60%)', filter: 'blur(80px)' }} />
+        <div className="absolute -bottom-[15%] -left-[12%] w-[1000px] h-[1000px] rounded-full opacity-50"
+             style={{ background: 'radial-gradient(circle, rgba(168, 139, 70, 0.06) 0%, transparent 55%)', filter: 'blur(100px)' }} />
+        <div className="absolute top-[40%] right-[5%] w-[600px] h-[600px] rounded-full opacity-40"
+             style={{ background: 'radial-gradient(circle, rgba(168, 139, 70, 0.05) 0%, transparent 50%)', filter: 'blur(60px)' }} />
       </div>
 
-      {/* Gradient overlay */}
-      <div className="fixed inset-0 bg-gradient-to-br from-yellow-500/5 via-transparent to-zinc-950 pointer-events-none z-0" />
+      {/* Peripheral Bokeh Nachos */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <motion.div animate={{ x: [0, 3, 6, 4, 2, 5, 1, 0], y: [0, -5, -3, -8, -4, -6, -2, 0], rotate: [0, 2, 4, 6, 3, 5, 1, 0] }} transition={{ duration: 120, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[5%] -left-[8%] w-[180px] h-[180px] opacity-[0.06]" style={{ filter: 'blur(18px)' }}>
+          <NachoTriangle size={180} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, -4, -2, -6, -4, -3, 0], y: [0, -6, -10, -4, -7, 0] }} transition={{ duration: 140, repeat: Infinity, ease: "easeInOut", delay: 40 }}
+          className="absolute top-[40%] -left-[12%] w-[220px] h-[220px] opacity-[0.05]" style={{ filter: 'blur(22px)' }}>
+          <NachoTriangle size={220} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, 3, 6, 4, 2, 5, 1, 0], y: [0, -5, -3, -8, -4, -6, -2, 0] }} transition={{ duration: 100, repeat: Infinity, ease: "easeInOut", delay: 70 }}
+          className="absolute bottom-[10%] -left-[6%] w-[160px] h-[160px] opacity-[0.07]" style={{ filter: 'blur(16px)' }}>
+          <NachoTriangle size={160} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, -4, -2, -6, -4, -3, 0], y: [0, -6, -10, -4, -7, 0] }} transition={{ duration: 130, repeat: Infinity, ease: "easeInOut", delay: 20 }}
+          className="absolute top-[8%] -right-[10%] w-[200px] h-[200px] opacity-[0.05]" style={{ filter: 'blur(20px)' }}>
+          <NachoTriangle size={200} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, 3, 6, 4, 2, 5, 1, 0], y: [0, -5, -3, -8, -4, -6, -2, 0] }} transition={{ duration: 150, repeat: Infinity, ease: "easeInOut", delay: 60 }}
+          className="absolute top-[50%] -right-[14%] w-[240px] h-[240px] opacity-[0.04]" style={{ filter: 'blur(24px)' }}>
+          <NachoTriangle size={240} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, -4, -2, -6, -4, -3, 0], y: [0, -6, -10, -4, -7, 0] }} transition={{ duration: 110, repeat: Infinity, ease: "easeInOut", delay: 90 }}
+          className="absolute bottom-[15%] -right-[8%] w-[170px] h-[170px] opacity-[0.06]" style={{ filter: 'blur(17px)' }}>
+          <NachoTriangle size={170} opacity={1} />
+        </motion.div>
+      </div>
+
+      {/* Foreground Bokeh Nachos */}
+      <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
+        <motion.div animate={{ x: [0, 8, 15, 10, 5, 0], y: [0, -12, -8, -18, -5, 0], rotate: [0, 8, 15, 22, 12, 0] }} transition={{ duration: 80, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[5%] left-[3%] w-[90px] h-[90px] opacity-[0.12]" style={{ filter: 'blur(12px)' }}>
+          <NachoTriangle size={90} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, -10, -5, -12, 0], y: [0, -15, -25, -10, 0], rotate: [0, -12, -20, -8, 0] }} transition={{ duration: 90, repeat: Infinity, ease: "easeInOut", delay: 30 }}
+          className="absolute bottom-[10%] right-[5%] w-[110px] h-[110px] opacity-[0.10]" style={{ filter: 'blur(14px)' }}>
+          <NachoTriangle size={110} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, 12, 6, 0], y: [0, -20, -10, 0], rotate: [0, 18, 10, 0] }} transition={{ duration: 70, repeat: Infinity, ease: "easeInOut", delay: 45 }}
+          className="absolute top-[45%] -left-[2%] w-[80px] h-[80px] opacity-[0.08]" style={{ filter: 'blur(10px)' }}>
+          <NachoTriangle size={80} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, 8, 15, 10, 5, 0], y: [0, -12, -8, -18, -5, 0], rotate: [0, 8, 15, 22, 12, 0] }} transition={{ duration: 85, repeat: Infinity, ease: "easeInOut", delay: 60 }}
+          className="absolute top-[15%] right-[8%] w-[70px] h-[70px] opacity-[0.09]" style={{ filter: 'blur(11px)' }}>
+          <NachoTriangle size={70} opacity={1} />
+        </motion.div>
+      </div>
+
+      {/* Midground Bokeh Nachos */}
+      <div className="fixed inset-0 pointer-events-none z-[2] overflow-hidden">
+        <motion.div animate={{ x: [0, 20, 35, 25, 10, 0], y: [0, -30, -20, -40, -15, 0], rotate: [0, 25, 50, 75, 55, 0] }} transition={{ duration: 45, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[20%] left-[15%] w-[40px] h-[40px] opacity-[0.18]" style={{ filter: 'blur(4px)' }}>
+          <NachoTriangle size={40} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, -25, -15, -30, 0], y: [0, -35, -50, -25, 0], rotate: [0, -40, -80, -50, 0] }} transition={{ duration: 50, repeat: Infinity, ease: "easeInOut", delay: 15 }}
+          className="absolute top-[60%] right-[20%] w-[35px] h-[35px] opacity-[0.16]" style={{ filter: 'blur(5px)' }}>
+          <NachoTriangle size={35} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, 30, 15, 0], y: [0, -25, -45, 0], rotate: [0, 60, 120, 0] }} transition={{ duration: 55, repeat: Infinity, ease: "easeInOut", delay: 25 }}
+          className="absolute bottom-[30%] left-[8%] w-[45px] h-[45px] opacity-[0.15]" style={{ filter: 'blur(4px)' }}>
+          <NachoTriangle size={45} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, 20, 35, 25, 10, 0], y: [0, -30, -20, -40, -15, 0], rotate: [0, 25, 50, 75, 55, 0] }} transition={{ duration: 48, repeat: Infinity, ease: "easeInOut", delay: 35 }}
+          className="absolute top-[35%] right-[12%] w-[38px] h-[38px] opacity-[0.14]" style={{ filter: 'blur(3px)' }}>
+          <NachoTriangle size={38} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, -25, -15, -30, 0], y: [0, -35, -50, -25, 0], rotate: [0, -40, -80, -50, 0] }} transition={{ duration: 42, repeat: Infinity, ease: "easeInOut", delay: 40 }}
+          className="absolute top-[75%] left-[25%] w-[32px] h-[32px] opacity-[0.17]" style={{ filter: 'blur(4px)' }}>
+          <NachoTriangle size={32} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, 30, 15, 0], y: [0, -25, -45, 0], rotate: [0, 60, 120, 0] }} transition={{ duration: 52, repeat: Infinity, ease: "easeInOut", delay: 50 }}
+          className="absolute top-[10%] left-[55%] w-[42px] h-[42px] opacity-[0.13]" style={{ filter: 'blur(4px)' }}>
+          <NachoTriangle size={42} opacity={1} />
+        </motion.div>
+      </div>
+
+      {/* Background (Focal) Bokeh Nachos */}
+      <div className="fixed inset-0 pointer-events-none z-[3] overflow-hidden">
+        <motion.div animate={{ x: [0, 25, 50, 35, 60, 40, 20, 0], y: [0, -40, -25, -60, -35, -55, -30, 0], rotate: [0, 45, 90, 150, 200, 270, 320, 360] }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className="absolute top-[25%] left-[20%] w-[18px] h-[18px] opacity-[0.35]" style={{ filter: 'blur(0.5px)' }}>
+          <NachoTriangle size={18} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, -35, -20, -50, -30, -15, 0], y: [0, -50, -30, -45, -60, -25, 0], rotate: [0, -60, -120, -180, -250, -310, -360] }} transition={{ duration: 28, repeat: Infinity, ease: "linear", delay: 8 }}
+          className="absolute top-[55%] right-[25%] w-[15px] h-[15px] opacity-[0.30]" style={{ filter: 'blur(0.5px)' }}>
+          <NachoTriangle size={15} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, 25, 50, 35, 60, 40, 20, 0], y: [0, -40, -25, -60, -35, -55, -30, 0], rotate: [0, 45, 90, 150, 200, 270, 320, 360] }} transition={{ duration: 22, repeat: Infinity, ease: "linear", delay: 12 }}
+          className="absolute bottom-[35%] left-[35%] w-[20px] h-[20px] opacity-[0.28]" style={{ filter: 'blur(0.5px)' }}>
+          <NachoTriangle size={20} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, -35, -20, -50, -30, -15, 0], y: [0, -50, -30, -45, -60, -25, 0], rotate: [0, -60, -120, -180, -250, -310, -360] }} transition={{ duration: 30, repeat: Infinity, ease: "linear", delay: 18 }}
+          className="absolute top-[40%] right-[35%] w-[16px] h-[16px] opacity-[0.32]" style={{ filter: 'blur(0.5px)' }}>
+          <NachoTriangle size={16} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, 25, 50, 35, 60, 40, 20, 0], y: [0, -40, -25, -60, -35, -55, -30, 0], rotate: [0, 45, 90, 150, 200, 270, 320, 360] }} transition={{ duration: 26, repeat: Infinity, ease: "linear", delay: 5 }}
+          className="absolute top-[15%] left-[45%] w-[14px] h-[14px] opacity-[0.25]" style={{ filter: 'blur(0.5px)' }}>
+          <NachoTriangle size={14} opacity={1} />
+        </motion.div>
+        <motion.div animate={{ x: [0, -35, -20, -50, -30, -15, 0], y: [0, -50, -30, -45, -60, -25, 0], rotate: [0, -60, -120, -180, -250, -310, -360] }} transition={{ duration: 24, repeat: Infinity, ease: "linear", delay: 15 }}
+          className="absolute bottom-[20%] right-[40%] w-[17px] h-[17px] opacity-[0.27]" style={{ filter: 'blur(0.5px)' }}>
+          <NachoTriangle size={17} opacity={1} />
+        </motion.div>
+      </div>
+
+      <style>{`
+        @keyframes traceBorder {
+          0% { offset-distance: 0%; }
+          100% { offset-distance: 100%; }
+        }
+        .spark-border-gold { 
+          position: relative; 
+          overflow: hidden; 
+          border-radius: 24px; 
+          background: rgba(18, 18, 18, 0.6);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+        }
+        .spark-border-gold::before { 
+          content: ""; 
+          position: absolute; 
+          inset: 0; 
+          border-radius: inherit; 
+          padding: 1px; 
+          background: linear-gradient(135deg, rgba(168, 139, 70, 0.5), rgba(168, 139, 70, 0.15)); 
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); 
+          -webkit-mask-composite: xor; 
+          mask-composite: exclude; 
+          z-index: 1; 
+          pointer-events: none; 
+        }
+        .spark-border-gold::after { 
+          content: ""; 
+          position: absolute; 
+          top: 0; 
+          left: 0; 
+          width: 80px; 
+          height: 2px; 
+          background: linear-gradient(90deg, transparent 0%, #a88b46 50%, #a88b46 100%); 
+          box-shadow: 0 0 15px 2px rgba(168, 139, 70, 0.6); 
+          offset-path: rect(0 100% 100% 0 round 24px); 
+          animation: traceBorder 6s linear infinite; 
+          z-index: 2; 
+          pointer-events: none; 
+        }
+      `}</style>
       
       {/* Main Content */}
       <motion.div 
@@ -371,38 +505,15 @@ const PokerProfitCalculator = () => {
       >
         <NachosPokerNavBar />
         
-        {/* Header Banner */}
-        <motion.div 
-          variants={itemVariants}
-          className="relative mb-8 p-6 sm:p-8 rounded-2xl bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 overflow-hidden group"
-        >
-          {/* Animated border glow */}
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-yellow-500/20 via-yellow-600/10 to-yellow-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="absolute inset-[1px] rounded-2xl bg-zinc-900/90" />
-          
-          {/* Sparkle accent */}
-          <div className="absolute top-4 right-4">
-            <Sparkles className="w-5 h-5 text-yellow-500/50" />
-          </div>
-          
-          <div className="relative flex flex-col sm:flex-row items-center gap-6">
-            <motion.div 
-              className="flex-shrink-0"
-              animate={{ y: [0, -5, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <CartoonNacho />
-            </motion.div>
-            
+        {/* Header Banner with Sparkborder */}
+        <div className="spark-border-gold mb-8 p-6 sm:p-8">
+          <div className="flex flex-col sm:flex-row items-center gap-6">
             <div className="flex-1 text-center sm:text-left">
-              <span className="inline-block text-xs font-semibold text-yellow-500 tracking-widest uppercase mb-2">
-                Crafted by FreeNachos
-              </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
-                Know your numbers. <span className="text-zinc-500">Then grow them.</span>
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Manrope, Inter, sans-serif' }}>
+                Profit <span style={{ color: '#a88b46' }}>Calculator</span>
               </h2>
               <p className="text-sm text-zinc-400 max-w-md">
-                Calculate your expected profit — and discover how coaching could take your win rate to the next level.
+                Project your earnings based on volume, win rate, and rakeback. Ready for structured guidance? Explore the Mentorship Program.
               </p>
             </div>
             
@@ -411,21 +522,23 @@ const PokerProfitCalculator = () => {
                 href="https://www.nachospoker.com/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-gradient-to-r from-yellow-500 to-yellow-600 text-zinc-950 font-semibold text-sm transition-all duration-300 hover:shadow-[0_0_20px_rgba(234,179,8,0.3)] hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg text-zinc-950 font-semibold text-sm transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,139,70,0.3)] hover:-translate-y-0.5"
+                style={{ background: '#a88b46' }}
               >
                 Join Our CFP <ExternalLink className="w-4 h-4" />
               </a>
               <a 
-                href="https://www.freenachoscoaching.com/" 
+                href="https://calendly.com/patrickgerritsen90/30min" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg border border-yellow-500/50 text-yellow-500 font-semibold text-sm transition-all duration-300 hover:bg-yellow-500/10 hover:border-yellow-500 hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5"
+                style={{ border: '1.5px solid #a88b46', color: '#a88b46' }}
               >
                 Private Coaching <ExternalLink className="w-4 h-4" />
               </a>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Main Tool Card */}
         <motion.div 
@@ -433,12 +546,12 @@ const PokerProfitCalculator = () => {
           className="relative rounded-2xl bg-zinc-900/60 backdrop-blur-xl border border-zinc-800 p-6 sm:p-10 mb-8 overflow-hidden"
         >
           {/* Subtle corner accent */}
-          <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-yellow-500/10 to-transparent rounded-br-full" />
+          <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-[rgba(168,139,70,0.1)] to-transparent rounded-br-full" />
           
           <div className="relative">
             {/* Title */}
             <div className="flex items-center justify-center gap-3 mb-2">
-              <Calculator className="w-7 h-7 text-yellow-500" />
+              <Calculator className="w-7 h-7 text-[#a88b46]" />
               <h1 className="text-2xl sm:text-3xl font-bold text-white">
                 Poker Profit Calculator
               </h1>
@@ -454,7 +567,7 @@ const PokerProfitCalculator = () => {
                 variants={cardVariants}
                 className="bg-zinc-800/50 backdrop-blur border border-zinc-700/50 rounded-xl p-5"
               >
-                <h3 className="flex items-center gap-2 text-yellow-500 font-semibold text-xs uppercase tracking-wider mb-4">
+                <h3 className="flex items-center gap-2 text-[#a88b46] font-semibold text-xs uppercase tracking-wider mb-4">
                   <Layers className="w-4 h-4" /> Mode
                 </h3>
                 <div className="flex gap-3">
@@ -462,7 +575,7 @@ const PokerProfitCalculator = () => {
                     onClick={() => setMode('online')}
                     className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                       mode === 'online'
-                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-zinc-950 shadow-[0_0_15px_rgba(234,179,8,0.2)]'
+                        ? 'bg-gradient-to-r from-#a88b46 to-#8b7339 text-zinc-950 shadow-[0_0_15px_rgba(168,139,70,0.2)]'
                         : 'bg-zinc-800 text-zinc-400 border border-zinc-700 hover:bg-zinc-700 hover:text-zinc-300'
                     }`}
                   >
@@ -472,7 +585,7 @@ const PokerProfitCalculator = () => {
                     onClick={() => setMode('live')}
                     className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                       mode === 'live'
-                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-zinc-950 shadow-[0_0_15px_rgba(234,179,8,0.2)]'
+                        ? 'bg-gradient-to-r from-#a88b46 to-#8b7339 text-zinc-950 shadow-[0_0_15px_rgba(168,139,70,0.2)]'
                         : 'bg-zinc-800 text-zinc-400 border border-zinc-700 hover:bg-zinc-700 hover:text-zinc-300'
                     }`}
                   >
@@ -486,7 +599,7 @@ const PokerProfitCalculator = () => {
                 variants={cardVariants}
                 className="bg-zinc-800/50 backdrop-blur border border-zinc-700/50 rounded-xl p-5"
               >
-                <h3 className="flex items-center gap-2 text-yellow-500 font-semibold text-xs uppercase tracking-wider mb-4">
+                <h3 className="flex items-center gap-2 text-[#a88b46] font-semibold text-xs uppercase tracking-wider mb-4">
                   <Clock className="w-4 h-4" /> {mode === 'online' ? 'Hands / Month' : 'Hours / Month'}
                 </h3>
                 <input
@@ -494,7 +607,7 @@ const PokerProfitCalculator = () => {
                   placeholder={mode === 'online' ? 'e.g., 50000' : 'e.g., 100'}
                   value={volume}
                   onChange={(e) => setVolume(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg bg-zinc-900/80 border border-zinc-700 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all duration-200"
+                  className="w-full px-4 py-3 rounded-lg bg-zinc-900/80 border border-zinc-700 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-[rgba(168,139,70,0.5)] focus:ring-2 focus:ring-[rgba(168,139,70,0.2)] transition-all duration-200"
                 />
                 {mode === 'live' && (
                   <div className="mt-3">
@@ -506,7 +619,7 @@ const PokerProfitCalculator = () => {
                       placeholder="30"
                       value={handsPerHour}
                       onChange={(e) => setHandsPerHour(parseInt(e.target.value) || DEFAULT_HANDS_PER_HOUR)}
-                      className="w-full px-3 py-2 rounded-lg bg-zinc-900/80 border border-zinc-700 text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all duration-200"
+                      className="w-full px-3 py-2 rounded-lg bg-zinc-900/80 border border-zinc-700 text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-[rgba(168,139,70,0.5)] focus:ring-2 focus:ring-[rgba(168,139,70,0.2)] transition-all duration-200"
                     />
                   </div>
                 )}
@@ -517,7 +630,7 @@ const PokerProfitCalculator = () => {
                 variants={cardVariants}
                 className="bg-zinc-800/50 backdrop-blur border border-zinc-700/50 rounded-xl p-5"
               >
-                <h3 className="flex items-center gap-2 text-yellow-500 font-semibold text-xs uppercase tracking-wider mb-4">
+                <h3 className="flex items-center gap-2 text-[#a88b46] font-semibold text-xs uppercase tracking-wider mb-4">
                   <TrendingUp className="w-4 h-4" /> Win Rate & Rakeback
                 </h3>
                 <div className="flex gap-3">
@@ -531,7 +644,7 @@ const PokerProfitCalculator = () => {
                       placeholder="e.g., 3.5"
                       value={winRate}
                       onChange={(e) => setWinRate(e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-lg bg-zinc-900/80 border border-zinc-700 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all duration-200"
+                      className="w-full px-3 py-2.5 rounded-lg bg-zinc-900/80 border border-zinc-700 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-[rgba(168,139,70,0.5)] focus:ring-2 focus:ring-[rgba(168,139,70,0.2)] transition-all duration-200"
                     />
                   </div>
                   <div className="flex-1">
@@ -544,7 +657,7 @@ const PokerProfitCalculator = () => {
                       placeholder="e.g., 30"
                       value={rakeback}
                       onChange={(e) => setRakeback(e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-lg bg-zinc-900/80 border border-zinc-700 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all duration-200"
+                      className="w-full px-3 py-2.5 rounded-lg bg-zinc-900/80 border border-zinc-700 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-[rgba(168,139,70,0.5)] focus:ring-2 focus:ring-[rgba(168,139,70,0.2)] transition-all duration-200"
                     />
                   </div>
                 </div>
@@ -556,7 +669,7 @@ const PokerProfitCalculator = () => {
               variants={cardVariants}
               className="bg-zinc-800/50 backdrop-blur border border-zinc-700/50 rounded-xl p-6 mb-8"
             >
-              <h3 className="flex items-center gap-2 text-yellow-500 font-semibold text-xs uppercase tracking-wider mb-5">
+              <h3 className="flex items-center gap-2 text-[#a88b46] font-semibold text-xs uppercase tracking-wider mb-5">
                 <DollarSign className="w-4 h-4" /> Add Site & Stake Scenario
               </h3>
               <div className="flex flex-wrap gap-4 items-end">
@@ -570,7 +683,7 @@ const PokerProfitCalculator = () => {
                       setSelectedSite(e.target.value);
                       setSelectedStake(Object.keys(SITE_DATA[e.target.value].stakes)[0]);
                     }}
-                    className="w-full px-4 py-3 rounded-lg bg-zinc-900/80 border border-zinc-700 text-white text-sm cursor-pointer appearance-none focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all duration-200 bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23a1a1aa%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_12px_center] pr-10"
+                    className="w-full px-4 py-3 rounded-lg bg-zinc-900/80 border border-zinc-700 text-white text-sm cursor-pointer appearance-none focus:outline-none focus:border-[rgba(168,139,70,0.5)] focus:ring-2 focus:ring-[rgba(168,139,70,0.2)] transition-all duration-200 bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23a1a1aa%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_12px_center] pr-10"
                   >
                     {Object.entries(SITE_DATA).map(([key, data]) => (
                       <option key={key} value={key} className="bg-zinc-900">{data.name}</option>
@@ -584,7 +697,7 @@ const PokerProfitCalculator = () => {
                   <select
                     value={selectedStake}
                     onChange={(e) => setSelectedStake(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg bg-zinc-900/80 border border-zinc-700 text-white text-sm cursor-pointer appearance-none focus:outline-none focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all duration-200 bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23a1a1aa%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_12px_center] pr-10"
+                    className="w-full px-4 py-3 rounded-lg bg-zinc-900/80 border border-zinc-700 text-white text-sm cursor-pointer appearance-none focus:outline-none focus:border-[rgba(168,139,70,0.5)] focus:ring-2 focus:ring-[rgba(168,139,70,0.2)] transition-all duration-200 bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23a1a1aa%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_12px_center] pr-10"
                   >
                     {Object.keys(SITE_DATA[selectedSite].stakes).map(stake => (
                       <option key={stake} value={stake} className="bg-zinc-900">{stake.toUpperCase()}</option>
@@ -597,7 +710,7 @@ const PokerProfitCalculator = () => {
                     disabled={!volume || !winRate || rakeback === ''}
                     className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-300 ${
                       volume && winRate && rakeback !== ''
-                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-zinc-950 hover:shadow-[0_0_20px_rgba(234,179,8,0.3)] hover:-translate-y-0.5 cursor-pointer'
+                        ? 'bg-gradient-to-r from-#a88b46 to-#8b7339 text-zinc-950 hover:shadow-[0_0_20px_rgba(168,139,70,0.3)] hover:-translate-y-0.5 cursor-pointer'
                         : 'bg-zinc-700/50 text-zinc-500 cursor-not-allowed'
                     }`}
                   >
@@ -606,7 +719,7 @@ const PokerProfitCalculator = () => {
                 </div>
               </div>
               <div className="mt-4 text-xs text-zinc-500">
-                Base rake for {SITE_DATA[selectedSite].name} {selectedStake.toUpperCase()}: <span className="text-yellow-500 font-medium">{SITE_DATA[selectedSite].stakes[selectedStake].rake} bb/100</span>
+                Base rake for {SITE_DATA[selectedSite].name} {selectedStake.toUpperCase()}: <span className="text-[#a88b46] font-medium">{SITE_DATA[selectedSite].stakes[selectedStake].rake} bb/100</span>
               </div>
             </motion.div>
 
@@ -620,7 +733,7 @@ const PokerProfitCalculator = () => {
                   transition={{ duration: 0.4 }}
                 >
                   <h3 className="flex items-center gap-2.5 text-white text-lg font-semibold mb-5">
-                    <TrendingUp className="w-5 h-5 text-yellow-500" />
+                    <TrendingUp className="w-5 h-5 text-[#a88b46]" />
                     Projected Profits
                   </h3>
                   
@@ -630,7 +743,7 @@ const PokerProfitCalculator = () => {
                       {/* Table Header */}
                       <thead>
                         <tr className="border-b border-zinc-800">
-                          <th className="px-4 py-3.5 text-left text-[11px] font-semibold text-yellow-500 uppercase tracking-wider bg-zinc-800/50 whitespace-nowrap">
+                          <th className="px-4 py-3.5 text-left text-[11px] font-semibold text-[#a88b46] uppercase tracking-wider bg-zinc-800/50 whitespace-nowrap">
                             Site / Stake
                           </th>
                           <th className="px-3 py-3.5 text-center text-[11px] font-semibold text-zinc-500 uppercase tracking-wider bg-zinc-800/50 whitespace-nowrap">
@@ -642,7 +755,7 @@ const PokerProfitCalculator = () => {
                           <th className="px-3 py-3.5 text-center text-[11px] font-semibold text-zinc-500 uppercase tracking-wider bg-zinc-800/50 whitespace-nowrap">
                             RB
                           </th>
-                          <th className="px-3 py-3.5 text-center text-[11px] font-semibold text-yellow-500 uppercase tracking-wider bg-yellow-500/5 whitespace-nowrap">
+                          <th className="px-3 py-3.5 text-center text-[11px] font-semibold text-[#a88b46] uppercase tracking-wider bg-[rgba(168,139,70,0.05)] whitespace-nowrap">
                             Total
                           </th>
                           <th className="px-3 py-3.5 text-center text-[11px] font-semibold text-zinc-500 uppercase tracking-wider bg-zinc-800/50 whitespace-nowrap">
@@ -714,7 +827,7 @@ const PokerProfitCalculator = () => {
                               </td>
                               
                               {/* Total WR */}
-                              <td className="px-3 py-3 text-center bg-yellow-500/5 whitespace-nowrap">
+                              <td className="px-3 py-3 text-center bg-[rgba(168,139,70,0.05)] whitespace-nowrap">
                                 <span className={`font-bold text-[13px] ${getProfitColor(results.totalBb100)}`}>
                                   {results.totalBb100 >= 0 ? '+' : ''}{results.totalBb100.toFixed(1)}
                                 </span>
@@ -765,9 +878,9 @@ const PokerProfitCalculator = () => {
                       {/* Table Footer - Totals */}
                       {scenarios.length > 1 && (
                         <tfoot>
-                          <tr className="border-t-2 border-yellow-500/20 bg-yellow-500/5">
+                          <tr className="border-t-2 border-[rgba(168,139,70,0.2)] bg-[rgba(168,139,70,0.05)]">
                             <td className="px-4 py-3">
-                              <div className="font-bold text-yellow-500 text-[13px]">
+                              <div className="font-bold text-[#a88b46] text-[13px]">
                                 TOTAL
                               </div>
                               <div className="text-[10px] text-zinc-500 mt-0.5">
@@ -790,7 +903,7 @@ const PokerProfitCalculator = () => {
                             <td className="px-3 py-3 text-center">
                               <span className="text-zinc-600 text-[11px]">—</span>
                             </td>
-                            <td className="px-3 py-3 text-center bg-yellow-500/10">
+                            <td className="px-3 py-3 text-center bg-[rgba(168,139,70,0.1)]">
                               <span className="text-zinc-600 text-[11px]">—</span>
                             </td>
                             <td className="px-3 py-3 text-center whitespace-nowrap">
@@ -868,7 +981,7 @@ const PokerProfitCalculator = () => {
           className="relative rounded-2xl bg-zinc-900/60 backdrop-blur-xl border border-zinc-800 p-6 sm:p-10"
         >
           <div className="flex items-center justify-center gap-3 mb-8">
-            <TrendingUp className="w-6 h-6 text-yellow-500" />
+            <TrendingUp className="w-6 h-6 text-[#a88b46]" />
             <h2 className="text-lg sm:text-xl font-semibold text-white">
               Understanding Your Numbers
             </h2>
@@ -878,11 +991,11 @@ const PokerProfitCalculator = () => {
             {/* Insight 1 */}
             <motion.div 
               whileHover={{ y: -4 }}
-              className="bg-yellow-500/10 backdrop-blur border border-yellow-500/20 rounded-xl p-6 transition-shadow duration-300 hover:shadow-[0_0_20px_rgba(234,179,8,0.1)]"
+              className="bg-[rgba(168,139,70,0.1)] backdrop-blur border border-[rgba(168,139,70,0.2)] rounded-xl p-6 transition-shadow duration-300 hover:shadow-[0_0_20px_rgba(168,139,70,0.1)]"
             >
               <div className="flex items-center gap-2 mb-3">
-                <Lightbulb className="w-4 h-4 text-yellow-500" />
-                <h3 className="text-yellow-500 text-sm font-semibold">
+                <Lightbulb className="w-4 h-4 text-[#a88b46]" />
+                <h3 className="text-[#a88b46] text-sm font-semibold">
                   Rake is an Estimate
                 </h3>
               </div>
@@ -926,7 +1039,7 @@ const PokerProfitCalculator = () => {
 
           <div className="mt-8 p-5 bg-zinc-950/50 rounded-xl border border-zinc-800 text-center">
             <p className="text-zinc-500 text-[13px] leading-relaxed">
-              <strong className="text-yellow-500">Pro Tip:</strong> These projections assume a stable win rate. In reality, variance can cause significant short-term swings. 
+              <strong className="text-[#a88b46]">Pro Tip:</strong> These projections assume a stable win rate. In reality, variance can cause significant short-term swings. 
               Focus on volume and continuous improvement — the math will work out over time.
             </p>
           </div>
