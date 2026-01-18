@@ -47,7 +47,7 @@ const ToolsPage = () => {
       name: 'Bad Beat Jackpot', 
       description: 'Track bad beat jackpot sizes and expected value across poker rooms. Find the most +EV tables.', 
       icon: Trophy, 
-      link: '/bad-beat-jackpot',
+      link: '/bbj',
       category: 'Analysis'
     }
   ];
