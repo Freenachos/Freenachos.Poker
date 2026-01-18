@@ -29,7 +29,7 @@ import NachosPokerNavBar from '@/components/NachosPokerNavBar';
  * BBJ Dashboard & Variance Calculator
  * 
  * Part of the Freenachos App Suite
- * Analyzes Bad Beat Jackpot odds, EV, and variance based on 8M+ hand sample
+ * Analyzes Bad Beat Jackpot odds, EV, and variance based on 178M+ hand sample
  */
 
 // ============================================
@@ -113,20 +113,20 @@ interface SimulationResults {
 }
 
 // ============================================
-// CONSTANTS - 42.1M Hand Verified Sample (GG Poker NL100+)
+// CONSTANTS - 178.6M Hand Verified Sample (GG Poker NL100+)
 // ============================================
 
 const BBJ_CONSTANTS: BBJConstants = {
-  handsPerBBJ: 67498,
-  showdownsPerBBJ: 8962,
-  avgPlayersPerTable: 5.96,
-  showdownRate: 0.1328,
-  bbPer100Fees: 2.0831,
-  feesPerBBJ_bb: 8378,
-  poolDivisor: 240.38,
-  breakevenPayout_bb: 1406,
-  breakevenPool_usd: 2017000,
-  evDivisor: 240.38,
+  handsPerBBJ: 91501,
+  showdownsPerBBJ: 13788,
+  avgPlayersPerTable: 5.80,
+  showdownRate: 0.1507,
+  bbPer100Fees: 1.8346,
+  feesPerBBJ_bb: 1679,
+  poolDivisor: 325.87,
+  breakevenPayout_bb: 1679,
+  breakevenPool_usd: 2363000,
+  evDivisor: 325.87,
   winnerSharePercent: 10,
   loserSharePercent: 3,
   tableSharePercent: 0.8,
@@ -159,28 +159,28 @@ const STAKE_OPTIONS: StakeOption[] = [
 ];
 
 const PROBABILITY_DATA = {
-  bbjPerHand: 1 / 67498,
-  bbjPerShowdown: 1 / 8962,
-  showdownRate: 0.1328,
-  avgPlayers: 5.96,
-  totalHandsAnalyzed: 42118396,
-  regularHands: 8186000,
+  bbjPerHand: 1 / 91501,
+  bbjPerShowdown: 1 / 13788,
+  showdownRate: 0.1507,
+  avgPlayers: 5.80,
+  totalHandsAnalyzed: 178609881,
+  regularHands: 144677485,
   rushCashHands: 33932396,
-  totalShowdowns: 5592311,
-  totalBBJsFound: 624,
-  duplicatesSkipped: 86311,
-  totalFeesUSD: 9037553.51,
-  totalFeesBB: 5226344.44,
-  handsToSeeOneBBJ: 67498,
-  handsToWinJackpot: Math.round(67498 * 5.96 / 2 * 2),
-  handsToBeOpponent: Math.round(67498 * 5.96 / 2 * 2),
-  handsToGetTableShare: Math.round(67498 * 5.96 / (5.96 - 2)),
+  totalShowdowns: 26913615,
+  totalBBJsFound: 1952,
+  duplicatesSkipped: 969330,
+  totalFeesUSD: 47898236.39,
+  totalFeesBB: 18993014.69,
+  handsToSeeOneBBJ: 91501,
+  handsToWinJackpot: Math.round(91501 * 5.80),
+  handsToBeOpponent: Math.round(91501 * 5.80),
+  handsToGetTableShare: Math.round(91501 * 5.80 / (5.80 - 2)),
   triggerHand: 'AAATT or better',
-  returnAt8000bb: 0.9552,
-  returnAt8500bb: 1.0149,
-  returnAt9000bb: 1.0746,
-  returnAt9500bb: 1.1343,
-  returnAt10000bb: 1.1940,
+  returnAt8000bb: 0.8222,
+  returnAt8500bb: 0.8736,
+  returnAt9000bb: 0.9250,
+  returnAt9500bb: 0.9764,
+  returnAt10000bb: 1.0277,
 };
 
 // ============================================
@@ -330,7 +330,7 @@ const BBJDashboard: React.FC = () => {
   // STATE
   // ============================================
   
-  const [poolSize, setPoolSize] = useState<number>(2017000);
+  const [poolSize, setPoolSize] = useState<number>(2363000);
   const [selectedStake, setSelectedStake] = useState<string>('0.50/1');
   const [simulationHands, setSimulationHands] = useState<number>(1000000);
   const [numTrials, setNumTrials] = useState<number>(100);
@@ -622,7 +622,7 @@ const BBJDashboard: React.FC = () => {
   const currentEV = useMemo(() => calculateEV(poolSize, selectedStake), [poolSize, selectedStake]);
   
   const evTableData = useMemo(() => {
-    const poolSizes = [1600000, 1800000, 2017000, 2200000, 2400000, 2600000];
+    const poolSizes = [1800000, 2000000, 2200000, 2363000, 2600000, 2800000];
     return poolSizes.map(pool => ({
       pool,
       ...calculateEV(pool, selectedStake)
@@ -1268,23 +1268,23 @@ const BBJDashboard: React.FC = () => {
               <h3 className="text-white text-lg font-bold mb-3">About This Data</h3>
               
               <p className="text-zinc-400 text-sm leading-relaxed mb-3">
-                Based on <strong className="text-[#a88b46]">42.1 million hands</strong> from GGPoker NL100+. 
-                We found <strong className="text-[#a88b46]">624 BBJ triggers</strong> , a frequency of <strong>1 in 67,500 hands</strong>.
+                Based on <strong className="text-[#a88b46]">178.6 million hands</strong> from GGPoker NL100+. 
+                We found <strong className="text-[#a88b46]">1,952 BBJ triggers</strong> , a frequency of <strong>1 in 91,500 hands</strong>.
               </p>
               
               <p className="text-zinc-500 text-xs leading-relaxed mb-5">
-                Sample: 8.2M regular hands + 33.9M Rush & Cash. Rush plays faster (new table each hand) but BBJ rules are identical , combining both ensures robust data.
+                Sample: 144.7M regular hands + 33.9M Rush & Cash. Rush plays faster (new table each hand) but BBJ rules are identical , combining both ensures robust data.
               </p>
               
               {/* Key Numbers */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 text-center">
                   <div className="text-[11px] text-zinc-500 mb-1.5 uppercase tracking-wide">Your Jackpot "Rake"</div>
-                  <div className="text-2xl md:text-3xl text-red-400 font-bold">2.08 bb/100</div>
+                  <div className="text-2xl md:text-3xl text-red-400 font-bold">1.83 bb/100</div>
                 </div>
                 <div className="bg-[#a88b46]/10 border border-[#a88b46]/20 rounded-2xl p-4 text-center">
                   <div className="text-[11px] text-zinc-500 mb-1.5 uppercase tracking-wide">Break-Even Pool</div>
-                  <div className="text-2xl md:text-3xl text-[#a88b46] font-bold">~$2.02M</div>
+                  <div className="text-2xl md:text-3xl text-[#a88b46] font-bold">~$2.36M</div>
                 </div>
               </div>
 
@@ -1328,7 +1328,7 @@ const BBJDashboard: React.FC = () => {
             <h2 className="text-xl md:text-2xl font-bold text-white">Variance Simulator</h2>
           </div>
           <p className="text-center text-zinc-500 text-sm mb-8 max-w-3xl mx-auto">
-            See how the -2.08bb/100 jackpot fee impacts your bankroll over thousands of trials. At a pool size of roughly $2,017,000, the mathematical frequency of hitting the BBJ should offset the fee and brings your theoretical EV back to zero.
+            See how the -1.83bb/100 jackpot fee impacts your bankroll over thousands of trials. At a pool size of roughly $2,363,000, the mathematical frequency of hitting the BBJ should offset the fee and brings your theoretical EV back to zero.
           </p>
 
           {/* Simulator Controls */}
@@ -1442,9 +1442,9 @@ const BBJDashboard: React.FC = () => {
                   </button>
                 ))}
                 <button
-                  onClick={() => setPoolSize(2017000)}
+                  onClick={() => setPoolSize(2363000)}
                   className={`py-1 px-2 rounded-md text-[9px] font-bold transition-all duration-200 ${
-                    poolSize === 2017000 
+                    poolSize === 2363000 
                       ? 'bg-[#a88b46] text-zinc-950' 
                       : 'bg-[#a88b46]/20 text-[#a88b46] hover:bg-[#a88b46]/30 border border-[#a88b46]/30'
                   }`}
@@ -1817,7 +1817,7 @@ const BBJDashboard: React.FC = () => {
               </div>
             </div>
             <div className="flex gap-2 flex-wrap mb-4">
-              {[1600000, 1800000, 2017000, 2200000, 2400000].map(preset => (
+              {[1800000, 2000000, 2363000, 2600000, 2800000].map(preset => (
                 <button
                   key={preset}
                   onClick={() => setPoolSize(preset)}
@@ -2094,7 +2094,7 @@ const BBJDashboard: React.FC = () => {
           transition={{ delay: 0.3 }}
         >
           <p>
-            Data based on 42.1M verified hands from GGPoker (NL100+) • 624 BBJ triggers analyzed
+            Data based on 178.6M verified hands from GGPoker (NL100+) • 1,952 BBJ triggers analyzed
           </p>
           <p className="mt-2">
             Built with 🌮 by Freenachos
