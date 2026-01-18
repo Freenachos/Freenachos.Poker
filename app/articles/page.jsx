@@ -211,8 +211,8 @@ const parseNotionContent = (content) => {
         i++;
       }
       const quoteContent = quoteLines.join(' ').trim();
-      // Check for attribution (— or --)
-      const attrMatch = quoteContent.match(/(.+?)(?:\s*[—–-]{1,2}\s*)([^—–-]+)$/);
+      // Check for attribution (,  or --)
+      const attrMatch = quoteContent.match(/(.+?)(?:\s*[, , -]{1,2}\s*)([^, , -]+)$/);
       if (attrMatch) {
         blocks.push({
           type: 'quote',
@@ -534,7 +534,7 @@ const renderInlineMarkdown = (text) => {
       // `code`
       parts.push(
         <code key={key++} style={{
-          background: 'rgba(255, 179, 71, 0.15)',
+          background: 'rgba(168, 139, 70, 0.15)',
           padding: '2px 6px',
           borderRadius: '4px',
           fontSize: '0.9em',
@@ -551,7 +551,7 @@ const renderInlineMarkdown = (text) => {
           href={match[7]} 
           target="_blank" 
           rel="noopener noreferrer"
-          style={{ color: '#FFB347', textDecoration: 'underline' }}
+          style={{ color: '#a88b46', textDecoration: 'underline' }}
         >
           {match[6]}
         </a>
@@ -896,7 +896,7 @@ export default function FreeNachosArticles() {
 
   const NachoTriangle = ({ size = 40, opacity = 0.1 }) => (
     <svg width={size} height={size} viewBox="0 0 40 40" fill="none" style={{ opacity }}>
-      <path d="M20 2L38 38H2L20 2Z" fill="#FFB347" />
+      <path d="M20 2L38 38H2L20 2Z" fill="#a88b46" />
       <circle cx="12" cy="28" r="2" fill="#4A2C0A" />
       <circle cx="22" cy="22" r="1.5" fill="#4A2C0A" />
       <circle cx="28" cy="30" r="2" fill="#4A2C0A" />
@@ -923,7 +923,7 @@ export default function FreeNachosArticles() {
       <defs>
         <linearGradient id="nachoGrad" x1="32" y1="4" x2="32" y2="56" gradientUnits="userSpaceOnUse">
           <stop stopColor="#FFD485" />
-          <stop offset="1" stopColor="#FFB347" />
+          <stop offset="1" stopColor="#a88b46" />
         </linearGradient>
       </defs>
     </svg>
@@ -958,18 +958,18 @@ export default function FreeNachosArticles() {
         case 'paragraph':
           return <p key={index} style={{ color: 'rgba(255,255,255,0.8)', fontSize: '16px', lineHeight: 1.8, marginBottom: '20px' }}>{renderInlineMarkdown(block.content)}</p>;
         case 'callout':
-          const calloutStyles = { insight: { bg: 'rgba(255, 179, 71, 0.15)', border: 'rgba(255, 179, 71, 0.3)', icon: Lightbulb, iconColor: '#FFB347' }, warning: { bg: 'rgba(239, 68, 68, 0.15)', border: 'rgba(239, 68, 68, 0.3)', icon: Zap, iconColor: '#ef4444' }, stat: { bg: 'rgba(34, 197, 94, 0.15)', border: 'rgba(34, 197, 94, 0.3)', icon: TrendingUp, iconColor: '#22c55e' }, tip: { bg: 'rgba(59, 130, 246, 0.15)', border: 'rgba(59, 130, 246, 0.3)', icon: BookOpen, iconColor: '#60a5fa' } };
+          const calloutStyles = { insight: { bg: 'rgba(168, 139, 70, 0.15)', border: 'rgba(168, 139, 70, 0.3)', icon: Lightbulb, iconColor: '#a88b46' }, warning: { bg: 'rgba(239, 68, 68, 0.15)', border: 'rgba(239, 68, 68, 0.3)', icon: Zap, iconColor: '#ef4444' }, stat: { bg: 'rgba(34, 197, 94, 0.15)', border: 'rgba(34, 197, 94, 0.3)', icon: TrendingUp, iconColor: '#22c55e' }, tip: { bg: 'rgba(59, 130, 246, 0.15)', border: 'rgba(59, 130, 246, 0.3)', icon: BookOpen, iconColor: '#60a5fa' } };
           const style = calloutStyles[block.variant] || calloutStyles.insight;
           const IconComponent = style.icon;
           return (<div key={index} style={{ background: style.bg, border: `1px solid ${style.border}`, borderRadius: '12px', padding: '24px', marginBottom: '24px', marginTop: '24px' }}><div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}><IconComponent size={20} color={style.iconColor} /><span style={{ color: style.iconColor, fontWeight: '600', fontSize: '14px' }}>{block.title}</span></div><p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '15px', lineHeight: 1.7, margin: 0 }}>{renderInlineMarkdown(block.content)}</p></div>);
         case 'list':
-          return (<ul key={index} style={{ marginBottom: '24px', paddingLeft: '8px', listStyle: 'none' }}>{block.items.map((item, i) => (<li key={i} style={{ color: 'rgba(255,255,255,0.8)', fontSize: '15px', lineHeight: 1.8, marginBottom: '8px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}><span style={{ color: '#FFB347', fontSize: '18px', lineHeight: 1.4 }}>▸</span><span>{renderInlineMarkdown(item)}</span></li>))}</ul>);
+          return (<ul key={index} style={{ marginBottom: '24px', paddingLeft: '8px', listStyle: 'none' }}>{block.items.map((item, i) => (<li key={i} style={{ color: 'rgba(255,255,255,0.8)', fontSize: '15px', lineHeight: 1.8, marginBottom: '8px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}><span style={{ color: '#a88b46', fontSize: '18px', lineHeight: 1.4 }}>▸</span><span>{renderInlineMarkdown(item)}</span></li>))}</ul>);
         case 'code':
-          return (<div key={index} style={{ background: 'rgba(0,0,0,0.4)', borderRadius: '12px', overflow: 'hidden', marginBottom: '24px', marginTop: '24px', border: '1px solid rgba(255,255,255,0.1)' }}><div style={{ background: 'rgba(255,255,255,0.05)', padding: '12px 16px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', gap: '8px' }}><Code size={14} color="#FFB347" /><span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '500' }}>{block.title || block.language}</span></div><pre style={{ margin: 0, padding: '20px', overflow: 'auto', fontFamily: 'monospace', fontSize: '13px', lineHeight: 1.6, color: 'rgba(255,255,255,0.9)' }}><code>{block.content}</code></pre></div>);
+          return (<div key={index} style={{ background: 'rgba(0,0,0,0.4)', borderRadius: '12px', overflow: 'hidden', marginBottom: '24px', marginTop: '24px', border: '1px solid rgba(255,255,255,0.1)' }}><div style={{ background: 'rgba(255,255,255,0.05)', padding: '12px 16px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', gap: '8px' }}><Code size={14} color="#a88b46" /><span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '500' }}>{block.title || block.language}</span></div><pre style={{ margin: 0, padding: '20px', overflow: 'auto', fontFamily: 'monospace', fontSize: '13px', lineHeight: 1.6, color: 'rgba(255,255,255,0.9)' }}><code>{block.content}</code></pre></div>);
         case 'data-viz':
-          return (<div key={index} className="glass-card" style={{ borderRadius: '12px', padding: '24px', marginBottom: '24px', marginTop: '24px' }}><div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}><BarChart3 size={18} color="#FFB347" /><span style={{ color: '#FFB347', fontWeight: '600', fontSize: '14px' }}>{block.title}</span></div><div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>{block.data.labels.map((label, i) => { const value = block.data.values[i]; const maxValue = Math.max(...block.data.values.map(Math.abs)); const percentage = (Math.abs(value) / maxValue) * 100; const isPositive = value >= 0; return (<div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ width: '70px', color: 'rgba(255,255,255,0.6)', fontSize: '13px', fontWeight: '500' }}>{label}</span><div style={{ flex: 1, height: '28px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', overflow: 'hidden' }}><div style={{ width: `${percentage}%`, height: '100%', background: isPositive ? 'linear-gradient(90deg, rgba(34, 197, 94, 0.6), rgba(34, 197, 94, 0.9))' : 'linear-gradient(90deg, rgba(239, 68, 68, 0.6), rgba(239, 68, 68, 0.9))', borderRadius: '6px', transition: 'width 0.5s ease-out' }} /></div><span style={{ width: '70px', textAlign: 'right', color: isPositive ? '#22c55e' : '#ef4444', fontSize: '14px', fontWeight: '600' }}>{isPositive ? '+' : ''}{value.toFixed(1)}</span></div>); })}</div></div>);
+          return (<div key={index} className="glass-card" style={{ borderRadius: '12px', padding: '24px', marginBottom: '24px', marginTop: '24px' }}><div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}><BarChart3 size={18} color="#a88b46" /><span style={{ color: '#a88b46', fontWeight: '600', fontSize: '14px' }}>{block.title}</span></div><div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>{block.data.labels.map((label, i) => { const value = block.data.values[i]; const maxValue = Math.max(...block.data.values.map(Math.abs)); const percentage = (Math.abs(value) / maxValue) * 100; const isPositive = value >= 0; return (<div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ width: '70px', color: 'rgba(255,255,255,0.6)', fontSize: '13px', fontWeight: '500' }}>{label}</span><div style={{ flex: 1, height: '28px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', overflow: 'hidden' }}><div style={{ width: `${percentage}%`, height: '100%', background: isPositive ? 'linear-gradient(90deg, rgba(34, 197, 94, 0.6), rgba(34, 197, 94, 0.9))' : 'linear-gradient(90deg, rgba(239, 68, 68, 0.6), rgba(239, 68, 68, 0.9))', borderRadius: '6px', transition: 'width 0.5s ease-out' }} /></div><span style={{ width: '70px', textAlign: 'right', color: isPositive ? '#22c55e' : '#ef4444', fontSize: '14px', fontWeight: '600' }}>{isPositive ? '+' : ''}{value.toFixed(1)}</span></div>); })}</div></div>);
         case 'quote':
-          return (<blockquote key={index} style={{ borderLeft: '4px solid #FFB347', margin: '32px 0', padding: '20px 24px', background: 'rgba(255, 179, 71, 0.08)', borderRadius: '0 12px 12px 0' }}><Quote size={24} color="#FFB347" style={{ marginBottom: '12px', opacity: 0.6 }} /><p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '18px', fontStyle: 'italic', lineHeight: 1.7, margin: 0 }}>{renderInlineMarkdown(block.content)}</p>{block.attribution && (<cite style={{ display: 'block', marginTop: '12px', color: 'rgba(255,255,255,0.5)', fontSize: '14px', fontStyle: 'normal' }}>— {block.attribution}</cite>)}</blockquote>);
+          return (<blockquote key={index} style={{ borderLeft: '4px solid #a88b46', margin: '32px 0', padding: '20px 24px', background: 'rgba(168, 139, 70, 0.08)', borderRadius: '0 12px 12px 0' }}><Quote size={24} color="#a88b46" style={{ marginBottom: '12px', opacity: 0.6 }} /><p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '18px', fontStyle: 'italic', lineHeight: 1.7, margin: 0 }}>{renderInlineMarkdown(block.content)}</p>{block.attribution && (<cite style={{ display: 'block', marginTop: '12px', color: 'rgba(255,255,255,0.5)', fontSize: '14px', fontStyle: 'normal' }}>,  {block.attribution}</cite>)}</blockquote>);
         case 'image':
           return (<figure key={index} style={{ margin: '32px 0', textAlign: 'center' }}>{block.src ? (<img src={block.src} alt={block.alt || ''} style={{ maxWidth: '100%', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }} />) : (<div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '12px', padding: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.1)' }}><FileImage size={48} color="rgba(255,255,255,0.3)" /><span style={{ marginLeft: '12px', color: 'rgba(255,255,255,0.4)' }}>[Image: {block.alt || 'Image'}]</span></div>)}{block.caption && <figcaption style={{ marginTop: '12px', color: 'rgba(255,255,255,0.5)', fontSize: '13px' }}>{block.caption}</figcaption>}</figure>);
         default: return null;
@@ -981,7 +981,7 @@ export default function FreeNachosArticles() {
     return (
       <article style={{ maxWidth: '720px', margin: '0 auto' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px', flexWrap: 'wrap' }}>
-          <span style={{ background: 'rgba(255, 179, 71, 0.2)', color: '#FFB347', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{article.category}</span>
+          <span style={{ background: 'rgba(168, 139, 70, 0.2)', color: '#a88b46', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{article.category}</span>
           {!article.published && (<span style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Draft</span>)}
           {isScheduled && (<span style={{ background: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: '600', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '6px' }}><Calendar size={12} />{scheduledDate}</span>)}
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'rgba(255,255,255,0.5)', fontSize: '13px' }}><User size={14} /><span>FreeNachos</span></div>
@@ -998,27 +998,86 @@ export default function FreeNachosArticles() {
     const isScheduled = article.scheduledFor && new Date(article.scheduledFor) > new Date();
     
     return (
-      <div onClick={() => onClick(article)} className="glass-card card-hover" style={{ borderRadius: '16px', overflow: 'hidden', cursor: 'pointer', animation: 'fadeInUp 0.5s ease-out' }}>
+      <div 
+        onClick={() => onClick(article)} 
+        className="glass-card-gold" 
+        style={{ 
+          borderRadius: '20px', 
+          overflow: 'hidden', 
+          cursor: 'pointer', 
+          animation: 'fadeInUp 0.5s ease-out'
+        }}
+      >
         {article.thumbnailUrl ? (
-          <div style={{ height: '160px', background: 'rgba(255, 179, 71, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+          <div style={{ height: '180px', background: 'rgba(168, 139, 70, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
             <img src={article.thumbnailUrl} alt={article.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
         ) : (
-          <div style={{ height: '160px', background: 'rgba(255, 179, 71, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <IconComponent size={48} color="#FFB347" style={{ opacity: 0.5 }} />
+          <div style={{ height: '180px', background: 'linear-gradient(135deg, rgba(168, 139, 70, 0.08) 0%, rgba(168, 139, 70, 0.03) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <IconComponent size={48} color="#a88b46" style={{ opacity: 0.4 }} />
           </div>
         )}
-        <div style={{ padding: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', flexWrap: 'wrap' }}>
-            <span style={{ background: 'rgba(255, 179, 71, 0.2)', color: '#FFB347', padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase' }}>{article.category}</span>
-            {!article.published && (<span style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase' }}>Draft</span>)}
-            {isScheduled && (<span style={{ background: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa', padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}><Calendar size={10} />Scheduled</span>)}
+        <div style={{ padding: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px', flexWrap: 'wrap' }}>
+            <span style={{ 
+              color: '#a88b46', 
+              fontSize: '10px', 
+              fontWeight: '600', 
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em'
+            }}>{article.category}</span>
+            <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '10px' }}>•</span>
+            <span style={{ 
+              color: '#a88b46', 
+              fontSize: '10px', 
+              fontWeight: '500', 
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}><Clock size={10} />{article.readTime}</span>
+            {!article.published && (
+              <span style={{ 
+                background: 'rgba(239, 68, 68, 0.15)', 
+                color: '#ef4444', 
+                padding: '3px 8px', 
+                borderRadius: '4px', 
+                fontSize: '9px', 
+                fontWeight: '600', 
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em'
+              }}>Draft</span>
+            )}
+            {isScheduled && (
+              <span style={{ 
+                background: 'rgba(59, 130, 246, 0.15)', 
+                color: '#60a5fa', 
+                padding: '3px 8px', 
+                borderRadius: '4px', 
+                fontSize: '9px', 
+                fontWeight: '600', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '4px',
+                letterSpacing: '0.05em'
+              }}><Calendar size={9} />Scheduled</span>
+            )}
           </div>
-          <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: '600', marginBottom: '8px', lineHeight: 1.3 }}>{article.title}</h3>
-          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', lineHeight: 1.5, marginBottom: '12px' }}>{article.excerpt?.slice(0, 100)}{article.excerpt?.length > 100 ? '...' : ''}</p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Clock size={12} />{article.readTime}</span>
-          </div>
+          <h3 style={{ 
+            color: '#FFFFFF', 
+            fontSize: '17px', 
+            fontWeight: '600', 
+            marginBottom: '10px', 
+            lineHeight: 1.35,
+            letterSpacing: '-0.01em'
+          }}>{article.title}</h3>
+          <p style={{ 
+            color: 'rgba(255,255,255,0.5)', 
+            fontSize: '13px', 
+            lineHeight: 1.6, 
+            marginBottom: '0' 
+          }}>{article.excerpt?.slice(0, 100)}{article.excerpt?.length > 100 ? '...' : ''}</p>
         </div>
       </div>
     );
@@ -1066,7 +1125,7 @@ export default function FreeNachosArticles() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: 'rgba(255,255,255,0.03)', borderBottom: collapsed ? 'none' : '1px solid rgba(255,255,255,0.1)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <GripVertical size={16} color="rgba(255,255,255,0.3)" />
-              <span style={{ color: '#FFB347', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>{block.type}</span>
+              <span style={{ color: '#a88b46', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>{block.type}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
               <button onClick={() => moveBlock(index, -1)} disabled={index === 0} style={{ background: 'none', border: 'none', padding: '6px', cursor: index === 0 ? 'not-allowed' : 'pointer', opacity: index === 0 ? 0.3 : 1 }}><ChevronUp size={14} color="rgba(255,255,255,0.5)" /></button>
@@ -1100,11 +1159,11 @@ export default function FreeNachosArticles() {
               </>)}
               {block.type === 'list' && (<div>
                 {block.items.map((item, itemIndex) => (<div key={itemIndex} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                  <span style={{ color: '#FFB347', padding: '8px 0' }}>▸</span>
+                  <span style={{ color: '#a88b46', padding: '8px 0' }}>▸</span>
                   <input type="text" value={item} onChange={(e) => { const newItems = [...block.items]; newItems[itemIndex] = e.target.value; updateBlock(index, { items: newItems }); }} style={{ flex: 1, background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '8px 12px', color: '#fff', fontSize: '13px' }} />
                   <button onClick={() => { const newItems = block.items.filter((_, i) => i !== itemIndex); updateBlock(index, { items: newItems.length ? newItems : [''] }); }} style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer' }}><X size={14} color="#ef4444" /></button>
                 </div>))}
-                <button onClick={() => updateBlock(index, { items: [...block.items, ''] })} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255, 179, 71, 0.1)', border: '1px solid rgba(255, 179, 71, 0.3)', borderRadius: '6px', padding: '8px 12px', color: '#FFB347', fontSize: '12px', cursor: 'pointer' }}><Plus size={12} />Add Item</button>
+                <button onClick={() => updateBlock(index, { items: [...block.items, ''] })} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(168, 139, 70, 0.1)', border: '1px solid rgba(168, 139, 70, 0.3)', borderRadius: '6px', padding: '8px 12px', color: '#a88b46', fontSize: '12px', cursor: 'pointer' }}><Plus size={12} />Add Item</button>
               </div>)}
               {block.type === 'code' && (<>
                 <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
@@ -1132,7 +1191,7 @@ export default function FreeNachosArticles() {
                     <button onClick={() => { const newLabels = block.data.labels.filter((_, i) => i !== labelIndex); const newValues = block.data.values.filter((_, i) => i !== labelIndex); updateBlock(index, { data: { labels: newLabels.length ? newLabels : ['A'], values: newValues.length ? newValues : [0] } }); }} style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer' }}><X size={12} color="#ef4444" /></button>
                   </div>))}
                 </div>
-                <button onClick={() => updateBlock(index, { data: { labels: [...block.data.labels, 'New'], values: [...block.data.values, 0] } })} style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255, 179, 71, 0.1)', border: '1px solid rgba(255, 179, 71, 0.3)', borderRadius: '6px', padding: '8px 12px', color: '#FFB347', fontSize: '12px', cursor: 'pointer' }}><Plus size={12} />Add Data Point</button>
+                <button onClick={() => updateBlock(index, { data: { labels: [...block.data.labels, 'New'], values: [...block.data.values, 0] } })} style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(168, 139, 70, 0.1)', border: '1px solid rgba(168, 139, 70, 0.3)', borderRadius: '6px', padding: '8px 12px', color: '#a88b46', fontSize: '12px', cursor: 'pointer' }}><Plus size={12} />Add Data Point</button>
               </>)}
             </div>
           )}
@@ -1190,11 +1249,11 @@ export default function FreeNachosArticles() {
                 display: 'flex', 
                 alignItems: 'center', 
                 gap: '8px', 
-                background: 'linear-gradient(135deg, rgba(255, 179, 71, 0.2) 0%, rgba(255, 179, 71, 0.1) 100%)', 
-                border: '1px solid rgba(255, 179, 71, 0.3)', 
+                background: 'linear-gradient(135deg, rgba(168, 139, 70, 0.2) 0%, rgba(168, 139, 70, 0.1) 100%)', 
+                border: '1px solid rgba(168, 139, 70, 0.3)', 
                 borderRadius: '8px', 
                 padding: '10px 16px', 
-                color: '#FFB347', 
+                color: '#a88b46', 
                 fontSize: '13px', 
                 fontWeight: '600', 
                 cursor: 'pointer' 
@@ -1217,11 +1276,11 @@ export default function FreeNachosArticles() {
 
         <div>
           <div className="glass-card" style={{ borderRadius: '12px', padding: '20px', position: 'sticky', top: '20px' }}>
-            <h4 style={{ color: '#fff', fontSize: '14px', fontWeight: '600', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}><Plus size={14} color="#FFB347" />Add Block</h4>
+            <h4 style={{ color: '#fff', fontSize: '14px', fontWeight: '600', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}><Plus size={14} color="#a88b46" />Add Block</h4>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
               {blockTypes.map(({ type, icon: Icon, label }) => (
                 <button key={type} onClick={() => addBlock(type)} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px', color: 'rgba(255,255,255,0.7)', fontSize: '12px', cursor: 'pointer', textAlign: 'left' }}>
-                  <Icon size={14} color="#FFB347" />{label}
+                  <Icon size={14} color="#a88b46" />{label}
                 </button>
               ))}
             </div>
@@ -1260,16 +1319,16 @@ export default function FreeNachosArticles() {
   // Notion Paste Modal
   const NotionPasteModal = () => (
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-      <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '600px', margin: '20px', border: '1px solid rgba(255, 179, 71, 0.3)' }}>
+      <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '600px', margin: '20px', border: '1px solid rgba(168, 139, 70, 0.3)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255, 179, 71, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ClipboardPaste size={24} color="#FFB347" /></div>
+          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(168, 139, 70, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ClipboardPaste size={24} color="#a88b46" /></div>
           <div><h2 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', margin: 0 }}>Paste from Notion</h2><p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', margin: '4px 0 0' }}>Copy content from Notion and paste it here. Images can be pasted directly!</p></div>
         </div>
         
         {uploadingImages && (
-          <div style={{ background: 'rgba(255, 179, 71, 0.1)', border: '1px solid rgba(255, 179, 71, 0.3)', borderRadius: '8px', padding: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Loader size={16} color="#FFB347" className="spin" />
-            <span style={{ color: '#FFB347', fontSize: '13px' }}>Uploading images...</span>
+          <div style={{ background: 'rgba(168, 139, 70, 0.1)', border: '1px solid rgba(168, 139, 70, 0.3)', borderRadius: '8px', padding: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <Loader size={16} color="#a88b46" className="spin" />
+            <span style={{ color: '#a88b46', fontSize: '13px' }}>Uploading images...</span>
           </div>
         )}
         
@@ -1333,7 +1392,7 @@ Supported formats:
             disabled={uploadingImages}
             style={{ 
               flex: 1, 
-              background: uploadingImages ? 'rgba(255, 179, 71, 0.3)' : 'linear-gradient(135deg, #FFB347 0%, #E09A30 100%)', 
+              background: uploadingImages ? 'rgba(168, 139, 70, 0.3)' : 'linear-gradient(135deg, #a88b46 0%, #E09A30 100%)', 
               border: 'none', 
               borderRadius: '8px', 
               padding: '12px', 
@@ -1359,14 +1418,14 @@ Supported formats:
   const LoginModal = () => (
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
       <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '400px', margin: '20px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '24px' }}><Fish size={40} color="#FFB347" style={{ marginBottom: '12px' }} /><h2 style={{ color: '#fff', fontSize: '20px', fontWeight: '700', margin: 0 }}>Admin Login</h2><p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', marginTop: '8px' }}>Sign in to manage articles</p></div>
+        <div style={{ textAlign: 'center', marginBottom: '24px' }}><Fish size={40} color="#a88b46" style={{ marginBottom: '12px' }} /><h2 style={{ color: '#fff', fontSize: '20px', fontWeight: '700', margin: 0 }}>Admin Login</h2><p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', marginTop: '8px' }}>Sign in to manage articles</p></div>
         {loginError && (<div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '8px', padding: '12px', marginBottom: '16px', color: '#ef4444', fontSize: '13px' }}>{loginError}</div>)}
         <form onSubmit={handleLogin}>
           <div style={{ marginBottom: '16px' }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px', textTransform: 'uppercase' }}>Email</label><input type="email" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} required style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px 16px', color: '#fff', fontSize: '14px' }} /></div>
           <div style={{ marginBottom: '24px' }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px', textTransform: 'uppercase' }}>Password</label><input type="password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px 16px', color: '#fff', fontSize: '14px' }} /></div>
           <div style={{ display: 'flex', gap: '12px' }}>
             <button type="button" onClick={() => { setShowLogin(false); setLoginError(''); }} style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '12px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}>Cancel</button>
-            <button type="submit" disabled={loginLoading} style={{ flex: 1, background: loginLoading ? 'rgba(255, 179, 71, 0.5)' : 'linear-gradient(135deg, #FFB347 0%, #E09A30 100%)', border: 'none', borderRadius: '8px', padding: '12px', color: '#0a0a0a', fontSize: '14px', fontWeight: '600', cursor: loginLoading ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>{loginLoading ? (<><Loader size={14} className="spin" />Signing in...</>) : 'Sign In'}</button>
+            <button type="submit" disabled={loginLoading} style={{ flex: 1, background: loginLoading ? 'rgba(168, 139, 70, 0.5)' : 'linear-gradient(135deg, #a88b46 0%, #E09A30 100%)', border: 'none', borderRadius: '8px', padding: '12px', color: '#0a0a0a', fontSize: '14px', fontWeight: '600', cursor: loginLoading ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>{loginLoading ? (<><Loader size={14} className="spin" />Signing in...</>) : 'Sign In'}</button>
           </div>
         </form>
       </div>
@@ -1374,99 +1433,455 @@ Supported formats:
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%)', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif', position: 'relative', overflow: 'hidden' }}>
+    <div style={{ minHeight: '100vh', background: '#0A0A0A', color: '#fff', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif', position: 'relative', overflow: 'hidden' }}>
       {showLogin && <LoginModal />}
       {showDeleteConfirm && <DeleteConfirmModal article={showDeleteConfirm} />}
       {showNotionPaste && <NotionPasteModal />}
       {showScheduleModal && <ScheduleModal />}
       
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0 }}>
-        {nachos.map(nacho => (<div key={nacho.id} style={{ position: 'absolute', left: `${nacho.x}%`, top: `${nacho.y}%`, animation: `floatNacho ${nacho.duration}s ease-in-out infinite`, animationDelay: `${nacho.delay}s`, '--moveX': `${nacho.moveX}px`, '--moveY': `${nacho.moveY}px` }}><NachoTriangle size={nacho.size} opacity={nacho.opacity} /></div>))}
-      </div>
-      
+      {/* Noise/Grain Texture Overlay */}
+      <div 
+        className="noise-overlay"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          zIndex: 9999,
+          opacity: 0.03
+        }}
+      />
+
       <style>{`
-        @keyframes floatNacho { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(var(--moveX), var(--moveY)) rotate(180deg); } }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
+        
+        html, body { scroll-behavior: smooth; overflow-x: hidden; }
+        
+        .noise-overlay {
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes traceBorder { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .spin { animation: spin 1s linear infinite; }
-        .glass-card { background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
-        .btn-hover { transition: transform 0.2s ease; }
+        
+        /* Gold Sparkborder Effect */
+        @keyframes traceBorder { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
+        
+        .spark-border-gold { 
+          position: relative; 
+          overflow: hidden; 
+          border-radius: 24px; 
+          background: rgba(18, 18, 18, 0.6);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+        }
+        .spark-border-gold::before { 
+          content: ""; 
+          position: absolute; 
+          inset: 0; 
+          border-radius: inherit; 
+          padding: 1px; 
+          background: linear-gradient(135deg, rgba(168, 139, 70, 0.5), rgba(168, 139, 70, 0.15)); 
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); 
+          -webkit-mask-composite: xor; 
+          mask-composite: exclude; 
+          z-index: 1; 
+          pointer-events: none; 
+        }
+        .spark-border-gold::after { 
+          content: ""; 
+          position: absolute; 
+          top: 0; 
+          left: 0; 
+          width: 80px; 
+          height: 2px; 
+          background: linear-gradient(90deg, transparent 0%, #a88b46 50%, #a88b46 100%); 
+          box-shadow: 0 0 15px 2px rgba(168, 139, 70, 0.6); 
+          offset-path: rect(0 100% 100% 0 round 24px); 
+          animation: traceBorder 6s linear infinite; 
+          z-index: 2; 
+          pointer-events: none; 
+        }
+        
+        /* Glassmorphism Card with Gold Border */
+        .glass-card-gold { 
+          background: rgba(18, 18, 18, 0.5); 
+          backdrop-filter: blur(16px); 
+          -webkit-backdrop-filter: blur(16px); 
+          border: 1px solid rgba(168, 139, 70, 0.2);
+          border-radius: 20px;
+          position: relative;
+          overflow: hidden;
+          transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .glass-card-gold::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: radial-gradient(circle at 50% 0%, rgba(168, 139, 70, 0.08) 0%, transparent 60%);
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          pointer-events: none;
+          border-radius: inherit;
+        }
+        .glass-card-gold:hover { 
+          transform: translateY(-6px); 
+          border-color: rgba(168, 139, 70, 0.4); 
+          box-shadow: 0 24px 64px rgba(0,0,0,0.4), 0 0 40px rgba(168, 139, 70, 0.08); 
+        }
+        .glass-card-gold:hover::before {
+          opacity: 1;
+        }
+        
+        /* Legacy glass-card for modals */
+        .glass-card { background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(168, 139, 70, 0.15); }
+        
+        .btn-hover { transition: all 0.3s ease; }
         .btn-hover:hover:not(:disabled) { transform: translateY(-2px); }
-        .spark-border { position: relative; overflow: hidden; border-radius: 16px; background: #0a0a0a; }
-        .spark-border::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 2px; background: linear-gradient(135deg, rgba(255, 179, 71, 0.3), rgba(255, 179, 71, 0.1)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; z-index: 1; pointer-events: none; }
-        .spark-border::after { content: ""; position: absolute; top: 0; left: 0; width: 100px; height: 2px; background: linear-gradient(90deg, transparent 0%, #FFB347 50%, #FFB347 100%); box-shadow: 0 0 10px 1px rgba(255, 179, 71, 0.6); offset-path: rect(0 100% 100% 0 round 16px); animation: traceBorder 5s linear infinite; z-index: 2; pointer-events: none; }
-        .filter-btn { padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .filter-btn.active { background: #FFB347; color: #0a0a0a; border-color: #FFB347; }
-        .filter-btn:not(.active) { background: rgba(255, 255, 255, 0.05); color: rgba(255, 255, 255, 0.6); }
-        .filter-btn:not(.active):hover { background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.8); }
+        
+        /* Minimalist Category Filters */
+        .filter-text { 
+          padding: 10px 18px; 
+          font-size: 13px; 
+          font-weight: 500; 
+          cursor: pointer; 
+          transition: all 0.3s ease; 
+          border: none;
+          background: transparent;
+          color: rgba(255, 255, 255, 0.5);
+          position: relative;
+          border-radius: 8px;
+        }
+        .filter-text::after {
+          content: '';
+          position: absolute;
+          bottom: 6px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 0;
+          height: 2px;
+          background: #a88b46;
+          transition: width 0.3s ease;
+          border-radius: 1px;
+        }
+        .filter-text.active { 
+          color: #a88b46;
+          text-shadow: 0 0 20px rgba(168, 139, 70, 0.5);
+        }
+        .filter-text.active::after {
+          width: 50%;
+        }
+        .filter-text:not(.active):hover { 
+          color: rgba(255, 255, 255, 0.8);
+          background: rgba(168, 139, 70, 0.05);
+        }
+        
         select option { background: #1a1a1a; color: #fff; }
+
+        /* === DEPTH-OF-FIELD BOKEH ANIMATIONS === */
+        @keyframes peripheralWobble1 {
+          0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+          15% { transform: translate(3px, -5px) rotate(2deg) scale(1.01); }
+          30% { transform: translate(6px, -3px) rotate(4deg) scale(0.99); }
+          45% { transform: translate(4px, -8px) rotate(6deg) scale(1.02); }
+          60% { transform: translate(2px, -4px) rotate(3deg) scale(0.98); }
+          75% { transform: translate(5px, -6px) rotate(5deg) scale(1.01); }
+          90% { transform: translate(1px, -2px) rotate(1deg) scale(1); }
+          100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+        }
+        @keyframes peripheralWobble2 {
+          0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+          20% { transform: translate(-4px, -6px) rotate(-3deg) scale(1.02); }
+          40% { transform: translate(-2px, -10px) rotate(-5deg) scale(0.98); }
+          60% { transform: translate(-6px, -4px) rotate(-2deg) scale(1.01); }
+          80% { transform: translate(-3px, -7px) rotate(-4deg) scale(0.99); }
+          100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+        }
+        @keyframes foregroundDrift1 {
+          0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+          20% { transform: translate(8px, -12px) rotate(8deg) scale(1.02); }
+          40% { transform: translate(15px, -8px) rotate(15deg) scale(0.98); }
+          60% { transform: translate(10px, -18px) rotate(22deg) scale(1.01); }
+          80% { transform: translate(5px, -5px) rotate(12deg) scale(0.99); }
+          100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+        }
+        @keyframes foregroundDrift2 {
+          0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+          25% { transform: translate(-10px, -15px) rotate(-12deg) scale(1.03); }
+          50% { transform: translate(-5px, -25px) rotate(-20deg) scale(0.97); }
+          75% { transform: translate(-12px, -10px) rotate(-8deg) scale(1.02); }
+          100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+        }
+        @keyframes foregroundDrift3 {
+          0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+          30% { transform: translate(12px, -20px) rotate(18deg) scale(0.98); }
+          60% { transform: translate(6px, -10px) rotate(10deg) scale(1.02); }
+          100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+        }
+        @keyframes midgroundDrift1 {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          20% { transform: translate(20px, -30px) rotate(25deg); }
+          40% { transform: translate(35px, -20px) rotate(50deg); }
+          60% { transform: translate(25px, -40px) rotate(75deg); }
+          80% { transform: translate(10px, -15px) rotate(55deg); }
+          100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        @keyframes midgroundDrift2 {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          25% { transform: translate(-25px, -35px) rotate(-40deg); }
+          50% { transform: translate(-15px, -50px) rotate(-80deg); }
+          75% { transform: translate(-30px, -25px) rotate(-50deg); }
+          100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        @keyframes midgroundDrift3 {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          33% { transform: translate(30px, -25px) rotate(60deg); }
+          66% { transform: translate(15px, -45px) rotate(120deg); }
+          100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        @keyframes backgroundDart1 {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          10% { transform: translate(25px, -40px) rotate(45deg); }
+          25% { transform: translate(50px, -25px) rotate(90deg); }
+          40% { transform: translate(35px, -60px) rotate(150deg); }
+          55% { transform: translate(60px, -35px) rotate(200deg); }
+          70% { transform: translate(40px, -55px) rotate(270deg); }
+          85% { transform: translate(20px, -30px) rotate(320deg); }
+          100% { transform: translate(0, 0) rotate(360deg); }
+        }
+        @keyframes backgroundDart2 {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          15% { transform: translate(-35px, -50px) rotate(-60deg); }
+          30% { transform: translate(-20px, -30px) rotate(-120deg); }
+          50% { transform: translate(-50px, -45px) rotate(-180deg); }
+          70% { transform: translate(-30px, -60px) rotate(-250deg); }
+          85% { transform: translate(-15px, -25px) rotate(-310deg); }
+          100% { transform: translate(0, 0) rotate(-360deg); }
+        }
       `}</style>
 
-      <div style={{position: 'relative', zIndex: 2, maxWidth: '1200px', margin: '0 auto', padding: '20px'}}>
+      {/* ==================== BACKGROUND GLOWS ==================== */}
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '-10%', right: '-8%', width: '900px', height: '900px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(168, 139, 70, 0.08) 0%, transparent 60%)', filter: 'blur(80px)', opacity: 0.6 }} />
+        <div style={{ position: 'absolute', bottom: '-15%', left: '-12%', width: '1000px', height: '1000px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(168, 139, 70, 0.06) 0%, transparent 55%)', filter: 'blur(100px)', opacity: 0.5 }} />
+        <div style={{ position: 'absolute', top: '40%', right: '5%', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(168, 139, 70, 0.05) 0%, transparent 50%)', filter: 'blur(60px)', opacity: 0.4 }} />
+      </div>
+
+      {/* ==================== PERIPHERAL BOKEH NACHOS ==================== */}
+      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '5%', left: '-8%', width: '180px', height: '180px', opacity: 0.06, filter: 'blur(18px)', animation: 'peripheralWobble1 120s ease-in-out infinite' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', top: '40%', left: '-12%', width: '220px', height: '220px', opacity: 0.05, filter: 'blur(22px)', animation: 'peripheralWobble2 140s ease-in-out infinite', animationDelay: '-40s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', bottom: '10%', left: '-6%', width: '160px', height: '160px', opacity: 0.07, filter: 'blur(16px)', animation: 'peripheralWobble1 100s ease-in-out infinite', animationDelay: '-70s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', top: '8%', right: '-10%', width: '200px', height: '200px', opacity: 0.05, filter: 'blur(20px)', animation: 'peripheralWobble2 130s ease-in-out infinite', animationDelay: '-20s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', top: '50%', right: '-14%', width: '240px', height: '240px', opacity: 0.04, filter: 'blur(24px)', animation: 'peripheralWobble1 150s ease-in-out infinite', animationDelay: '-60s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', bottom: '15%', right: '-8%', width: '170px', height: '170px', opacity: 0.06, filter: 'blur(17px)', animation: 'peripheralWobble2 110s ease-in-out infinite', animationDelay: '-90s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+      </div>
+
+      {/* ==================== FOREGROUND BOKEH NACHOS ==================== */}
+      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 1, overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '5%', left: '3%', width: '90px', height: '90px', opacity: 0.12, filter: 'blur(12px)', animation: 'foregroundDrift1 80s ease-in-out infinite' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', bottom: '10%', right: '5%', width: '110px', height: '110px', opacity: 0.10, filter: 'blur(14px)', animation: 'foregroundDrift2 90s ease-in-out infinite', animationDelay: '-30s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', top: '45%', left: '-2%', width: '80px', height: '80px', opacity: 0.08, filter: 'blur(10px)', animation: 'foregroundDrift3 70s ease-in-out infinite', animationDelay: '-45s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', top: '15%', right: '8%', width: '70px', height: '70px', opacity: 0.09, filter: 'blur(11px)', animation: 'foregroundDrift1 85s ease-in-out infinite', animationDelay: '-60s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+      </div>
+
+      {/* ==================== MIDGROUND BOKEH NACHOS ==================== */}
+      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 2, overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '20%', left: '15%', width: '40px', height: '40px', opacity: 0.18, filter: 'blur(4px)', animation: 'midgroundDrift1 45s ease-in-out infinite' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', top: '60%', right: '20%', width: '35px', height: '35px', opacity: 0.16, filter: 'blur(5px)', animation: 'midgroundDrift2 50s ease-in-out infinite', animationDelay: '-15s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', bottom: '30%', left: '8%', width: '45px', height: '45px', opacity: 0.15, filter: 'blur(4px)', animation: 'midgroundDrift3 55s ease-in-out infinite', animationDelay: '-25s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', top: '35%', right: '12%', width: '38px', height: '38px', opacity: 0.14, filter: 'blur(3px)', animation: 'midgroundDrift1 48s ease-in-out infinite', animationDelay: '-35s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', top: '75%', left: '25%', width: '32px', height: '32px', opacity: 0.17, filter: 'blur(4px)', animation: 'midgroundDrift2 42s ease-in-out infinite', animationDelay: '-40s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', top: '10%', left: '55%', width: '42px', height: '42px', opacity: 0.13, filter: 'blur(4px)', animation: 'midgroundDrift3 52s ease-in-out infinite', animationDelay: '-50s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+      </div>
+
+      {/* ==================== BACKGROUND (FOCAL) BOKEH NACHOS ==================== */}
+      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 3, overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '25%', left: '20%', width: '18px', height: '18px', opacity: 0.35, filter: 'blur(0.5px)', animation: 'backgroundDart1 25s linear infinite' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', top: '55%', right: '25%', width: '15px', height: '15px', opacity: 0.30, filter: 'blur(0.5px)', animation: 'backgroundDart2 28s linear infinite', animationDelay: '-8s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', bottom: '35%', left: '35%', width: '20px', height: '20px', opacity: 0.28, filter: 'blur(0.5px)', animation: 'backgroundDart1 22s linear infinite', animationDelay: '-12s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', top: '40%', right: '35%', width: '16px', height: '16px', opacity: 0.32, filter: 'blur(0.5px)', animation: 'backgroundDart2 30s linear infinite', animationDelay: '-18s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', top: '15%', left: '45%', width: '14px', height: '14px', opacity: 0.25, filter: 'blur(0.5px)', animation: 'backgroundDart1 26s linear infinite', animationDelay: '-5s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+        <div style={{ position: 'absolute', bottom: '20%', right: '40%', width: '17px', height: '17px', opacity: 0.27, filter: 'blur(0.5px)', animation: 'backgroundDart2 24s linear infinite', animationDelay: '-15s' }}>
+          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}><polygon points="50,5 95,95 5,95" fill="#a88b46" /></svg>
+        </div>
+      </div>
+
+      <div style={{position: 'relative', zIndex: 10, maxWidth: '1200px', margin: '0 auto', padding: '20px'}}>
         <NachosPokerNavBar />
         
-        <div className="card-hover spark-border" style={{ marginBottom: '30px', padding: '28px 32px', animation: 'fadeInUp 0.6s ease-out', display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
-          <div style={{ flexShrink: 0, animation: 'bounce 2s ease-in-out infinite' }}><CartoonNacho /></div>
-          <div style={{ flex: 1, minWidth: '200px' }}>
-            <div style={{fontSize: '12px', color: '#FFB347', fontWeight: '600', marginBottom: '6px', letterSpacing: '0.1em', textTransform: 'uppercase'}}>Crafted by FreeNachos</div>
-            <h2 style={{fontSize: '22px', fontWeight: '700', color: '#ffffff', marginBottom: '8px', lineHeight: 1.2}}>
-              {view === 'library' && 'Knowledge Hub'}
+        {/* ==================== HERO CTA BAR WITH SPARKBORDER ==================== */}
+        <div className="spark-border-gold" style={{ marginBottom: '30px', padding: '32px 40px', animation: 'fadeInUp 0.6s ease-out', display: 'flex', alignItems: 'center', gap: '32px', flexWrap: 'wrap' }}>
+          <div style={{ flex: 1, minWidth: '280px' }}>
+            <h2 style={{
+              fontSize: 'clamp(28px, 4vw, 36px)', 
+              fontWeight: '800', 
+              color: '#FFFFFF', 
+              marginBottom: '12px', 
+              lineHeight: 1.1,
+              letterSpacing: '-0.02em',
+              fontFamily: 'Manrope, Inter, sans-serif'
+            }}>
+              {view === 'library' && (<>Knowledge <span style={{ color: '#a88b46' }}>Hub</span></>)}
               {view === 'reader' && selectedArticle?.title}
               {view === 'editor' && (isEditing ? 'Edit Article' : 'New Article')}
             </h2>
-            <p style={{fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginBottom: '0', lineHeight: 1.5}}>
-              {view === 'library' && 'Deep dives into poker strategy, analysis, and edge optimization.'}
+            <p style={{fontSize: '15px', color: 'rgba(255,255,255,0.55)', marginBottom: '0', lineHeight: 1.6}}>
+              {view === 'library' && 'Technical deep dives into poker strategy, solver analysis, and population exploits.'}
               {view === 'reader' && selectedArticle?.excerpt}
-              {view === 'editor' && 'Construct data-driven articles with precision.'}
+              {view === 'editor' && 'Construct data driven articles with precision.'}
             </p>
           </div>
-          <div style={{display: 'flex', flexDirection: 'column', gap: '10px', flexShrink: 0}}>
-            <a href="https://www.nachospoker.com/" target="_blank" rel="noopener noreferrer" className="btn-hover" style={{ background: '#FFB347', color: '#0a0a0a', padding: '12px 20px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>Join Our CFP <ExternalLink size={14} /></a>
-            <a href="https://www.freenachoscoaching.com/" target="_blank" rel="noopener noreferrer" className="btn-hover" style={{ background: 'transparent', border: '1px solid rgba(255, 179, 71, 0.5)', color: '#FFB347', padding: '10px 20px', borderRadius: '8px', fontWeight: '600', fontSize: '13px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>Private Coaching <ExternalLink size={14} /></a>
+          <div style={{display: 'flex', gap: '12px', flexShrink: 0, flexWrap: 'wrap'}}>
+            <a href="https://www.nachospoker.com/" target="_blank" rel="noopener noreferrer" className="btn-hover" style={{ 
+              background: '#a88b46', 
+              color: '#0a0a0a', 
+              padding: '14px 24px', 
+              borderRadius: '12px', 
+              fontWeight: '600', 
+              fontSize: '14px', 
+              textDecoration: 'none', 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: '8px',
+              boxShadow: '0 4px 20px rgba(168, 139, 70, 0.3)'
+            }}>Join Our CFP <ExternalLink size={14} /></a>
+            <a href="https://calendly.com/patrickgerritsen90/30min" target="_blank" rel="noopener noreferrer" className="btn-hover" style={{ 
+              background: 'transparent', 
+              border: '1.5px solid #a88b46', 
+              color: '#a88b46', 
+              padding: '14px 24px', 
+              borderRadius: '12px', 
+              fontWeight: '600', 
+              fontSize: '14px', 
+              textDecoration: 'none', 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: '8px' 
+            }}>Private Coaching <ExternalLink size={14} /></a>
           </div>
         </div>
 
-        <div className="glass-card" style={{ borderRadius: '12px', padding: '16px 24px', marginBottom: '30px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+        {/* ==================== TOOLBAR BAR ==================== */}
+        <div className="glass-card" style={{ borderRadius: '16px', padding: '16px 24px', marginBottom: '30px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {view !== 'library' && (<button onClick={() => { setView('library'); setSelectedArticle(null); setEditorArticle(null); }} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '8px', padding: '10px 16px', color: 'rgba(255,255,255,0.8)', fontSize: '13px', fontWeight: '500', cursor: 'pointer' }}><ChevronLeft size={16} />Back to Library</button>)}
-            {view === 'library' && (<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><BookOpen size={18} color="#FFB347" /><span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500' }}>{loading ? 'Loading...' : `${filteredArticles.length} Article${filteredArticles.length !== 1 ? 's' : ''}`}</span></div>)}
+            {view !== 'library' && (<button onClick={() => { setView('library'); setSelectedArticle(null); setEditorArticle(null); }} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '10px', padding: '10px 16px', color: 'rgba(255,255,255,0.8)', fontSize: '13px', fontWeight: '500', cursor: 'pointer' }}><ChevronLeft size={16} />Back to Library</button>)}
+            {view === 'library' && (<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><BookOpen size={18} color="#a88b46" /><span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500' }}>{loading ? 'Loading...' : `${filteredArticles.length} Article${filteredArticles.length !== 1 ? 's' : ''}`}</span></div>)}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            {user ? (<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}><span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>{user.email}</span><button onClick={handleLogout} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '8px', padding: '8px 12px', color: 'rgba(255,255,255,0.6)', fontSize: '12px', cursor: 'pointer' }}><LogOut size={14} /></button></div>) : (<button onClick={() => setShowLogin(true)} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '8px', padding: '10px 16px', color: 'rgba(255,255,255,0.6)', fontSize: '13px', fontWeight: '500', cursor: 'pointer' }}><LogIn size={14} />Admin</button>)}
+            {user ? (<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}><span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>{user.email}</span><button onClick={handleLogout} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '8px', padding: '8px 12px', color: 'rgba(255,255,255,0.6)', fontSize: '12px', cursor: 'pointer' }}><LogOut size={14} /></button></div>) : (<button onClick={() => setShowLogin(true)} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '10px', padding: '10px 16px', color: 'rgba(255,255,255,0.6)', fontSize: '13px', fontWeight: '500', cursor: 'pointer' }}><LogIn size={14} />Admin</button>)}
             {view === 'editor' && user && (<>
-              <button onClick={() => { setView('library'); setEditorArticle(null); }} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(239, 68, 68, 0.2)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '8px', padding: '10px 16px', color: '#ef4444', fontSize: '13px', fontWeight: '500', cursor: 'pointer' }}><X size={14} />Cancel</button>
-              <button onClick={() => saveArticle(false)} disabled={!editorArticle?.title || saving} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '10px 16px', color: 'rgba(255,255,255,0.8)', fontSize: '13px', fontWeight: '500', cursor: !editorArticle?.title || saving ? 'not-allowed' : 'pointer', opacity: !editorArticle?.title ? 0.5 : 1 }}><EyeOff size={14} />Save Draft</button>
-              <button onClick={() => setShowScheduleModal(true)} disabled={!editorArticle?.title || saving} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(59, 130, 246, 0.2)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '8px', padding: '10px 16px', color: '#60a5fa', fontSize: '13px', fontWeight: '500', cursor: !editorArticle?.title || saving ? 'not-allowed' : 'pointer', opacity: !editorArticle?.title ? 0.5 : 1 }}><Calendar size={14} />Schedule</button>
-              <button onClick={() => saveArticle(true)} disabled={!editorArticle?.title || saving} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: !editorArticle?.title || saving ? 'rgba(34, 197, 94, 0.3)' : '#22c55e', border: 'none', borderRadius: '8px', padding: '10px 20px', color: !editorArticle?.title || saving ? 'rgba(255,255,255,0.4)' : '#0a0a0a', fontSize: '13px', fontWeight: '600', cursor: !editorArticle?.title || saving ? 'not-allowed' : 'pointer' }}>{saving ? (<><Loader size={14} className="spin" />Saving...</>) : (<><Globe size={14} />Publish</>)}</button>
+              <button onClick={() => { setView('library'); setEditorArticle(null); }} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '10px', padding: '10px 16px', color: '#ef4444', fontSize: '13px', fontWeight: '500', cursor: 'pointer' }}><X size={14} />Cancel</button>
+              <button onClick={() => saveArticle(false)} disabled={!editorArticle?.title || saving} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '10px', padding: '10px 16px', color: 'rgba(255,255,255,0.8)', fontSize: '13px', fontWeight: '500', cursor: !editorArticle?.title || saving ? 'not-allowed' : 'pointer', opacity: !editorArticle?.title ? 0.5 : 1 }}><EyeOff size={14} />Save Draft</button>
+              <button onClick={() => setShowScheduleModal(true)} disabled={!editorArticle?.title || saving} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(59, 130, 246, 0.15)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '10px', padding: '10px 16px', color: '#60a5fa', fontSize: '13px', fontWeight: '500', cursor: !editorArticle?.title || saving ? 'not-allowed' : 'pointer', opacity: !editorArticle?.title ? 0.5 : 1 }}><Calendar size={14} />Schedule</button>
+              <button onClick={() => saveArticle(true)} disabled={!editorArticle?.title || saving} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: !editorArticle?.title || saving ? 'rgba(34, 197, 94, 0.3)' : '#22c55e', border: 'none', borderRadius: '10px', padding: '10px 20px', color: !editorArticle?.title || saving ? 'rgba(255,255,255,0.4)' : '#0a0a0a', fontSize: '13px', fontWeight: '600', cursor: !editorArticle?.title || saving ? 'not-allowed' : 'pointer' }}>{saving ? (<><Loader size={14} className="spin" />Saving...</>) : (<><Globe size={14} />Publish</>)}</button>
             </>)}
-            {view !== 'editor' && user && (<button onClick={() => openEditor()} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'linear-gradient(135deg, #FFB347 0%, #E09A30 100%)', border: 'none', borderRadius: '8px', padding: '10px 20px', color: '#0a0a0a', fontSize: '13px', fontWeight: '600', cursor: 'pointer', boxShadow: '0 4px 20px rgba(255, 179, 71, 0.3)' }}><Edit3 size={14} />New Article</button>)}
+            {view !== 'editor' && user && (<button onClick={() => openEditor()} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#a88b46', border: 'none', borderRadius: '10px', padding: '10px 20px', color: '#0a0a0a', fontSize: '13px', fontWeight: '600', cursor: 'pointer', boxShadow: '0 4px 20px rgba(168, 139, 70, 0.3)' }}><Edit3 size={14} />New Article</button>)}
           </div>
         </div>
 
         {error && (<div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '12px', padding: '16px 20px', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}><AlertTriangle size={20} color="#ef4444" /><span style={{ color: '#ef4444', fontSize: '14px', flex: 1 }}>{error}</span><button onClick={() => setError(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}><X size={16} color="#ef4444" /></button></div>)}
 
         {view === 'library' && (<>
-          <div className="glass-card" style={{ borderRadius: '12px', padding: '20px 24px', marginBottom: '30px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-              <Tag size={16} color="#FFB347" />
-              <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>Categories:</span>
-              {CATEGORIES.map(cat => (<button key={cat} className={`filter-btn ${selectedCategory === cat ? 'active' : ''}`} onClick={() => setSelectedCategory(cat)}>{cat}</button>))}
-            </div>
+          {/* ==================== MINIMALIST CATEGORY FILTERS ==================== */}
+          <div style={{ marginBottom: '30px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            {CATEGORIES.map(cat => (
+              <button 
+                key={cat} 
+                className={`filter-text ${selectedCategory === cat ? 'active' : ''}`} 
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
-          {loading ? (<div className="glass-card" style={{ borderRadius: '16px', padding: '60px 40px', textAlign: 'center' }}><Loader size={32} color="#FFB347" className="spin" style={{ marginBottom: '16px' }} /><p style={{ color: 'rgba(255,255,255,0.6)', margin: 0 }}>Loading articles...</p></div>) : (<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>{filteredArticles.map((article) => (<ArticleCard key={article.id} article={article} onClick={openArticle} />))}</div>)}
-          {!loading && filteredArticles.length === 0 && (<div className="glass-card" style={{ borderRadius: '16px', padding: '60px 40px', textAlign: 'center' }}><BookOpen size={48} color="rgba(255,255,255,0.2)" style={{ marginBottom: '16px' }} /><h3 style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '8px' }}>No Articles Found</h3><p style={{ color: 'rgba(255,255,255,0.4)', margin: 0 }}>{selectedCategory === 'All' ? 'No articles yet. Create your first one!' : `No articles in "${selectedCategory}" yet.`}</p></div>)}
+          
+          {loading ? (
+            <div className="glass-card" style={{ borderRadius: '20px', padding: '60px 40px', textAlign: 'center' }}>
+              <Loader size={32} color="#a88b46" className="spin" style={{ marginBottom: '16px' }} />
+              <p style={{ color: 'rgba(255,255,255,0.6)', margin: 0 }}>Loading articles...</p>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+              {filteredArticles.map((article) => (<ArticleCard key={article.id} article={article} onClick={openArticle} />))}
+            </div>
+          )}
+          {!loading && filteredArticles.length === 0 && (
+            <div className="glass-card" style={{ borderRadius: '20px', padding: '60px 40px', textAlign: 'center' }}>
+              <BookOpen size={48} color="rgba(168, 139, 70, 0.3)" style={{ marginBottom: '16px' }} />
+              <h3 style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '8px' }}>No Articles Found</h3>
+              <p style={{ color: 'rgba(255,255,255,0.4)', margin: 0 }}>{selectedCategory === 'All' ? 'No articles yet. Create your first one.' : `No articles in "${selectedCategory}" yet.`}</p>
+            </div>
+          )}
         </>)}
 
         {view === 'reader' && selectedArticle && (
-          <div className="glass-card" style={{ borderRadius: '16px', padding: '48px' }}>
+          <div className="glass-card" style={{ borderRadius: '20px', padding: '48px' }}>
             <ArticleRenderer article={selectedArticle} />
-            <div style={{ marginTop: '48px', paddingTop: '32px', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255, 179, 71, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Fish size={20} color="#FFB347" /></div><div><div style={{ color: '#fff', fontSize: '14px', fontWeight: '600' }}>FreeNachos</div><div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>Poker Strategy & Coaching</div></div></div>
-              {user && (<div style={{ display: 'flex', gap: '10px' }}><button onClick={() => setShowDeleteConfirm(selectedArticle)} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '8px', padding: '10px 16px', color: '#ef4444', fontSize: '13px', fontWeight: '500', cursor: 'pointer' }}><Trash2 size={14} />Delete</button><button onClick={() => openEditor(selectedArticle)} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '10px 16px', color: 'rgba(255,255,255,0.8)', fontSize: '13px', fontWeight: '500', cursor: 'pointer' }}><Edit3 size={14} />Edit Article</button></div>)}
+            <div style={{ marginTop: '48px', paddingTop: '32px', borderTop: '1px solid rgba(168, 139, 70, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(168, 139, 70, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Fish size={20} color="#a88b46" />
+                </div>
+                <div>
+                  <div style={{ color: '#fff', fontSize: '14px', fontWeight: '600' }}>FreeNachos</div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>Poker Strategy and Coaching</div>
+                </div>
+              </div>
+              {user && (
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button onClick={() => setShowDeleteConfirm(selectedArticle)} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '10px', padding: '10px 16px', color: '#ef4444', fontSize: '13px', fontWeight: '500', cursor: 'pointer' }}><Trash2 size={14} />Delete</button>
+                  <button onClick={() => openEditor(selectedArticle)} className="btn-hover" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '10px', padding: '10px 16px', color: 'rgba(255,255,255,0.8)', fontSize: '13px', fontWeight: '500', cursor: 'pointer' }}><Edit3 size={14} />Edit Article</button>
+                </div>
+              )}
             </div>
           </div>
         )}
