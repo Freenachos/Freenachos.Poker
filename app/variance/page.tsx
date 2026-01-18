@@ -172,11 +172,21 @@ const PokerEVSimulation = () => {
   ];
 
   const addStake = () => {
+    const newStakeCount = parameters.stakeWeights.length + 1;
+    const evenWeight = Math.floor(100 / newStakeCount);
+    
+    // Redistribute existing stakes evenly (only if they're using percentage)
+    const updatedWeights = parameters.stakeWeights.map(sw => ({
+      ...sw,
+      weight: sw.volumeType === 'percentage' ? evenWeight : sw.weight
+    }));
+    
+    // Add new stake with even weight
     setParameters({
       ...parameters,
-      stakeWeights: [...parameters.stakeWeights, { 
+      stakeWeights: [...updatedWeights, { 
         stake: '25nl', 
-        weight: 0, 
+        weight: evenWeight, 
         volumeType: 'percentage',
         customWinrate: parameters.winrate,
         customStdDev: parameters.stdDev
@@ -187,7 +197,16 @@ const PokerEVSimulation = () => {
   const removeStake = (index) => {
     if (parameters.stakeWeights.length > 1) {
       const newWeights = parameters.stakeWeights.filter((_, i) => i !== index);
-      setParameters({ ...parameters, stakeWeights: newWeights });
+      const newStakeCount = newWeights.length;
+      const evenWeight = Math.floor(100 / newStakeCount);
+      
+      // Redistribute remaining stakes evenly (only if they're using percentage)
+      const redistributedWeights = newWeights.map(sw => ({
+        ...sw,
+        weight: sw.volumeType === 'percentage' ? evenWeight : sw.weight
+      }));
+      
+      setParameters({ ...parameters, stakeWeights: redistributedWeights });
     }
   };
 
@@ -993,15 +1012,13 @@ const PokerEVSimulation = () => {
                 Variance <span style={{ color: '#a88b46' }}>Calculator</span>
               </h2>
               <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.55)', marginBottom: 0, lineHeight: 1.6 }}>
-                Understand your variance with multi-stake weighting and Monte Carlo simulation. Ready for structured guidance? Explore the Mentorship Program.
+                Understand your variance with multi-stake weighting and Monte Carlo simulation. If you'd rather fix your win rate than just watch the swings, check out our coaching programs.
               </p>
             </div>
             
             <div className="header-buttons" style={{flexShrink: 0}}>
               <a 
-                href="https://www.nachospoker.com/" 
-                target="_blank" 
-                rel="noopener noreferrer"
+                href="/"
                 className="btn-primary"
                 style={{
                   padding: '14px 24px',
@@ -1013,10 +1030,10 @@ const PokerEVSimulation = () => {
                   gap: '10px'
                 }}
               >
-                Join Our CFP <ExternalLink size={16} />
+                Mentorship Program <ExternalLink size={16} />
               </a>
               <a 
-                href="https://calendly.com/patrickgerritsen90/30min" 
+                href="https://www.nachospoker.com/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="btn-secondary"
@@ -1030,7 +1047,7 @@ const PokerEVSimulation = () => {
                   gap: '10px'
                 }}
               >
-                Private Coaching <ExternalLink size={16} />
+                Join Our CFP <ExternalLink size={16} />
               </a>
             </div>
           </div>
@@ -1121,7 +1138,45 @@ const PokerEVSimulation = () => {
                 color: 'rgba(240, 240, 240, 0.6)',
                 lineHeight: 1.6
               }}>
-                <strong style={{color: '#a88b46'}}>Note:</strong> Set win rate and std dev in the Advanced panel per stake.
+                <strong style={{color: '#a88b46'}}>Note:</strong> Max 100M trial hands (hands × samples). More trial hands = longer load time and more lag. Override per-stake settings in Advanced panel.
+              </div>
+
+              <div style={{marginBottom: '20px'}}>
+                <label style={{
+                  color: 'rgba(240, 240, 240, 0.7)', 
+                  display: 'block', 
+                  marginBottom: '8px', 
+                  fontSize: '14px', 
+                  fontWeight: '600'
+                }}>
+                  Win Rate (BB/100)
+                </label>
+                <input 
+                  type="number" 
+                  value={parameters.winrate} 
+                  onChange={(e) => setParameters({...parameters, winrate: parseFloat(e.target.value) || 0})} 
+                  className="input-obsidian"
+                  step="0.5" 
+                />
+              </div>
+
+              <div style={{marginBottom: '20px'}}>
+                <label style={{
+                  color: 'rgba(240, 240, 240, 0.7)', 
+                  display: 'block', 
+                  marginBottom: '8px', 
+                  fontSize: '14px', 
+                  fontWeight: '600'
+                }}>
+                  Standard Deviation (BB/100)
+                </label>
+                <input 
+                  type="number" 
+                  value={parameters.stdDev} 
+                  onChange={(e) => setParameters({...parameters, stdDev: parseFloat(e.target.value) || 0})} 
+                  className="input-obsidian"
+                  step="5" 
+                />
               </div>
 
               <div style={{marginBottom: '20px'}}>
