@@ -154,16 +154,13 @@ const NachosPokerNavBar = () => {
         .np-brand-logo {
           width: 40px;
           height: 40px;
-          border-radius: 10px;
-          overflow: hidden;
-          border: 1px solid rgba(168, 139, 70, 0.3);
           flex-shrink: 0;
         }
         
         .np-brand-logo img {
           width: 100%;
           height: 100%;
-          object-fit: cover;
+          object-fit: contain;
         }
         
         .np-brand-text {
@@ -252,18 +249,11 @@ const NachosPokerNavBar = () => {
           mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
           -webkit-mask-composite: xor;
           mask-composite: exclude;
-          opacity: 0.6;
-          transition: opacity 0.3s ease;
-        }
-        
-        .np-nav-cta:hover::before {
-          opacity: 1;
+          pointer-events: none;
         }
         
         /* ============================================
-           TOOLS DROPDOWN
-           Gold-line icons (#a88b46)
-           Gold glow/underline on hover
+           TOOLS DROPDOWN - Ghost style
            ============================================ */
         .np-tools-dropdown {
           position: relative;
@@ -282,55 +272,41 @@ const NachosPokerNavBar = () => {
           align-items: center;
           gap: 8px;
           white-space: nowrap;
-          background: transparent;
-          border: 1px solid transparent;
-          font-family: inherit;
           text-decoration: none;
+          border: 1px solid transparent;
+          background: transparent;
         }
         
         .np-tools-btn svg {
           color: #a88b46;
-          opacity: 0.7;
+          opacity: 0.6;
           transition: all 0.25s ease;
         }
         
-        .np-tools-btn svg.chevron {
-          color: rgba(255, 255, 255, 0.5);
-          transition: transform 0.25s ease, color 0.25s ease;
+        .np-tools-btn .chevron {
+          margin-left: -2px;
+          transition: transform 0.25s ease, opacity 0.25s ease;
         }
         
-        /* Gold underline on hover */
-        .np-tools-btn::after {
-          content: '';
-          position: absolute;
-          bottom: 6px;
-          left: 50%;
-          transform: translateX(-50%) scaleX(0);
-          width: calc(100% - 24px);
-          height: 1px;
-          background: linear-gradient(90deg, transparent, #a88b46, transparent);
-          transition: transform 0.25s ease;
-        }
-        
-        .np-tools-btn:hover {
+        .np-tools-btn:hover,
+        .np-tools-btn.open {
           color: #FFFFFF;
-          background: rgba(168, 139, 70, 0.08);
+          background: rgba(168, 139, 70, 0.1);
           border-color: rgba(168, 139, 70, 0.2);
         }
         
-        .np-tools-btn:hover svg {
+        .np-tools-btn:hover svg,
+        .np-tools-btn.open svg {
           opacity: 1;
           filter: drop-shadow(0 0 4px rgba(168, 139, 70, 0.5));
         }
         
-        .np-tools-btn:hover::after {
-          transform: translateX(-50%) scaleX(1);
+        .np-tools-btn.open .chevron {
+          transform: rotate(180deg);
         }
         
         .np-tools-btn.active {
           color: #a88b46;
-          background: rgba(168, 139, 70, 0.12);
-          border-color: rgba(168, 139, 70, 0.25);
         }
         
         .np-tools-btn.active svg {
@@ -338,16 +314,7 @@ const NachosPokerNavBar = () => {
           filter: drop-shadow(0 0 6px rgba(168, 139, 70, 0.6));
         }
         
-        .np-tools-btn.active::after {
-          transform: translateX(-50%) scaleX(1);
-          background: #a88b46;
-        }
-        
-        .np-tools-btn.open svg.chevron {
-          transform: rotate(180deg);
-        }
-        
-        /* Dropdown menu - glassmorphism */
+        /* Dropdown menu */
         .np-tools-menu {
           position: absolute;
           top: calc(100% + 10px);
