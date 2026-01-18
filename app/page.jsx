@@ -102,32 +102,32 @@ const PokerToolboxHome = () => {
     {
       icon: Crosshair,
       title: 'Surgical Leak Correction',
-      description: "We don't just chat. We audit your ranges against GTO to identify exactly where you are bleeding EV, then build a custom protocol to plug the leak."
+      description: "We skip the small talk and audit your ranges against GTO to identify exactly where you are bleeding EV. By comparing your ranges to the GTO range composition, we build a personalized study plan and custom protocols to plug your leaks."
     },
     {
       icon: Swords,
-      title: 'Weekly High-Stakes War Room',
-      description: 'Join live study sessions with other crushers. Dissect hands, debate lines, and stay accountable in a high-performance environment.'
+      title: 'High-Stakes War Room',
+      description: 'Join weekly live study sessions with a group of motivated crushers. Dissect hands, debate lines, and stay accountable in a high-performance environment designed to help you improve consistently.'
     },
     {
       icon: Zap,
       title: "The 'Nacho' Stat Validator",
-      description: "Exclusive access to my proprietary tool. Instantly visualize where your range structure deviates from optimal play. It's an X-Ray for your game."
+      description: "Exclusive access to a unique tool that compares your entire range structure to solver outputs. Instantly visualize where your strategy deviates from optimal play and see where your leaks are in an X-ray of your game."
     },
     {
       icon: Brain,
       title: 'Performance by Design',
-      description: 'A complete mental operating system tailored for poker. Eliminate tilt, master focus, and build the discipline required for high-volume grinding.'
+      description: 'A complete mental operating system tailored for the reality of high-volume grinding. Eliminate tilt, master your focus, and build the discipline required for long-term consistency and confidence at the tables.'
     },
     {
       icon: Lock,
       title: 'The Strategy Vault',
-      description: 'Unlock a growing library of high-stakes analysis, hand history reviews, and theoretical deep dives. The exact concepts used to beat 1KNL.'
+      description: 'Unlock access to a growing library of high-stakes analyses, hand reviews, and deep theoretical dives. These videos cover the exact concepts and strategies used to beat 1KNL and above.'
     },
     {
       icon: MessageCircle,
       title: 'Direct Mentor Access',
-      description: 'You are never alone. Get direct priority support via my private Discord. Post hands, ask questions, and get answers from me personally.'
+      description: 'You are never alone on the grind. Get direct priority support via my private Discord to post hands, ask questions, and get strategy breakdowns from me personally.'
     }
   ];
 
@@ -2961,7 +2961,7 @@ The 3-month program consists of:
               letterSpacing: '-0.025em',
               fontFamily: 'Manrope, Inter, sans-serif'
             }}>
-              What Players <span style={{ 
+              What My Students <span style={{ 
                 color: '#A78A43',
                 textShadow: '0 0 60px rgba(167, 138, 67, 0.4)'
               }}>Say</span>
@@ -2973,7 +2973,7 @@ The 3-month program consists of:
               margin: '0 auto',
               lineHeight: 1.7
             }}>
-              Results from real students who've been through the mentorship
+              Results and testimonials from players I've worked with.
             </p>
           </div>
 
@@ -3045,6 +3045,7 @@ The 3-month program consists of:
               className="main-testimonial-card"
               style={{
                 flex: '0 0 550px',
+                height: '520px',
                 background: 'rgba(18, 18, 18, 0.5)',
                 backdropFilter: 'blur(16px)',
                 WebkitBackdropFilter: 'blur(16px)',
@@ -3052,7 +3053,9 @@ The 3-month program consists of:
                 borderRadius: '24px',
                 padding: '40px',
                 boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(167, 138, 67, 0.1)',
-                animation: slideDirection === 'right' ? 'slideInRight 0.4s ease-out' : 'slideInLeft 0.4s ease-out'
+                animation: slideDirection === 'right' ? 'slideInRight 0.4s ease-out' : 'slideInLeft 0.4s ease-out',
+                display: 'flex',
+                flexDirection: 'column'
               }}
             >
               {/* Quote */}
@@ -3062,7 +3065,8 @@ The 3-month program consists of:
                 lineHeight: 1.8,
                 fontStyle: 'italic',
                 marginBottom: '24px',
-                minHeight: '120px'
+                flex: '1',
+                overflow: 'auto'
               }}>
                 "{testimonials[currentTestimonialIndex].quote}"
               </p>
@@ -3074,7 +3078,8 @@ The 3-month program consists of:
                   overflow: 'hidden',
                   marginBottom: '24px',
                   border: '1px solid rgba(167, 138, 67, 0.2)',
-                  maxHeight: '200px'
+                  maxHeight: '180px',
+                  flexShrink: 0
                 }}>
                   <img 
                     src={testimonials[currentTestimonialIndex].image || testimonials[currentTestimonialIndex].imageAfter}
@@ -3085,7 +3090,7 @@ The 3-month program consists of:
               )}
               
               {/* Author Info */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0 }}>
                 <div style={{
                   width: '48px',
                   height: '48px',
@@ -3237,6 +3242,13 @@ The 3-month program consists of:
               .main-testimonial-card {
                 flex: 1 !important;
                 max-width: 600px !important;
+                height: 480px !important;
+              }
+            }
+            @media (max-width: 600px) {
+              .main-testimonial-card {
+                height: 520px !important;
+                padding: 28px !important;
               }
             }
           `}</style>
