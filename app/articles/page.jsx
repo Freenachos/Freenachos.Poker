@@ -976,23 +976,7 @@ export default function FreenachosArticles() {
     </svg>
   );
 
-  const DeleteConfirmModal = ({ article }) => (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-      <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '450px', margin: '20px', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Trash2 size={24} color="#ef4444" /></div>
-          <div><h2 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', margin: 0 }}>Delete Article?</h2><p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', margin: '4px 0 0' }}>This action cannot be undone</p></div>
-        </div>
-        <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '16px', marginBottom: '24px' }}><p style={{ color: 'rgba(255,255,255,0.8)', margin: 0, fontSize: '14px' }}>"{article.title}"</p></div>
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <button onClick={() => setShowDeleteConfirm(null)} style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '12px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}>Cancel</button>
-          <button onClick={() => deleteArticle(article.id)} disabled={deleting} style={{ flex: 1, background: deleting ? 'rgba(239, 68, 68, 0.5)' : '#ef4444', border: 'none', borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', fontWeight: '600', cursor: deleting ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            {deleting ? (<><Loader size={14} className="spin" />Deleting...</>) : (<><Trash2 size={14} />Delete</>)}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+  // DeleteConfirmModal is now rendered inline in return statement
 
   const ArticleRenderer = ({ article }) => {
     if (!article) return null;
@@ -1387,154 +1371,157 @@ export default function FreenachosArticles() {
     );
   };
 
-  // Schedule Modal
-  const ScheduleModal = () => (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-      <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '400px', margin: '20px', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Calendar size={24} color="#60a5fa" /></div>
-          <div><h2 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', margin: 0 }}>Schedule Article</h2><p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', margin: '4px 0 0' }}>Set a future publish date</p></div>
-        </div>
-        <div style={{ marginBottom: '16px' }}>
-          <label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px', textTransform: 'uppercase' }}>Date</label>
-          <input type="date" value={scheduleDate} onChange={(e) => setScheduleDate(e.target.value)} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px' }} />
-        </div>
-        <div style={{ marginBottom: '24px' }}>
-          <label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px', textTransform: 'uppercase' }}>Time</label>
-          <input type="time" value={scheduleTime} onChange={(e) => setScheduleTime(e.target.value)} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px' }} />
-        </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <button onClick={() => { setShowScheduleModal(false); setScheduleDate(''); setScheduleTime(''); }} style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '12px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}>Cancel</button>
-          <button onClick={() => scheduleArticle()} disabled={!scheduleDate || !scheduleTime || saving} style={{ flex: 1, background: (!scheduleDate || !scheduleTime || saving) ? 'rgba(59, 130, 246, 0.3)' : '#3b82f6', border: 'none', borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', fontWeight: '600', cursor: (!scheduleDate || !scheduleTime || saving) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            {saving ? (<><Loader size={14} className="spin" />Scheduling...</>) : (<><Calendar size={14} />Schedule</>)}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+  // Modals are now rendered inline in the return statement to prevent focus loss
 
-  // Notion Paste Modal
-  const NotionPasteModal = () => (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-      <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '600px', margin: '20px', border: '1px solid rgba(168, 139, 70, 0.3)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(168, 139, 70, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ClipboardPaste size={24} color="#a88b46" /></div>
-          <div><h2 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', margin: 0 }}>Paste from Notion</h2><p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', margin: '4px 0 0' }}>Copy content from Notion and paste it here. Images can be pasted directly!</p></div>
-        </div>
-        
-        {uploadingImages && (
-          <div style={{ background: 'rgba(168, 139, 70, 0.1)', border: '1px solid rgba(168, 139, 70, 0.3)', borderRadius: '8px', padding: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Loader size={16} color="#a88b46" className="spin" />
-            <span style={{ color: '#a88b46', fontSize: '13px' }}>Uploading images...</span>
+  return (
+    <div style={{ minHeight: '100vh', background: '#0A0A0A', color: '#fff', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif', position: 'relative', overflow: 'hidden' }}>
+      {/* Login Modal - Inline JSX to prevent focus loss */}
+      {showLogin && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '400px', margin: '20px' }}>
+            <div style={{ textAlign: 'center', marginBottom: '24px' }}><Fish size={40} color="#a88b46" style={{ marginBottom: '12px' }} /><h2 style={{ color: '#fff', fontSize: '20px', fontWeight: '700', margin: 0 }}>Admin Login</h2><p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', marginTop: '8px' }}>Sign in to manage articles</p></div>
+            {loginError && (<div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '8px', padding: '12px', marginBottom: '16px', color: '#ef4444', fontSize: '13px' }}>{loginError}</div>)}
+            <form onSubmit={handleLogin}>
+              <div style={{ marginBottom: '16px' }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px', textTransform: 'uppercase' }}>Email</label><input type="email" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} required style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px 16px', color: '#fff', fontSize: '14px' }} /></div>
+              <div style={{ marginBottom: '24px' }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px', textTransform: 'uppercase' }}>Password</label><input type="password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px 16px', color: '#fff', fontSize: '14px' }} /></div>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button type="button" onClick={() => { setShowLogin(false); setLoginError(''); }} style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '12px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}>Cancel</button>
+                <button type="submit" disabled={loginLoading} style={{ flex: 1, background: loginLoading ? 'rgba(168, 139, 70, 0.5)' : 'linear-gradient(135deg, #a88b46 0%, #E09A30 100%)', border: 'none', borderRadius: '8px', padding: '12px', color: '#0a0a0a', fontSize: '14px', fontWeight: '600', cursor: loginLoading ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>{loginLoading ? (<><Loader size={14} className="spin" />Signing in...</>) : 'Sign In'}</button>
+              </div>
+            </form>
           </div>
-        )}
-        
-        {uploadedImages.length > 0 && (
-          <div style={{ marginBottom: '16px' }}>
-            <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '8px', textTransform: 'uppercase' }}>Uploaded Images ({uploadedImages.length})</div>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {uploadedImages.map((url, i) => (
-                <img key={i} src={url} alt={`Uploaded ${i + 1}`} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }} />
-              ))}
+        </div>
+      )}
+      
+      {/* Delete Confirm Modal - Inline JSX */}
+      {showDeleteConfirm && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '400px', margin: '20px', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(239, 68, 68, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}><Trash2 size={28} color="#ef4444" /></div>
+              <h3 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>Delete Article?</h3>
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px', marginBottom: '24px', lineHeight: 1.5 }}>This will permanently delete "<strong style={{ color: '#fff' }}>{showDeleteConfirm.title}</strong>". This action cannot be undone.</p>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button onClick={() => setShowDeleteConfirm(null)} style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '12px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}>Cancel</button>
+                <button onClick={() => deleteArticle(showDeleteConfirm.id)} disabled={deleting} style={{ flex: 1, background: deleting ? 'rgba(239, 68, 68, 0.3)' : '#ef4444', border: 'none', borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', fontWeight: '600', cursor: deleting ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>{deleting ? (<><Loader size={14} className="spin" />Deleting...</>) : (<><Trash2 size={14} />Delete</>)}</button>
+              </div>
             </div>
           </div>
-        )}
-        
-        <textarea 
-          ref={notionTextareaRef}
-          onPaste={handlePasteWithImages}
-          onChange={(e) => {
-            textareaContentRef.current = e.target.value;
-          }}
-          placeholder="Paste your Notion content here...
+        </div>
+      )}
+      
+      {/* Notion Paste Modal - Inline JSX */}
+      {showNotionPaste && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '600px', margin: '20px', border: '1px solid rgba(168, 139, 70, 0.3)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(168, 139, 70, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ClipboardPaste size={24} color="#a88b46" /></div>
+              <div><h2 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', margin: 0 }}>Paste from Notion</h2><p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', margin: '4px 0 0' }}>Copy content from Notion and paste it here. Images can be pasted directly!</p></div>
+            </div>
+            
+            {uploadingImages && (
+              <div style={{ background: 'rgba(168, 139, 70, 0.1)', border: '1px solid rgba(168, 139, 70, 0.3)', borderRadius: '8px', padding: '12px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <Loader size={16} color="#a88b46" className="spin" />
+                <span style={{ color: '#a88b46', fontSize: '13px' }}>Uploading images...</span>
+              </div>
+            )}
+            
+            {uploadedImages.length > 0 && (
+              <div style={{ marginBottom: '16px' }}>
+                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '8px', textTransform: 'uppercase' }}>Uploaded Images ({uploadedImages.length})</div>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {uploadedImages.map((url, i) => (
+                    <img key={i} src={url} alt={`Uploaded ${i + 1}`} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }} />
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            <textarea 
+              ref={notionTextareaRef}
+              onPaste={handlePasteWithImages}
+              onChange={(e) => {
+                textareaContentRef.current = e.target.value;
+              }}
+              placeholder="Paste your Notion content here...
 
 Supported formats:
 • Headers (# ## ###)
 • Paragraphs
 • Bullet and numbered lists
-• Code blocks (```)
+• Code blocks (\`\`\`)
 • Blockquotes (>)
 • Images (paste directly or include URLs)
 • Callouts (:::tip, :::warning, etc.)"
-          rows={12}
-          style={{ 
-            width: '100%', 
-            background: 'rgba(0,0,0,0.3)', 
-            border: '1px solid rgba(255,255,255,0.1)', 
-            borderRadius: '12px', 
-            padding: '16px', 
-            color: '#fff', 
-            fontSize: '14px', 
-            resize: 'vertical',
-            fontFamily: 'monospace',
-            lineHeight: 1.6,
-            marginBottom: '24px'
-          }} 
-        />
-        
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <button 
-            onClick={() => { 
-              setShowNotionPaste(false); 
-              if (notionTextareaRef.current) notionTextareaRef.current.value = '';
-              textareaContentRef.current = '';
-              setUploadedImages([]);
-            }} 
-            style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '12px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}
-          >
-            Cancel
-          </button>
-          <button 
-            onClick={handleNotionPaste}
-            disabled={uploadingImages}
-            style={{ 
-              flex: 1, 
-              background: uploadingImages ? 'rgba(168, 139, 70, 0.3)' : 'linear-gradient(135deg, #a88b46 0%, #E09A30 100%)', 
-              border: 'none', 
-              borderRadius: '8px', 
-              padding: '12px', 
-              color: uploadingImages ? 'rgba(255,255,255,0.5)' : '#0a0a0a', 
-              fontSize: '14px', 
-              fontWeight: '600', 
-              cursor: uploadingImages ? 'not-allowed' : 'pointer', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              gap: '8px' 
-            }}
-          >
-            <ClipboardPaste size={14} />
-            Import Content
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  // Login Modal
-  const LoginModal = () => (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-      <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '400px', margin: '20px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '24px' }}><Fish size={40} color="#a88b46" style={{ marginBottom: '12px' }} /><h2 style={{ color: '#fff', fontSize: '20px', fontWeight: '700', margin: 0 }}>Admin Login</h2><p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', marginTop: '8px' }}>Sign in to manage articles</p></div>
-        {loginError && (<div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '8px', padding: '12px', marginBottom: '16px', color: '#ef4444', fontSize: '13px' }}>{loginError}</div>)}
-        <form onSubmit={handleLogin}>
-          <div style={{ marginBottom: '16px' }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px', textTransform: 'uppercase' }}>Email</label><input type="email" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} required style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px 16px', color: '#fff', fontSize: '14px' }} /></div>
-          <div style={{ marginBottom: '24px' }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px', textTransform: 'uppercase' }}>Password</label><input type="password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px 16px', color: '#fff', fontSize: '14px' }} /></div>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <button type="button" onClick={() => { setShowLogin(false); setLoginError(''); }} style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '12px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}>Cancel</button>
-            <button type="submit" disabled={loginLoading} style={{ flex: 1, background: loginLoading ? 'rgba(168, 139, 70, 0.5)' : 'linear-gradient(135deg, #a88b46 0%, #E09A30 100%)', border: 'none', borderRadius: '8px', padding: '12px', color: '#0a0a0a', fontSize: '14px', fontWeight: '600', cursor: loginLoading ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>{loginLoading ? (<><Loader size={14} className="spin" />Signing in...</>) : 'Sign In'}</button>
+              rows={12}
+              style={{ 
+                width: '100%', 
+                background: 'rgba(0,0,0,0.3)', 
+                border: '1px solid rgba(255,255,255,0.1)', 
+                borderRadius: '12px', 
+                padding: '16px', 
+                color: '#fff', 
+                fontSize: '14px', 
+                resize: 'vertical',
+                fontFamily: 'monospace',
+                lineHeight: 1.6,
+                marginBottom: '24px'
+              }} 
+            />
+            
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button 
+                onClick={() => { 
+                  setShowNotionPaste(false); 
+                  if (notionTextareaRef.current) notionTextareaRef.current.value = '';
+                  textareaContentRef.current = '';
+                  setUploadedImages([]);
+                }} 
+                style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '12px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleNotionPaste}
+                disabled={uploadingImages}
+                style={{ 
+                  flex: 1, 
+                  background: uploadingImages ? 'rgba(168, 139, 70, 0.3)' : 'linear-gradient(135deg, #a88b46 0%, #E09A30 100%)', 
+                  border: 'none', 
+                  borderRadius: '8px', 
+                  padding: '12px', 
+                  color: uploadingImages ? 'rgba(255,255,255,0.5)' : '#0a0a0a', 
+                  fontSize: '14px', 
+                  fontWeight: '600', 
+                  cursor: uploadingImages ? 'not-allowed' : 'pointer', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  gap: '8px' 
+                }}
+              >
+                <ClipboardPaste size={14} />
+                Import Content
+              </button>
+            </div>
           </div>
-        </form>
-      </div>
-    </div>
-  );
-
-  return (
-    <div style={{ minHeight: '100vh', background: '#0A0A0A', color: '#fff', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif', position: 'relative', overflow: 'hidden' }}>
-      {showLogin && <LoginModal />}
-      {showDeleteConfirm && <DeleteConfirmModal article={showDeleteConfirm} />}
-      {showNotionPaste && <NotionPasteModal />}
-      {showScheduleModal && <ScheduleModal />}
+        </div>
+      )}
+      
+      {/* Schedule Modal - Inline JSX */}
+      {showScheduleModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div className="glass-card" style={{ borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '400px', margin: '20px', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
+            <div style={{ textAlign: 'center', marginBottom: '24px' }}><Calendar size={32} color="#60a5fa" style={{ marginBottom: '12px' }} /><h3 style={{ color: '#fff', fontSize: '18px', fontWeight: '600', margin: 0 }}>Schedule Article</h3><p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', marginTop: '8px' }}>Set when this article should go live</p></div>
+            <div style={{ marginBottom: '16px' }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px', textTransform: 'uppercase' }}>Date</label><input type="date" value={scheduleDate} onChange={(e) => setScheduleDate(e.target.value)} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px 16px', color: '#fff', fontSize: '14px' }} /></div>
+            <div style={{ marginBottom: '24px' }}><label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px', textTransform: 'uppercase' }}>Time</label><input type="time" value={scheduleTime} onChange={(e) => setScheduleTime(e.target.value)} style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px 16px', color: '#fff', fontSize: '14px' }} /></div>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button onClick={() => { setShowScheduleModal(false); setScheduleDate(''); setScheduleTime(''); }} style={{ flex: 1, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', padding: '12px', color: 'rgba(255,255,255,0.8)', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}>Cancel</button>
+              <button onClick={() => scheduleArticle()} disabled={!scheduleDate || !scheduleTime || saving} style={{ flex: 1, background: (!scheduleDate || !scheduleTime || saving) ? 'rgba(59, 130, 246, 0.3)' : '#3b82f6', border: 'none', borderRadius: '8px', padding: '12px', color: '#fff', fontSize: '14px', fontWeight: '600', cursor: (!scheduleDate || !scheduleTime || saving) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>{saving ? (<><Loader size={14} className="spin" />Scheduling...</>) : (<><Calendar size={14} />Schedule</>)}</button>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Noise/Grain Texture Overlay */}
       <div 
