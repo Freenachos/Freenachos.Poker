@@ -374,18 +374,23 @@ const BBJBarcodeGraph = () => {
   
   const maxBBJ = Math.max(...aggregatedBins.map(b => b.bbjCount));
   
-  // True barcode: color intensity based on BBJ count (0=grey, more BBJs = brighter yellow)
+  // True barcode: color intensity based on BBJ count
+  // More gradual transition: grey -> muted gold -> bright yellow only at peaks
   const getBarColor = (count: number): string => {
-    if (count === 0) return '#3f3f46'; // zinc-700 grey
-    if (count === 1) return '#a88b46'; // base gold
-    if (count === 2) return '#b9994d'; // slightly brighter
-    if (count === 3) return '#c9a854'; // brighter
-    if (count === 4) return '#d9b65b'; // more bright
-    if (count === 5) return '#e5c463'; // even brighter
-    if (count === 6) return '#efd26b'; // bright yellow-gold
-    if (count === 7) return '#f5dc73'; // brighter
-    if (count >= 8) return '#fde047'; // bright yellow
-    return '#fde047';
+    if (count === 0) return '#27272a'; // zinc-800 - darkest grey
+    if (count === 1) return '#3f3f46'; // zinc-700 - dark grey
+    if (count === 2) return '#52524e'; // grey with hint of warmth
+    if (count === 3) return '#5c5a4d'; // muted olive-grey
+    if (count === 4) return '#6b674a'; // darker muted gold
+    if (count === 5) return '#7a7347'; // muted gold
+    if (count === 6) return '#8a8044'; // warmer gold
+    if (count === 7) return '#998c42'; // gold
+    if (count === 8) return '#a88b46'; // brand gold
+    if (count === 9) return '#b89a4a'; // brighter gold
+    if (count === 10) return '#c9a84e'; // bright gold
+    if (count === 11) return '#d9b652'; // bright yellow-gold
+    if (count >= 12) return '#e9c556'; // brightest yellow
+    return '#e9c556';
   };
 
   const hoveredData = hoveredBin !== null ? aggregatedBins[hoveredBin] : null;
@@ -473,15 +478,17 @@ const BBJBarcodeGraph = () => {
       
       {/* Legend */}
       <div className="flex justify-center items-center gap-1 mt-2">
-        <span className="text-[9px] text-zinc-600 mr-1">0 BBJ</span>
+        <span className="text-[9px] text-zinc-600 mr-1">0</span>
         <div className="flex h-2 rounded-sm overflow-hidden">
-          <div className="w-4 h-full" style={{ backgroundColor: '#3f3f46' }} />
-          <div className="w-4 h-full" style={{ backgroundColor: '#a88b46' }} />
-          <div className="w-4 h-full" style={{ backgroundColor: '#c9a854' }} />
-          <div className="w-4 h-full" style={{ backgroundColor: '#e5c463' }} />
-          <div className="w-4 h-full" style={{ backgroundColor: '#fde047' }} />
+          <div className="w-3 h-full" style={{ backgroundColor: '#27272a' }} />
+          <div className="w-3 h-full" style={{ backgroundColor: '#3f3f46' }} />
+          <div className="w-3 h-full" style={{ backgroundColor: '#5c5a4d' }} />
+          <div className="w-3 h-full" style={{ backgroundColor: '#7a7347' }} />
+          <div className="w-3 h-full" style={{ backgroundColor: '#a88b46' }} />
+          <div className="w-3 h-full" style={{ backgroundColor: '#c9a84e' }} />
+          <div className="w-3 h-full" style={{ backgroundColor: '#e9c556' }} />
         </div>
-        <span className="text-[9px] text-zinc-600 ml-1">8+ BBJ</span>
+        <span className="text-[9px] text-zinc-600 ml-1">12+ BBJ</span>
       </div>
     </div>
   );
