@@ -884,7 +884,7 @@ The 3-month program consists of:
       
       {/* CTA Button - Outline style matching Book Free Introcall */}
       <a
-        href="https://calendly.com/freenachos/intro"
+        href="https://calendly.com/patrickgerritsen90/30min"
         target="_blank"
         rel="noopener noreferrer"
         className="pricing-cta-btn"
@@ -2270,7 +2270,7 @@ The 3-month program consists of:
               
               {/* CTA Button */}
               <a 
-                href="https://calendly.com/freenachos/intro" 
+                href="https://calendly.com/patrickgerritsen90/30min" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="btn-hover cta-primary"
@@ -2428,7 +2428,7 @@ The 3-month program consists of:
 
               {/* CTA Button */}
               <a 
-                href="https://calendly.com/freenachos/intro" 
+                href="https://calendly.com/patrickgerritsen90/30min" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="btn-hover authority-cta-btn"
@@ -3972,7 +3972,7 @@ The 3-month program consists of:
             marginTop: '56px'
           }}>
             <a 
-              href="https://calendly.com/freenachos/intro"
+              href="https://calendly.com/patrickgerritsen90/30min"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-hover cta-primary"
