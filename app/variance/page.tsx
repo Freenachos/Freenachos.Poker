@@ -35,6 +35,29 @@ const PokerEVSimulation = () => {
   const nachoRef = useRef(null);
 
   // ============================================
+  // MULTIPLAYER MODE STATE
+  // ============================================
+  const [multiplayerMode, setMultiplayerMode] = useState(false);
+  const [players, setPlayers] = useState([
+    { id: 1, name: 'Player 1', winrate: 6, stdDev: 85, numSamples: 5, color: '#22c55e' },
+    { id: 2, name: 'Player 2', winrate: 2, stdDev: 95, numSamples: 5, color: '#ef4444' }
+  ]);
+  const [multiplayerResults, setMultiplayerResults] = useState(null);
+  const [hoveredPlayer, setHoveredPlayer] = useState(null);
+  
+  // Player color palette
+  const playerColors = [
+    '#22c55e', // green
+    '#ef4444', // red
+    '#3b82f6', // blue
+    '#f59e0b', // amber
+    '#8b5cf6', // purple
+    '#ec4899', // pink
+    '#06b6d4', // cyan
+    '#84cc16', // lime
+  ];
+
+  // ============================================
   // EFFECTS - PRESERVED EXACTLY AS ORIGINAL
   // ============================================
   
@@ -148,6 +171,11 @@ const PokerEVSimulation = () => {
     const avgStdDev = getWeightedAverageStdDev();
     const avgBB = getWeightedAverageBB();
     
+    // FIX: Validate stdDev is positive
+    if (avgStdDev <= 0) {
+      return { bb: Infinity, dollars: Infinity };
+    }
+    
     const wrPerHand = avgWinrate / 100;
     const stdDevPerHand = avgStdDev / Math.sqrt(100);
     
@@ -239,33 +267,51 @@ const PokerEVSimulation = () => {
       return null;
     }
 
-    const stakePool = [];
+    // FIX: Build cumulative distribution for proper weighted sampling
+    // instead of creating a capped pool of 1000 entries
     const totalWeight = stakeWeights.reduce((sum, sw) => sum + (sw.weight || 0), 0);
+    const stakeData = [];
+    let cumulative = 0;
     
     stakeWeights.forEach(sw => {
       const stake = stakes.find(s => s.value === sw.stake);
       if (stake && (sw.weight || 0) > 0) {
-        const handsForStake = sw.volumeType === 'hands' 
-          ? Math.min(sw.weight || 0, numHands)
-          : Math.round(((sw.weight || 0) / totalWeight) * numHands);
-        
-        for (let i = 0; i < Math.min(handsForStake, 1000); i++) {
-          stakePool.push({
-            bb: stake.bb,
-            winrate: sw.customWinrate || 0,
-            stdDev: sw.customStdDev || 0
-          });
-        }
+        const normalizedWeight = (sw.weight || 0) / totalWeight;
+        cumulative += normalizedWeight;
+        stakeData.push({
+          cumulative,
+          bb: stake.bb,
+          winrate: sw.customWinrate || 0,
+          stdDev: Math.max(sw.customStdDev || 1, 1) // Ensure stdDev is at least 1
+        });
       }
     });
     
-    if (stakePool.length === 0) {
-      stakePool.push({
+    // Fallback if no valid stakes
+    if (stakeData.length === 0) {
+      stakeData.push({
+        cumulative: 1,
         bb: 0.25,
         winrate: parameters.winrate || 0,
-        stdDev: parameters.stdDev || 0
+        stdDev: Math.max(parameters.stdDev || 90, 1)
       });
     }
+    
+    // Binary search sampler for O(log n) stake selection
+    const getStake = () => {
+      const r = Math.random();
+      let left = 0;
+      let right = stakeData.length - 1;
+      while (left < right) {
+        const mid = Math.floor((left + right) / 2);
+        if (stakeData[mid].cumulative < r) {
+          left = mid + 1;
+        } else {
+          right = mid;
+        }
+      }
+      return stakeData[left];
+    };
     
     const samples = [];
     
@@ -274,7 +320,7 @@ const PokerEVSimulation = () => {
       let cumulativeDollars = 0;
       
       for (let hand = 1; hand <= numHands; hand++) {
-        const stakeInfo = stakePool[Math.floor(Math.random() * stakePool.length)];
+        const stakeInfo = getStake();
         const handResultBB = normalRandom() * ((stakeInfo.stdDev || 0) / Math.sqrt(100)) + ((stakeInfo.winrate || 0) / 100);
         const handResultDollars = handResultBB * stakeInfo.bb;
         cumulativeDollars += handResultDollars;
@@ -290,14 +336,18 @@ const PokerEVSimulation = () => {
     const finalEVs = samples.map(s => s.finalEV);
     finalEVs.sort((a, b) => a - b);
     
+    // FIX: Handle edge case when numSamples is very small
+    const lowerIndex = Math.max(0, Math.floor(0.025 * numSamples));
+    const upperIndex = Math.min(numSamples - 1, Math.floor(0.975 * numSamples));
+    
     return {
       samples,
       finalEVs,
       bestRun: Math.max(...finalEVs),
       worstRun: Math.min(...finalEVs),
       avgEV: finalEVs.reduce((a, b) => a + b, 0) / finalEVs.length,
-      conf95Lower: finalEVs[Math.floor(0.025 * numSamples)] || 0,
-      conf95Upper: finalEVs[Math.floor(0.975 * numSamples)] || 0
+      conf95Lower: finalEVs[lowerIndex] || 0,
+      conf95Upper: finalEVs[upperIndex] || 0
     };
   };
 
@@ -314,6 +364,13 @@ const PokerEVSimulation = () => {
       return;
     }
     
+    // FIX: Validate stdDev before running simulation
+    const avgStdDev = getWeightedAverageStdDev();
+    if (avgStdDev <= 0) {
+      alert('Standard deviation must be greater than 0.');
+      return;
+    }
+    
     setIsCalculating(true);
     setTimeout(() => {
       const simResults = monteCarloSimulation(numHands, numSamples, stakeWeights);
@@ -322,24 +379,253 @@ const PokerEVSimulation = () => {
     }, 100);
   };
 
+  // ============================================
+  // MULTIPLAYER MODE FUNCTIONS
+  // ============================================
+  
+  const MAX_TOTAL_SAMPLES = 20;
+  
+  const getTotalMultiplayerSamples = () => {
+    return players.reduce((sum, p) => sum + (p.numSamples || 0), 0);
+  };
+  
+  const addPlayer = () => {
+    if (players.length >= 8) {
+      alert('Maximum 8 players allowed.');
+      return;
+    }
+    const newId = Math.max(...players.map(p => p.id)) + 1;
+    const colorIndex = players.length % playerColors.length;
+    setPlayers([...players, {
+      id: newId,
+      name: `Player ${newId}`,
+      winrate: 3,
+      stdDev: 90,
+      numSamples: Math.min(3, MAX_TOTAL_SAMPLES - getTotalMultiplayerSamples()),
+      color: playerColors[colorIndex]
+    }]);
+  };
+  
+  const removePlayer = (id) => {
+    if (players.length > 1) {
+      setPlayers(players.filter(p => p.id !== id));
+    }
+  };
+  
+  const updatePlayer = (id, field, value) => {
+    setPlayers(players.map(p => {
+      if (p.id === id) {
+        // Validate numSamples doesn't exceed total limit
+        if (field === 'numSamples') {
+          const otherPlayersSamples = players.filter(op => op.id !== id).reduce((sum, op) => sum + (op.numSamples || 0), 0);
+          const maxForThisPlayer = MAX_TOTAL_SAMPLES - otherPlayersSamples;
+          value = Math.min(Math.max(1, value), maxForThisPlayer);
+        }
+        return { ...p, [field]: value };
+      }
+      return p;
+    }));
+  };
+  
+  // Run simulation for a single player (used in multiplayer mode)
+  const runPlayerSimulation = (player, numHands, stakeWeights) => {
+    const totalWeight = stakeWeights.reduce((sum, sw) => sum + (sw.weight || 0), 0);
+    const stakeData = [];
+    let cumulative = 0;
+    
+    stakeWeights.forEach(sw => {
+      const stake = stakes.find(s => s.value === sw.stake);
+      if (stake && (sw.weight || 0) > 0) {
+        const normalizedWeight = (sw.weight || 0) / totalWeight;
+        cumulative += normalizedWeight;
+        stakeData.push({
+          cumulative,
+          bb: stake.bb,
+          // Use player's winrate and stdDev instead of stake's custom values
+          winrate: player.winrate,
+          stdDev: Math.max(player.stdDev || 1, 1)
+        });
+      }
+    });
+    
+    if (stakeData.length === 0) {
+      stakeData.push({
+        cumulative: 1,
+        bb: 0.25,
+        winrate: player.winrate,
+        stdDev: Math.max(player.stdDev || 90, 1)
+      });
+    }
+    
+    const getStake = () => {
+      const r = Math.random();
+      let left = 0;
+      let right = stakeData.length - 1;
+      while (left < right) {
+        const mid = Math.floor((left + right) / 2);
+        if (stakeData[mid].cumulative < r) {
+          left = mid + 1;
+        } else {
+          right = mid;
+        }
+      }
+      return stakeData[left];
+    };
+    
+    const samples = [];
+    
+    for (let sample = 0; sample < player.numSamples; sample++) {
+      const sampleData = [];
+      let cumulativeDollars = 0;
+      
+      for (let hand = 1; hand <= numHands; hand++) {
+        const stakeInfo = getStake();
+        const handResultBB = normalRandom() * ((stakeInfo.stdDev || 0) / Math.sqrt(100)) + ((stakeInfo.winrate || 0) / 100);
+        const handResultDollars = handResultBB * stakeInfo.bb;
+        cumulativeDollars += handResultDollars;
+        
+        if (hand % 1000 === 0 || hand === numHands) {
+          sampleData.push({ x: hand, y: cumulativeDollars });
+        }
+      }
+      
+      samples.push({ 
+        data: sampleData, 
+        finalEV: cumulativeDollars,
+        playerId: player.id,
+        playerName: player.name,
+        playerColor: player.color
+      });
+    }
+    
+    return samples;
+  };
+  
+  const runMultiplayerSimulation = () => {
+    const { numHands, stakeWeights } = parameters;
+    
+    if (isNaN(numHands) || numHands <= 0) {
+      alert('Please enter valid number of hands.');
+      return;
+    }
+    
+    // Validate all players have positive stdDev
+    const invalidPlayer = players.find(p => (p.stdDev || 0) <= 0);
+    if (invalidPlayer) {
+      alert(`${invalidPlayer.name} has invalid standard deviation. Must be greater than 0.`);
+      return;
+    }
+    
+    const totalSamples = getTotalMultiplayerSamples();
+    if (totalSamples > MAX_TOTAL_SAMPLES) {
+      alert(`Total samples (${totalSamples}) exceeds maximum (${MAX_TOTAL_SAMPLES}). Please reduce samples per player.`);
+      return;
+    }
+    
+    setIsCalculating(true);
+    setTimeout(() => {
+      const allSamples = [];
+      const playerResults = [];
+      
+      players.forEach(player => {
+        const samples = runPlayerSimulation(player, numHands, stakeWeights);
+        allSamples.push(...samples);
+        
+        const finalEVs = samples.map(s => s.finalEV).sort((a, b) => a - b);
+        playerResults.push({
+          ...player,
+          samples,
+          finalEVs,
+          bestRun: Math.max(...finalEVs),
+          worstRun: Math.min(...finalEVs),
+          avgEV: finalEVs.reduce((a, b) => a + b, 0) / finalEVs.length
+        });
+      });
+      
+      setMultiplayerResults({
+        players: playerResults,
+        allSamples
+      });
+      setIsCalculating(false);
+    }, 100);
+  };
+  
+  const prepareMultiplayerChartData = () => {
+    if (!multiplayerResults) return [];
+    const { numHands } = parameters;
+    const maxHands = Math.floor(numHands / 1000) * 1000;
+    const weightedBB = getWeightedAverageBB();
+    const combinedData = [];
+    
+    // Pre-index all sample data
+    const sampleDataIndex = multiplayerResults.allSamples.map(sample => {
+      const indexed = {};
+      sample.data.forEach(point => {
+        indexed[point.x] = point.y;
+      });
+      return { indexed, playerId: sample.playerId };
+    });
+    
+    for (let hand = 1000; hand <= maxHands; hand += 1000) {
+      const dataPoint = { x: hand };
+      
+      // Add theoretical EV lines for each player
+      players.forEach(player => {
+        dataPoint[`ev_player_${player.id}`] = (player.winrate * hand / 100) * weightedBB;
+      });
+      
+      // Add all sample lines
+      multiplayerResults.allSamples.forEach((sample, sampleIndex) => {
+        const value = sampleDataIndex[sampleIndex].indexed[hand];
+        if (value !== undefined) {
+          dataPoint[`sample_${sampleIndex}_player_${sample.playerId}`] = value;
+        }
+      });
+      
+      combinedData.push(dataPoint);
+    }
+    
+    return combinedData;
+  };
+
   const prepareChartData = () => {
     if (!results) return [];
     const { numHands } = parameters;
     const maxHands = Math.floor(numHands / 1000) * 1000;
     const weightedBB = getWeightedAverageBB();
     const weightedWinrate = getWeightedAverageWinrate();
+    const weightedStdDev = getWeightedAverageStdDev();
     const combinedData = [];
+    
+    // Pre-index sample data for O(1) lookup instead of O(n) find()
+    const sampleDataIndex = results.samples.map(sample => {
+      const indexed = {};
+      sample.data.forEach(point => {
+        indexed[point.x] = point.y;
+      });
+      return indexed;
+    });
     
     for (let hand = 1000; hand <= maxHands; hand += 1000) {
       const dataPoint = { x: hand };
-      dataPoint.theoreticalEV = (weightedWinrate * hand / 100) * weightedBB;
-      const progress = hand / numHands;
-      dataPoint.conf95Upper = results.conf95Upper * progress;
-      dataPoint.conf95Lower = results.conf95Lower * progress;
       
+      // Theoretical EV at this hand count
+      dataPoint.theoreticalEV = (weightedWinrate * hand / 100) * weightedBB;
+      
+      // FIX: Calculate proper CI using sqrt(N) scaling instead of linear interpolation
+      // Standard deviation after N hands = (stdDev_BB100 / 10) * sqrt(N)
+      // where stdDev_BB100 / 10 converts BB/100 to per-hand stdDev
+      const stdDevAtHandsBB = (weightedStdDev / 10) * Math.sqrt(hand);
+      const stdDevAtHandsDollars = stdDevAtHandsBB * weightedBB;
+      
+      // 95% CI uses z = 1.96
+      dataPoint.conf95Upper = dataPoint.theoreticalEV + (1.96 * stdDevAtHandsDollars);
+      dataPoint.conf95Lower = dataPoint.theoreticalEV - (1.96 * stdDevAtHandsDollars);
+      
+      // Use indexed lookup instead of .find() for better performance
       results.samples.forEach((sample, sampleIndex) => {
-        const samplePoint = sample.data.find(point => point.x === hand);
-        if (samplePoint) dataPoint[`sample${sampleIndex}`] = samplePoint.y;
+        const value = sampleDataIndex[sampleIndex][hand];
+        if (value !== undefined) dataPoint[`sample${sampleIndex}`] = value;
       });
       combinedData.push(dataPoint);
     }
@@ -1175,8 +1461,15 @@ const PokerEVSimulation = () => {
                   value={parameters.stdDev} 
                   onChange={(e) => setParameters({...parameters, stdDev: parseFloat(e.target.value) || 0})} 
                   className="input-obsidian"
-                  step="5" 
+                  style={parameters.stdDev <= 0 ? { borderColor: '#ef4444' } : {}}
+                  step="5"
+                  min="1"
                 />
+                {parameters.stdDev <= 0 && (
+                  <div style={{ color: '#ef4444', fontSize: '12px', marginTop: '6px' }}>
+                    Standard deviation must be greater than 0
+                  </div>
+                )}
               </div>
 
               <div style={{marginBottom: '20px'}}>
@@ -1457,7 +1750,7 @@ const PokerEVSimulation = () => {
 
           <motion.button 
             onClick={runSimulation} 
-            disabled={isCalculating || isOverLimit}
+            disabled={isCalculating || isOverLimit || getWeightedAverageStdDev() <= 0}
             className="btn-primary"
             whileHover={{ scale: isCalculating || isOverLimit ? 1 : 1.02 }}
             whileTap={{ scale: isCalculating || isOverLimit ? 1 : 0.98 }}
@@ -1486,6 +1779,582 @@ const PokerEVSimulation = () => {
             )}
           </motion.button>
         </motion.div>
+
+        {/* ==================== MULTIPLAYER MODE SECTION ==================== */}
+        <motion.div 
+          className="obsidian-card"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          style={{
+            borderRadius: '32px', 
+            padding: '48px', 
+            marginBottom: '40px'
+          }}
+        >
+          {/* Toggle Header */}
+          <button
+            onClick={() => setMultiplayerMode(!multiplayerMode)}
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '0',
+              marginBottom: multiplayerMode ? '32px' : '0'
+            }}
+          >
+            <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+              <div style={{
+                width: '56px',
+                height: '56px',
+                borderRadius: '18px',
+                background: multiplayerMode ? 'rgba(168, 139, 70, 0.15)' : 'rgba(168, 139, 70, 0.1)',
+                border: `1px solid ${multiplayerMode ? 'rgba(168, 139, 70, 0.4)' : 'rgba(168, 139, 70, 0.25)'}`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.3s ease'
+              }}>
+                <span style={{ fontSize: '28px' }}>👥</span>
+              </div>
+              <div style={{ textAlign: 'left' }}>
+                <h2 style={{fontSize: '24px', fontWeight: '800', color: '#F0F0F0', margin: 0, letterSpacing: '-0.02em'}}>
+                  Multiplayer Mode
+                </h2>
+                <p style={{color: 'rgba(240, 240, 240, 0.5)', fontSize: '14px', margin: '4px 0 0 0'}}>
+                  Compare how different win rates lead to wildly different outcomes
+                </p>
+              </div>
+            </div>
+            <div style={{
+              width: '52px',
+              height: '28px',
+              borderRadius: '14px',
+              background: multiplayerMode ? '#a88b46' : 'rgba(255, 255, 255, 0.1)',
+              border: `1px solid ${multiplayerMode ? '#a88b46' : 'rgba(255, 255, 255, 0.2)'}`,
+              display: 'flex',
+              alignItems: 'center',
+              padding: '2px',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer'
+            }}>
+              <div style={{
+                width: '22px',
+                height: '22px',
+                borderRadius: '50%',
+                background: '#fff',
+                transform: multiplayerMode ? 'translateX(24px)' : 'translateX(0)',
+                transition: 'transform 0.3s ease',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+              }} />
+            </div>
+          </button>
+          
+          {/* Multiplayer Content */}
+          <AnimatePresence>
+            {multiplayerMode && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                style={{ overflow: 'hidden' }}
+              >
+                {/* Info Banner */}
+                <div style={{
+                  background: 'rgba(168, 139, 70, 0.08)',
+                  border: '1px solid rgba(168, 139, 70, 0.2)',
+                  borderRadius: '16px',
+                  padding: '16px 20px',
+                  marginBottom: '28px',
+                  fontSize: '14px',
+                  color: 'rgba(240, 240, 240, 0.6)',
+                  lineHeight: 1.6
+                }}>
+                  <strong style={{color: '#a88b46'}}>How it works:</strong> Each player uses the same stake mix and volume from above, but with their own win rate and standard deviation. 
+                  Max {MAX_TOTAL_SAMPLES} total samples across all players. Currently using: <strong style={{color: '#F0F0F0'}}>{getTotalMultiplayerSamples()}/{MAX_TOTAL_SAMPLES}</strong>
+                </div>
+                
+                {/* Players Grid */}
+                <div style={{display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px'}}>
+                  {players.map((player, index) => (
+                    <motion.div 
+                      key={player.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      style={{
+                        background: 'rgba(10, 10, 10, 0.5)',
+                        borderRadius: '20px',
+                        padding: '24px',
+                        border: `2px solid ${player.color}30`,
+                        position: 'relative'
+                      }}
+                    >
+                      {/* Color indicator bar */}
+                      <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: '24px',
+                        right: '24px',
+                        height: '3px',
+                        background: player.color,
+                        borderRadius: '0 0 3px 3px'
+                      }} />
+                      
+                      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'}}>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                          <div style={{
+                            width: '12px',
+                            height: '12px',
+                            borderRadius: '50%',
+                            background: player.color,
+                            boxShadow: `0 0 8px ${player.color}80`
+                          }} />
+                          <input
+                            type="text"
+                            value={player.name}
+                            onChange={(e) => updatePlayer(player.id, 'name', e.target.value)}
+                            style={{
+                              background: 'transparent',
+                              border: 'none',
+                              color: '#F0F0F0',
+                              fontSize: '16px',
+                              fontWeight: '700',
+                              outline: 'none',
+                              width: '140px'
+                            }}
+                          />
+                        </div>
+                        {players.length > 1 && (
+                          <button 
+                            onClick={() => removePlayer(player.id)}
+                            style={{
+                              background: 'rgba(239, 68, 68, 0.15)',
+                              border: '1px solid rgba(239, 68, 68, 0.3)',
+                              color: '#ef4444',
+                              borderRadius: '8px',
+                              padding: '6px 12px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              fontSize: '12px',
+                              fontWeight: '600'
+                            }}
+                          >
+                            <X size={14} /> Remove
+                          </button>
+                        )}
+                      </div>
+                      
+                      <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px'}}>
+                        {/* Win Rate */}
+                        <div>
+                          <label style={{
+                            color: 'rgba(240, 240, 240, 0.5)',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            display: 'block',
+                            marginBottom: '8px'
+                          }}>
+                            Win Rate (BB/100)
+                          </label>
+                          <input
+                            type="number"
+                            value={player.winrate}
+                            onChange={(e) => updatePlayer(player.id, 'winrate', parseFloat(e.target.value) || 0)}
+                            className="input-obsidian"
+                            style={{ padding: '12px 14px' }}
+                            step="0.5"
+                          />
+                        </div>
+                        
+                        {/* Std Dev */}
+                        <div>
+                          <label style={{
+                            color: 'rgba(240, 240, 240, 0.5)',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            display: 'block',
+                            marginBottom: '8px'
+                          }}>
+                            Std Dev (BB/100)
+                          </label>
+                          <input
+                            type="number"
+                            value={player.stdDev}
+                            onChange={(e) => updatePlayer(player.id, 'stdDev', parseFloat(e.target.value) || 0)}
+                            className="input-obsidian"
+                            style={{ 
+                              padding: '12px 14px',
+                              borderColor: player.stdDev <= 0 ? '#ef4444' : undefined
+                            }}
+                            step="5"
+                            min="1"
+                          />
+                        </div>
+                        
+                        {/* Samples */}
+                        <div>
+                          <label style={{
+                            color: 'rgba(240, 240, 240, 0.5)',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            display: 'block',
+                            marginBottom: '8px'
+                          }}>
+                            Samples
+                          </label>
+                          <input
+                            type="number"
+                            value={player.numSamples}
+                            onChange={(e) => updatePlayer(player.id, 'numSamples', parseInt(e.target.value) || 1)}
+                            className="input-obsidian"
+                            style={{ padding: '12px 14px' }}
+                            min="1"
+                            max={MAX_TOTAL_SAMPLES}
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Player EV Preview */}
+                      <div style={{
+                        marginTop: '16px',
+                        padding: '12px 16px',
+                        background: `${player.color}10`,
+                        borderRadius: '10px',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}>
+                        <span style={{color: 'rgba(240, 240, 240, 0.5)', fontSize: '13px'}}>
+                          Theoretical EV ({parameters.numHands.toLocaleString()} hands):
+                        </span>
+                        <span style={{color: player.color, fontWeight: '700', fontSize: '15px'}}>
+                          {displayInDollars 
+                            ? `$${Math.round((player.winrate * parameters.numHands / 100) * getWeightedAverageBB()).toLocaleString()}`
+                            : `${Math.round(player.winrate * parameters.numHands / 100).toLocaleString()} BB`
+                          }
+                        </span>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+                
+                {/* Add Player Button */}
+                {players.length < 8 && (
+                  <button 
+                    onClick={addPlayer}
+                    className="btn-secondary"
+                    style={{
+                      width: '100%',
+                      marginBottom: '24px',
+                      padding: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '10px',
+                      fontSize: '14px',
+                      borderStyle: 'dashed'
+                    }}
+                  >
+                    <Plus size={18} /> Add Another Player
+                  </button>
+                )}
+                
+                {/* Run Multiplayer Simulation Button */}
+                <motion.button 
+                  onClick={runMultiplayerSimulation} 
+                  disabled={isCalculating || getTotalMultiplayerSamples() > MAX_TOTAL_SAMPLES || players.some(p => p.stdDev <= 0)}
+                  className="btn-primary"
+                  whileHover={{ scale: isCalculating ? 1 : 1.02 }}
+                  whileTap={{ scale: isCalculating ? 1 : 0.98 }}
+                  style={{
+                    width: '100%',
+                    padding: '18px',
+                    fontSize: '17px',
+                    opacity: isCalculating ? 0.7 : 1
+                  }}
+                >
+                  {isCalculating ? (
+                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                      <Sparkles size={20} style={{ animation: 'pulse 1s ease-in-out infinite' }} />
+                      Simulating {players.length} Players...
+                    </span>
+                  ) : (
+                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                      <Zap size={20} />
+                      Run Multiplayer Simulation
+                    </span>
+                  )}
+                </motion.button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* ==================== MULTIPLAYER RESULTS ==================== */}
+        {multiplayerMode && multiplayerResults && (
+          <motion.div 
+            className="obsidian-card"
+            initial={{ opacity: 0, y: 40, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              borderRadius: '32px', 
+              padding: '48px', 
+              marginBottom: '40px'
+            }}
+          >
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', flexWrap: 'wrap', gap: '16px'}}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '16px',
+                  background: 'rgba(168, 139, 70, 0.1)',
+                  border: '1px solid rgba(168, 139, 70, 0.25)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <BarChart3 size={24} color="#a88b46" />
+                </div>
+                <h2 style={{fontSize: '24px', fontWeight: '800', color: '#F0F0F0', margin: 0}}>
+                  Multiplayer Results
+                </h2>
+              </div>
+              <div style={{display: 'flex', gap: '8px'}}>
+                <button
+                  onClick={() => setDisplayInDollars(true)}
+                  style={{
+                    background: displayInDollars ? 'rgba(168, 139, 70, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                    border: `1px solid ${displayInDollars ? 'rgba(168, 139, 70, 0.4)' : 'rgba(255, 255, 255, 0.1)'}`,
+                    color: displayInDollars ? '#a88b46' : 'rgba(240, 240, 240, 0.6)',
+                    padding: '10px 18px',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '600'
+                  }}
+                >
+                  $ Dollars
+                </button>
+                <button
+                  onClick={() => setDisplayInDollars(false)}
+                  style={{
+                    background: !displayInDollars ? 'rgba(168, 139, 70, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                    border: `1px solid ${!displayInDollars ? 'rgba(168, 139, 70, 0.4)' : 'rgba(255, 255, 255, 0.1)'}`,
+                    color: !displayInDollars ? '#a88b46' : 'rgba(240, 240, 240, 0.6)',
+                    padding: '10px 18px',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '600'
+                  }}
+                >
+                  BB ({getStakeMixLabel()})
+                </button>
+              </div>
+            </div>
+            
+            {/* Player Stats Grid */}
+            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '32px'}}>
+              {multiplayerResults.players.map((player, index) => (
+                <motion.div 
+                  key={player.id}
+                  className="glass-card"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  style={{
+                    padding: '20px',
+                    borderRadius: '16px',
+                    border: `2px solid ${player.color}40`,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    transform: hoveredPlayer === player.id ? 'scale(1.02)' : 'scale(1)'
+                  }}
+                  onMouseEnter={() => setHoveredPlayer(player.id)}
+                  onMouseLeave={() => setHoveredPlayer(null)}
+                >
+                  <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px'}}>
+                    <div style={{
+                      width: '10px',
+                      height: '10px',
+                      borderRadius: '50%',
+                      background: player.color,
+                      boxShadow: `0 0 8px ${player.color}80`
+                    }} />
+                    <span style={{color: '#F0F0F0', fontWeight: '700', fontSize: '15px'}}>{player.name}</span>
+                    <span style={{color: 'rgba(240, 240, 240, 0.4)', fontSize: '12px'}}>({player.winrate} BB/100)</span>
+                  </div>
+                  
+                  <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px'}}>
+                    <div>
+                      <div style={{color: 'rgba(240, 240, 240, 0.4)', fontSize: '11px', marginBottom: '4px'}}>BEST</div>
+                      <div style={{color: '#22c55e', fontWeight: '700', fontSize: '14px'}}>
+                        {formatNumber(player.bestRun, displayInDollars)}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{color: 'rgba(240, 240, 240, 0.4)', fontSize: '11px', marginBottom: '4px'}}>WORST</div>
+                      <div style={{color: '#ef4444', fontWeight: '700', fontSize: '14px'}}>
+                        {formatNumber(player.worstRun, displayInDollars)}
+                      </div>
+                    </div>
+                    <div style={{gridColumn: '1 / -1'}}>
+                      <div style={{color: 'rgba(240, 240, 240, 0.4)', fontSize: '11px', marginBottom: '4px'}}>AVERAGE</div>
+                      <div style={{color: player.color, fontWeight: '700', fontSize: '16px'}}>
+                        {formatNumber(player.avgEV, displayInDollars)}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+            
+            {/* Multiplayer Chart */}
+            <div style={{background: 'rgba(10, 10, 10, 0.5)', borderRadius: '20px', padding: '28px'}}>
+              <div style={{height: '450px'}}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart 
+                    data={prepareMultiplayerChartData()} 
+                    margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                    <XAxis 
+                      dataKey="x" 
+                      stroke="rgba(255,255,255,0.3)" 
+                      tick={{fill: 'rgba(240, 240, 240, 0.5)', fontSize: 11}}
+                      tickFormatter={(val) => `${(val/1000)}k`}
+                      label={{value: 'Hands', position: 'insideBottomRight', offset: -10, fill: 'rgba(240, 240, 240, 0.4)', fontSize: 11}}
+                    />
+                    <YAxis 
+                      stroke="rgba(255,255,255,0.3)" 
+                      tick={{fill: 'rgba(240, 240, 240, 0.5)', fontSize: 11}}
+                      tickFormatter={(val) => displayInDollars ? `$${(val/1000).toFixed(0)}k` : `${Math.round(val / getWeightedAverageBB()).toLocaleString()}`}
+                      label={{value: displayInDollars ? 'Profit ($)' : 'Profit (BB)', angle: -90, position: 'insideLeft', fill: 'rgba(240, 240, 240, 0.4)', fontSize: 11}}
+                    />
+                    <Tooltip 
+                      contentStyle={{
+                        background: 'rgba(10, 10, 10, 0.95)',
+                        border: '1px solid rgba(168, 139, 70, 0.4)',
+                        borderRadius: '16px',
+                        boxShadow: '0 12px 40px rgba(0,0,0,0.5)'
+                      }}
+                      labelFormatter={(value) => `Hand ${value.toLocaleString()}`}
+                      formatter={(value, name) => {
+                        if (name.startsWith('ev_player_')) {
+                          const playerId = parseInt(name.split('_')[2]);
+                          const player = players.find(p => p.id === playerId);
+                          return [formatNumber(value, displayInDollars), `${player?.name} EV`];
+                        }
+                        if (name.startsWith('sample_')) {
+                          const parts = name.split('_');
+                          const playerId = parseInt(parts[3]);
+                          const player = players.find(p => p.id === playerId);
+                          return [formatNumber(value, displayInDollars), player?.name];
+                        }
+                        return [formatNumber(value, displayInDollars), name];
+                      }}
+                    />
+                    
+                    {/* EV lines for each player (dashed) */}
+                    {players.map(player => (
+                      <Line 
+                        key={`ev_${player.id}`}
+                        type="monotone" 
+                        dataKey={`ev_player_${player.id}`}
+                        stroke={player.color}
+                        strokeWidth={2}
+                        strokeDasharray="8 4"
+                        dot={false}
+                        opacity={0.5}
+                      />
+                    ))}
+                    
+                    {/* Sample lines for each player */}
+                    {multiplayerResults.allSamples.map((sample, index) => {
+                      const player = players.find(p => p.id === sample.playerId);
+                      const isHovered = hoveredPlayer === sample.playerId;
+                      return (
+                        <Line 
+                          key={`sample_${index}`}
+                          type="monotone" 
+                          dataKey={`sample_${index}_player_${sample.playerId}`}
+                          stroke={player?.color || '#888'}
+                          strokeWidth={isHovered ? 3 : 1.5}
+                          dot={false}
+                          opacity={isHovered ? 1 : (hoveredPlayer ? 0.2 : 0.7)}
+                        />
+                      );
+                    })}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              
+              {/* Legend */}
+              <div style={{marginTop: '24px', padding: '18px', background: 'rgba(0,0,0,0.3)', borderRadius: '12px'}}>
+                <div style={{display: 'flex', justifyContent: 'center', gap: '24px', flexWrap: 'wrap', alignItems: 'center'}}>
+                  {players.map(player => (
+                    <div 
+                      key={player.id}
+                      style={{
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '8px',
+                        cursor: 'pointer',
+                        padding: '6px 12px',
+                        borderRadius: '8px',
+                        background: hoveredPlayer === player.id ? `${player.color}20` : 'transparent',
+                        transition: 'background 0.2s ease'
+                      }}
+                      onMouseEnter={() => setHoveredPlayer(player.id)}
+                      onMouseLeave={() => setHoveredPlayer(null)}
+                    >
+                      <div style={{width: '20px', height: '3px', background: player.color, borderRadius: '2px'}}></div>
+                      <span style={{color: 'rgba(240, 240, 240, 0.7)', fontSize: '13px', fontWeight: '600'}}>
+                        {player.name} ({player.winrate} BB/100)
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{textAlign: 'center', marginTop: '12px', color: 'rgba(240, 240, 240, 0.4)', fontSize: '12px'}}>
+                  Dashed lines = Theoretical EV • Solid lines = Simulated runs • Hover legend to highlight player
+                </div>
+              </div>
+            </div>
+            
+            {/* Key Insight */}
+            <div style={{
+              marginTop: '28px',
+              padding: '20px 24px',
+              background: 'rgba(168, 139, 70, 0.08)',
+              border: '1px solid rgba(168, 139, 70, 0.2)',
+              borderRadius: '16px'
+            }}>
+              <div style={{display: 'flex', alignItems: 'flex-start', gap: '12px'}}>
+                <span style={{fontSize: '24px'}}>💡</span>
+                <div>
+                  <div style={{color: '#a88b46', fontWeight: '700', fontSize: '15px', marginBottom: '6px'}}>
+                    Key Insight
+                  </div>
+                  <p style={{color: 'rgba(240, 240, 240, 0.6)', fontSize: '14px', margin: 0, lineHeight: 1.7}}>
+                    Notice how players with different win rates can have overlapping results in the short term. 
+                    A {Math.max(...players.map(p => p.winrate))} BB/100 winner can run below a {Math.min(...players.map(p => p.winrate))} BB/100 player for thousands of hands. 
+                    This is why sample size matters — variance masks true skill in the short run.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Nacho Bankroll Analysis Section */}
         <motion.div 
