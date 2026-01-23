@@ -1347,36 +1347,36 @@ const PokerEVSimulation = () => {
           transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           style={{
             borderRadius: '32px', 
-            padding: '48px', 
-            marginBottom: '40px'
+            padding: '36px', 
+            marginBottom: '32px'
           }}
         >
-          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
             <div style={{
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '64px',
-              height: '64px',
-              borderRadius: '20px',
+              width: '56px',
+              height: '56px',
+              borderRadius: '18px',
               background: 'rgba(168, 139, 70, 0.1)',
               border: '1px solid rgba(168, 139, 70, 0.25)',
-              marginBottom: '20px'
+              marginBottom: '16px'
             }}>
-              <Calculator size={28} color="#a88b46" strokeWidth={1.5} />
+              <Calculator size={26} color="#a88b46" strokeWidth={1.5} />
             </div>
             <h1 style={{
-              fontSize: '36px', 
-              marginBottom: '12px', 
+              fontSize: '28px', 
+              marginBottom: '8px', 
               color: '#F0F0F0',
               fontWeight: '800',
               letterSpacing: '-0.02em'
             }}>
-              Poker EV Simulator
+              Cashgame Variance Simulator
             </h1>
             <p style={{
               color: 'rgba(240, 240, 240, 0.5)', 
-              fontSize: '16px',
+              fontSize: '14px',
               maxWidth: '500px',
               margin: '0 auto'
             }}>
@@ -1384,7 +1384,7 @@ const PokerEVSimulation = () => {
             </p>
           </div>
           
-          <div className="params-container" style={{marginBottom: '32px'}}>
+          <div className="params-container" style={{marginBottom: '24px'}}>
             {/* Basic Parameters Panel */}
             <motion.div 
               className="glass-card"
@@ -1392,10 +1392,10 @@ const PokerEVSimulation = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               style={{
-                padding: '32px', 
-                borderRadius: '24px',
-                flex: '0 0 340px',
-                maxWidth: '340px'
+                padding: '24px', 
+                borderRadius: '20px',
+                flex: '0 0 320px',
+                maxWidth: '320px'
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
@@ -1517,8 +1517,8 @@ const PokerEVSimulation = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
               style={{
-                padding: '32px', 
-                borderRadius: '24px',
+                padding: '24px', 
+                borderRadius: '20px',
                 flex: 1
               }}
             >
@@ -1534,7 +1534,7 @@ const PokerEVSimulation = () => {
                   border: 'none',
                   cursor: 'pointer',
                   padding: '0',
-                  marginBottom: advancedOpen ? '24px' : '0'
+                  marginBottom: advancedOpen ? '20px' : '0'
                 }}
               >
                 <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
@@ -1787,9 +1787,9 @@ const PokerEVSimulation = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           style={{
-            borderRadius: '32px', 
-            padding: '48px', 
-            marginBottom: '40px'
+            borderRadius: '28px', 
+            padding: '32px', 
+            marginBottom: '32px'
           }}
         >
           {/* Toggle Header */}
@@ -1804,14 +1804,14 @@ const PokerEVSimulation = () => {
               border: 'none',
               cursor: 'pointer',
               padding: '0',
-              marginBottom: multiplayerMode ? '32px' : '0'
+              marginBottom: multiplayerMode ? '24px' : '0'
             }}
           >
-            <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '14px'}}>
               <div style={{
-                width: '56px',
-                height: '56px',
-                borderRadius: '18px',
+                width: '48px',
+                height: '48px',
+                borderRadius: '14px',
                 background: multiplayerMode ? 'rgba(168, 139, 70, 0.15)' : 'rgba(168, 139, 70, 0.1)',
                 border: `1px solid ${multiplayerMode ? 'rgba(168, 139, 70, 0.4)' : 'rgba(168, 139, 70, 0.25)'}`,
                 display: 'flex',
@@ -1819,13 +1819,13 @@ const PokerEVSimulation = () => {
                 justifyContent: 'center',
                 transition: 'all 0.3s ease'
               }}>
-                <span style={{ fontSize: '28px' }}>👥</span>
+                <span style={{ fontSize: '22px' }}>👥</span>
               </div>
               <div style={{ textAlign: 'left' }}>
-                <h2 style={{fontSize: '24px', fontWeight: '800', color: '#F0F0F0', margin: 0, letterSpacing: '-0.02em'}}>
+                <h2 style={{fontSize: '20px', fontWeight: '800', color: '#F0F0F0', margin: 0, letterSpacing: '-0.02em'}}>
                   Multiplayer Mode
                 </h2>
-                <p style={{color: 'rgba(240, 240, 240, 0.5)', fontSize: '14px', margin: '4px 0 0 0'}}>
+                <p style={{color: 'rgba(240, 240, 240, 0.5)', fontSize: '13px', margin: '2px 0 0 0'}}>
                   Compare how different win rates lead to wildly different outcomes
                 </p>
               </div>
@@ -1868,10 +1868,10 @@ const PokerEVSimulation = () => {
                 <div style={{
                   background: 'rgba(168, 139, 70, 0.08)',
                   border: '1px solid rgba(168, 139, 70, 0.2)',
-                  borderRadius: '16px',
-                  padding: '16px 20px',
-                  marginBottom: '28px',
-                  fontSize: '14px',
+                  borderRadius: '12px',
+                  padding: '12px 16px',
+                  marginBottom: '20px',
+                  fontSize: '13px',
                   color: 'rgba(240, 240, 240, 0.6)',
                   lineHeight: 1.6
                 }}>
@@ -1880,7 +1880,7 @@ const PokerEVSimulation = () => {
                 </div>
                 
                 {/* Players Grid */}
-                <div style={{display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px'}}>
+                <div style={{display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px'}}>
                   {players.map((player, index) => (
                     <motion.div 
                       key={player.id}
@@ -1889,8 +1889,8 @@ const PokerEVSimulation = () => {
                       transition={{ delay: index * 0.05 }}
                       style={{
                         background: 'rgba(10, 10, 10, 0.5)',
-                        borderRadius: '20px',
-                        padding: '24px',
+                        borderRadius: '16px',
+                        padding: '18px',
                         border: `2px solid ${player.color}30`,
                         position: 'relative'
                       }}
@@ -1899,18 +1899,18 @@ const PokerEVSimulation = () => {
                       <div style={{
                         position: 'absolute',
                         top: 0,
-                        left: '24px',
-                        right: '24px',
+                        left: '18px',
+                        right: '18px',
                         height: '3px',
                         background: player.color,
                         borderRadius: '0 0 3px 3px'
                       }} />
                       
-                      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'}}>
-                        <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                           <div style={{
-                            width: '12px',
-                            height: '12px',
+                            width: '10px',
+                            height: '10px',
                             borderRadius: '50%',
                             background: player.color,
                             boxShadow: `0 0 8px ${player.color}80`
@@ -2024,18 +2024,18 @@ const PokerEVSimulation = () => {
                       
                       {/* Player EV Preview */}
                       <div style={{
-                        marginTop: '16px',
-                        padding: '12px 16px',
+                        marginTop: '12px',
+                        padding: '10px 14px',
                         background: `${player.color}10`,
-                        borderRadius: '10px',
+                        borderRadius: '8px',
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center'
                       }}>
-                        <span style={{color: 'rgba(240, 240, 240, 0.5)', fontSize: '13px'}}>
+                        <span style={{color: 'rgba(240, 240, 240, 0.5)', fontSize: '12px'}}>
                           Theoretical EV ({parameters.numHands.toLocaleString()} hands):
                         </span>
-                        <span style={{color: player.color, fontWeight: '700', fontSize: '15px'}}>
+                        <span style={{color: player.color, fontWeight: '700', fontSize: '14px'}}>
                           {displayInDollars 
                             ? `$${Math.round((player.winrate * parameters.numHands / 100) * getWeightedAverageBB()).toLocaleString()}`
                             : `${Math.round(player.winrate * parameters.numHands / 100).toLocaleString()} BB`
@@ -2053,17 +2053,17 @@ const PokerEVSimulation = () => {
                     className="btn-secondary"
                     style={{
                       width: '100%',
-                      marginBottom: '24px',
-                      padding: '14px',
+                      marginBottom: '16px',
+                      padding: '12px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: '10px',
-                      fontSize: '14px',
+                      gap: '8px',
+                      fontSize: '13px',
                       borderStyle: 'dashed'
                     }}
                   >
-                    <Plus size={18} /> Add Another Player
+                    <Plus size={16} /> Add Another Player
                   </button>
                 )}
                 
@@ -2076,8 +2076,8 @@ const PokerEVSimulation = () => {
                   whileTap={{ scale: isCalculating ? 1 : 0.98 }}
                   style={{
                     width: '100%',
-                    padding: '18px',
-                    fontSize: '17px',
+                    padding: '16px',
+                    fontSize: '15px',
                     opacity: isCalculating ? 0.7 : 1
                   }}
                 >
