@@ -136,7 +136,7 @@ const PokerToolboxHome = () => {
   const pricingPlans = [
     {
       name: '3-Month Kickstart',
-      totalPrice: '2,999',
+      totalPrice: '2,499',
       paymentNote: 'Paid in full',
       featured: false,
       features: [
@@ -150,7 +150,7 @@ const PokerToolboxHome = () => {
     },
     {
       name: '6-Month Accelerator',
-      totalPrice: '4,999',
+      totalPrice: '3,999',
       paymentNote: 'Pay in full or 3 monthly installments',
       featured: true,
       badge: 'MOST POPULAR',
@@ -167,7 +167,7 @@ const PokerToolboxHome = () => {
     },
     {
       name: '12-Month Mastery',
-      totalPrice: '8,999',
+      totalPrice: '5,999',
       paymentNote: 'Pay in full or quarterly installments',
       featured: false,
       badge: 'BEST VALUE',
