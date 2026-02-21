@@ -40,6 +40,31 @@ const PokerToolboxHome = () => {
   const heroSectionRef = useRef(null);
   const cinemaCarouselRef = useRef(null);
 
+  // Winter pricing countdown - expires March 20, 2026 at midnight CET
+  const WINTER_PRICING_END = new Date('2026-03-20T00:00:00+01:00').getTime();
+  const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: false });
+
+  useEffect(() => {
+    const updateCountdown = () => {
+      const now = Date.now();
+      const diff = WINTER_PRICING_END - now;
+      if (diff <= 0) {
+        setCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: true });
+        return;
+      }
+      setCountdown({
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((diff / (1000 * 60)) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+        expired: false
+      });
+    };
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   // ============================================
   // DATA
   // ============================================
@@ -137,6 +162,7 @@ const PokerToolboxHome = () => {
     {
       name: '3-Month Kickstart',
       totalPrice: '2,499',
+      originalPrice: '2,999',
       paymentNote: 'Paid in full',
       featured: false,
       features: [
@@ -151,6 +177,7 @@ const PokerToolboxHome = () => {
     {
       name: '6-Month Accelerator',
       totalPrice: '3,999',
+      originalPrice: '4,999',
       paymentNote: 'Pay in full or 3 monthly installments',
       featured: true,
       badge: 'MOST POPULAR',
@@ -168,10 +195,11 @@ const PokerToolboxHome = () => {
     {
       name: '12-Month Mastery',
       totalPrice: '5,999',
+      originalPrice: '8,999',
       paymentNote: 'Pay in full or quarterly installments',
       featured: false,
       badge: 'BEST VALUE',
-      savings: 'Save €3,000 vs. Quarterly',
+      savings: 'Save €4,000 vs. Quarterly',
       features: [
         '24 Private 1-on-1 Sessions',
         'Lifetime Weekly Group Coaching',
@@ -726,7 +754,7 @@ The 3-month program consists of:
     );
   });
 
-  const PricingCard = React.memo(({ plan }) => (
+  const PricingCard = React.memo(({ plan, isPromoActive }) => (
     <div 
       className={`pricing-card-authority ${plan.featured ? 'featured' : ''}`}
       style={{
@@ -803,6 +831,22 @@ The 3-month program consists of:
         position: 'relative',
         zIndex: 1
       }}>
+        {isPromoActive && plan.originalPrice && (
+          <div style={{
+            marginBottom: '6px'
+          }}>
+            <span style={{
+              color: 'rgba(240, 240, 240, 0.35)',
+              fontSize: '22px',
+              fontWeight: '600',
+              textDecoration: 'line-through',
+              textDecorationColor: 'rgba(220, 80, 80, 0.6)',
+              letterSpacing: '-0.01em'
+            }}>
+              €{plan.originalPrice}
+            </span>
+          </div>
+        )}
         <span style={{
           color: '#FFFFFF',
           fontSize: '52px',
@@ -3786,6 +3830,65 @@ The 3-month program consists of:
             }}>
               Select the path that fits your goals and timeline.
             </p>
+
+            {/* Winter Pricing Countdown */}
+            {!countdown.expired && (
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '20px',
+                marginTop: '28px',
+                padding: '14px 28px',
+                background: 'rgba(168, 139, 70, 0.08)',
+                border: '1px solid rgba(168, 139, 70, 0.2)',
+                borderRadius: '14px',
+                flexWrap: 'wrap',
+                justifyContent: 'center'
+              }}>
+                <span style={{
+                  color: '#a88b46',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  letterSpacing: '0.04em',
+                  textTransform: 'uppercase',
+                  whiteSpace: 'nowrap'
+                }}>
+                  Winter pricing ends in
+                </span>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  {[
+                    { val: countdown.days, label: 'd' },
+                    { val: countdown.hours, label: 'h' },
+                    { val: countdown.minutes, label: 'm' },
+                    { val: countdown.seconds, label: 's' }
+                  ].map((unit, i) => (
+                    <div key={i} style={{
+                      display: 'flex',
+                      alignItems: 'baseline',
+                      gap: '2px'
+                    }}>
+                      <span style={{
+                        color: '#FFFFFF',
+                        fontSize: '20px',
+                        fontWeight: '700',
+                        fontVariantNumeric: 'tabular-nums',
+                        minWidth: '28px',
+                        textAlign: 'right'
+                      }}>
+                        {String(unit.val).padStart(2, '0')}
+                      </span>
+                      <span style={{
+                        color: 'rgba(168, 139, 70, 0.6)',
+                        fontSize: '12px',
+                        fontWeight: '500'
+                      }}>
+                        {unit.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <div 
@@ -3799,7 +3902,7 @@ The 3-month program consists of:
               margin: '0 auto'
             }}>
             {pricingPlans.map((plan, idx) => (
-              <PricingCard key={idx} plan={plan} />
+              <PricingCard key={idx} plan={plan} isPromoActive={!countdown.expired} />
             ))}
           </div>
 
