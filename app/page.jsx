@@ -128,33 +128,33 @@ const PokerToolboxHome = () => {
   const mentorshipBenefits = [
     {
       icon: Crosshair,
-      title: 'Surgical Leak Correction',
-      description: "We skip the small talk and audit your ranges against GTO to identify exactly where you are bleeding EV. By comparing your ranges to the GTO range composition, we build a personalized study plan and custom protocols to plug your leaks."
+      title: 'Full Database Review',
+      description: "I go through your database and compare your ranges to GTO. We find where you're losing money, why, and build a study plan around fixing it."
     },
     {
       icon: Swords,
-      title: 'High-Stakes War Room',
-      description: 'Join weekly live study sessions with a group of motivated crushers. Dissect hands, debate lines, and stay accountable in a high-performance environment designed to help you improve consistently.'
+      title: 'Weekly Group Study Sessions',
+      description: "Every week we get together as a group to break down hands and talk through spots. It keeps you sharp and gives you perspectives you won't get studying alone."
     },
     {
       icon: Zap,
-      title: "The 'Nacho' Stat Validator",
-      description: "Exclusive access to a unique tool that compares your entire range structure to solver outputs. Instantly visualize where your strategy deviates from optimal play and see where your leaks are in an X-ray of your game."
+      title: "Get Access to Nachos' Statchecker",
+      description: "A custom tool I built that compares your range structure against solver outputs. You'll see exactly where your strategy is off and what to work on."
     },
     {
       icon: Brain,
       title: 'Performance by Design',
-      description: 'A complete mental operating system tailored for the reality of high-volume grinding. Eliminate tilt, master your focus, and build the discipline required for long-term consistency and confidence at the tables.'
+      description: 'Get access to a full mindset course I built from my own experience playing high volume. Covers tilt, focus, discipline, and how to stay consistent over long sessions.'
     },
     {
       icon: Lock,
-      title: 'The Strategy Vault',
-      description: 'Unlock access to a growing library of high-stakes analyses, hand reviews, and deep theoretical dives. These videos cover the exact concepts and strategies used to beat 1KNL and above.'
+      title: 'Private Notion Access',
+      description: "A library of hand reviews, deep dives, and strategy breakdowns covering the concepts I use to beat 1KNL+. New content added regularly."
     },
     {
       icon: MessageCircle,
       title: 'Direct Mentor Access',
-      description: 'You are never alone on the grind. Get direct priority support via my private Discord to post hands, ask questions, and get strategy breakdowns from me personally.'
+      description: "Message me directly on Discord. Post hands, ask questions, get feedback. You're not figuring this out alone."
     }
   ];
 
