@@ -2538,7 +2538,7 @@ The 3-month program consists of:
                     transition: 'all 0.3s ease'
                   }}>
                   <img 
-                    src="https://static.runitonce.com/static/img/courses/dominate-with-data/chart.bcc69818f43c.jpg"
+                    src="https://i.gyazo.com/9cdbd1da3b1ac551bbdce274be82df1c.png"
                     alt="Freenachos Results Graph - 6.2bb/100 at High Stakes"
                     style={{
                       width: '100%',
@@ -2707,7 +2707,7 @@ The 3-month program consists of:
                   overflow: 'hidden'
                 }}>
                   <img 
-                    src="https://static.runitonce.com/static/img/courses/dominate-with-data/chart.bcc69818f43c.jpg"
+                    src="https://i.gyazo.com/9cdbd1da3b1ac551bbdce274be82df1c.png"
                     alt="Freenachos Results Graph - 6.2bb/100 at High Stakes"
                     style={{
                       width: '100%',
