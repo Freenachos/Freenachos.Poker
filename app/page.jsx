@@ -2,7 +2,7 @@
 
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
 import NewsletterPopup from '@/components/NewsletterPopup';
-
+import { Analytics } from '@vercel/analytics/react'
 import React, { useState, useEffect, useRef } from 'react';
 import { ExternalLink, Play, ChevronLeft, ChevronRight, Calculator, Target, TrendingUp, BookOpen, User, Youtube, ArrowRight, Sparkles, BarChart3, Percent, DollarSign, Trophy, Activity, Check, X, ChevronDown, GraduationCap, Users, CheckCircle, Video, MessageCircle, Calendar, Star, Award, Database, Headphones, Crosshair, Swords, Brain, Lock, Zap } from 'lucide-react';
 
