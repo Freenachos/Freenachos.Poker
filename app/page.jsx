@@ -129,7 +129,7 @@ const PokerToolboxHome = () => {
     {
       icon: Crosshair,
       title: 'Full Database Review',
-      description: "I go through your database and compare your ranges to GTO. We find where you're losing money, why, and build a study plan around fixing it."
+      description: "In our bi-weekly 1-on-1 sessions, I go through your database and compare your ranges to GTO. We find where you're losing money, why, and build a study plan around fixing it."
     },
     {
       icon: Swords,
