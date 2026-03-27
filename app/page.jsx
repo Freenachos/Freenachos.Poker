@@ -129,7 +129,7 @@ const PokerToolboxHome = () => {
     {
       icon: Crosshair,
       title: 'Full Database Review',
-      description: "During our bi-weekly one-on-one sessions, I go through your database and compare your ranges to GTO. We find where you're losing money, why, and build a study plan around fixing it."
+      description: "I go through your database and compare your ranges to GTO. We find where you're losing money, why, and build a study plan around fixing it."
     },
     {
       icon: Swords,
@@ -921,14 +921,9 @@ The 3-month program consists of:
                 strokeWidth={2.5} 
               />
               {isFreeCourse ? (
-                <span style={{
-                  background: 'linear-gradient(90deg, #ec4899, #a855f7)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
+                <span className="gradient-flow-text" style={{
                   fontSize: '14px',
-                  lineHeight: 1.5,
-                  fontWeight: '600'
+                  lineHeight: 1.5
                 }}>
                   {feature}
                 </span>
@@ -3854,59 +3849,74 @@ The 3-month program consists of:
             {/* Easter Pricing Countdown */}
             {!countdown.expired && (
               <div style={{
-                display: 'inline-flex',
+                display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
-                gap: '20px',
+                gap: '12px',
                 marginTop: '28px',
-                padding: '14px 28px',
+                padding: '18px 32px',
                 background: 'rgba(168, 139, 70, 0.08)',
                 border: '1px solid rgba(168, 139, 70, 0.2)',
-                borderRadius: '14px',
-                flexWrap: 'wrap',
-                justifyContent: 'center'
+                borderRadius: '14px'
               }}>
-                <span style={{
-                  color: '#a88b46',
-                  fontSize: '13px',
-                  fontWeight: '600',
-                  letterSpacing: '0.04em',
-                  textTransform: 'uppercase',
-                  whiteSpace: 'nowrap'
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '20px',
+                  flexWrap: 'wrap',
+                  justifyContent: 'center'
                 }}>
-                  Easter pricing ends in
-                </span>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  {[
-                    { val: countdown.days, label: 'd' },
-                    { val: countdown.hours, label: 'h' },
-                    { val: countdown.minutes, label: 'm' },
-                    { val: countdown.seconds, label: 's' }
-                  ].map((unit, i) => (
-                    <div key={i} style={{
-                      display: 'flex',
-                      alignItems: 'baseline',
-                      gap: '2px'
-                    }}>
-                      <span style={{
-                        color: '#FFFFFF',
-                        fontSize: '20px',
-                        fontWeight: '700',
-                        fontVariantNumeric: 'tabular-nums',
-                        minWidth: '28px',
-                        textAlign: 'right'
+                  <span style={{
+                    color: '#a88b46',
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    letterSpacing: '0.04em',
+                    textTransform: 'uppercase',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    Easter pricing ends in
+                  </span>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    {[
+                      { val: countdown.days, label: 'd' },
+                      { val: countdown.hours, label: 'h' },
+                      { val: countdown.minutes, label: 'm' },
+                      { val: countdown.seconds, label: 's' }
+                    ].map((unit, i) => (
+                      <div key={i} style={{
+                        display: 'flex',
+                        alignItems: 'baseline',
+                        gap: '2px'
                       }}>
-                        {String(unit.val).padStart(2, '0')}
-                      </span>
-                      <span style={{
-                        color: 'rgba(168, 139, 70, 0.6)',
-                        fontSize: '12px',
-                        fontWeight: '500'
-                      }}>
-                        {unit.label}
-                      </span>
-                    </div>
-                  ))}
+                        <span style={{
+                          color: '#FFFFFF',
+                          fontSize: '20px',
+                          fontWeight: '700',
+                          fontVariantNumeric: 'tabular-nums',
+                          minWidth: '28px',
+                          textAlign: 'right'
+                        }}>
+                          {String(unit.val).padStart(2, '0')}
+                        </span>
+                        <span style={{
+                          color: 'rgba(168, 139, 70, 0.6)',
+                          fontSize: '12px',
+                          fontWeight: '500'
+                        }}>
+                          {unit.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
+                <p style={{
+                  color: 'rgba(240, 240, 240, 0.6)',
+                  fontSize: '14px',
+                  margin: 0,
+                  textAlign: 'center'
+                }}>
+                  1-Year Mentorship on sale with <span className="gradient-flow-text">Dominate With Data</span> course included free.
+                </p>
               </div>
             )}
           </div>
@@ -3928,6 +3938,20 @@ The 3-month program consists of:
 
           {/* Pricing card styles */}
           <style>{`
+            @keyframes gradientFlow {
+              0% { background-position: 0% 50%; }
+              50% { background-position: 100% 50%; }
+              100% { background-position: 0% 50%; }
+            }
+            .gradient-flow-text {
+              background: linear-gradient(90deg, #ec4899, #a855f7, #ec4899, #a855f7);
+              background-size: 200% auto;
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              background-clip: text;
+              animation: gradientFlow 3s ease infinite;
+              font-weight: 600;
+            }
             .pricing-card-authority {
               box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
             }
