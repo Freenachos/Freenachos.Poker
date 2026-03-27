@@ -40,14 +40,14 @@ const PokerToolboxHome = () => {
   const heroSectionRef = useRef(null);
   const cinemaCarouselRef = useRef(null);
 
-  // Winter pricing countdown - expires March 20, 2026 at midnight CET
-  const WINTER_PRICING_END = new Date('2026-03-20T00:00:00+01:00').getTime();
+  // Easter pricing countdown - expires April 6, 2026 (Easter Monday) at 23:59 CET
+  const EASTER_PRICING_END = new Date('2026-04-06T23:59:59+02:00').getTime();
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: false });
 
   useEffect(() => {
     const updateCountdown = () => {
       const now = Date.now();
-      const diff = WINTER_PRICING_END - now;
+      const diff = EASTER_PRICING_END - now;
       if (diff <= 0) {
         setCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: true });
         return;
@@ -161,8 +161,7 @@ const PokerToolboxHome = () => {
   const pricingPlans = [
     {
       name: '3-Month Kickstart',
-      totalPrice: '2,499',
-      originalPrice: '2,999',
+      totalPrice: '2,999',
       paymentNote: 'Paid in full',
       featured: false,
       features: [
@@ -176,8 +175,7 @@ const PokerToolboxHome = () => {
     },
     {
       name: '6-Month Accelerator',
-      totalPrice: '3,999',
-      originalPrice: '4,999',
+      totalPrice: '4,999',
       paymentNote: 'Pay in full or 3 monthly installments',
       featured: true,
       badge: 'MOST POPULAR',
@@ -194,19 +192,20 @@ const PokerToolboxHome = () => {
     },
     {
       name: '12-Month Mastery',
-      totalPrice: '5,999',
+      totalPrice: '6,999',
       originalPrice: '8,999',
       paymentNote: 'Pay in full or quarterly installments',
       featured: false,
       badge: 'BEST VALUE',
-      savings: 'Save €4,000 vs. Quarterly',
+      savings: 'Save €2,000 + Free RIO Course',
       features: [
         '24 Private 1-on-1 Sessions',
         'Lifetime Weekly Group Coaching',
         'Quarterly Database Review',
         'Quarterly Updated Study Plan',
         'Lifetime Discord Access',
-        'Priority Scheduling'
+        'Priority Scheduling',
+        'Free Dominate With Data RIO Course'
       ],
       buttonText: 'Book Free Introcall'
     }
@@ -3831,7 +3830,7 @@ The 3-month program consists of:
               Select the path that fits your goals and timeline.
             </p>
 
-            {/* Winter Pricing Countdown */}
+            {/* Easter Pricing Countdown */}
             {!countdown.expired && (
               <div style={{
                 display: 'inline-flex',
@@ -3853,7 +3852,7 @@ The 3-month program consists of:
                   textTransform: 'uppercase',
                   whiteSpace: 'nowrap'
                 }}>
-                  Winter pricing ends in
+                  Easter pricing ends in
                 </span>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   {[
