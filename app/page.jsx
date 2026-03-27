@@ -129,7 +129,7 @@ const PokerToolboxHome = () => {
     {
       icon: Crosshair,
       title: 'Full Database Review',
-      description: "In our bi-weekly 1-on-1 sessions, I go through your database and compare your ranges to GTO. We find where you're losing money, why, and build a study plan around fixing it."
+      description: "During our bi-weekly one-on-one sessions, I go through your database and compare your ranges to GTO. We find where you're losing money, why, and build a study plan around fixing it."
     },
     {
       icon: Swords,
@@ -177,8 +177,7 @@ const PokerToolboxHome = () => {
       name: '6-Month Accelerator',
       totalPrice: '4,999',
       paymentNote: 'Pay in full or 3 monthly installments',
-      featured: true,
-      badge: 'MOST POPULAR',
+      featured: false,
       savings: 'Save €1,000 vs. Quarterly',
       features: [
         '12 Private 1-on-1 Sessions',
@@ -195,8 +194,8 @@ const PokerToolboxHome = () => {
       totalPrice: '6,999',
       originalPrice: '8,999',
       paymentNote: 'Pay in full or quarterly installments',
-      featured: false,
-      badge: 'BEST VALUE',
+      featured: true,
+      badge: 'EASTER SALE',
       savings: 'Save €2,000 + Free RIO Course',
       features: [
         '24 Private 1-on-1 Sessions',
@@ -907,22 +906,44 @@ The 3-month program consists of:
         position: 'relative',
         zIndex: 1
       }}>
-        {plan.features.map((feature, idx) => (
-          <div key={idx} style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: '12px'
-          }}>
-            <Check size={15} color="#a88b46" style={{ flexShrink: 0, marginTop: '2px' }} strokeWidth={2.5} />
-            <span style={{
-              color: 'rgba(240, 240, 240, 0.75)',
-              fontSize: '14px',
-              lineHeight: 1.5
+        {plan.features.map((feature, idx) => {
+          const isFreeCourse = feature.includes('Free Dominate With Data');
+          return (
+            <div key={idx} style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '12px'
             }}>
-              {feature}
-            </span>
-          </div>
-        ))}
+              <Check 
+                size={15} 
+                color={isFreeCourse ? '#c471ed' : '#a88b46'} 
+                style={{ flexShrink: 0, marginTop: '2px' }} 
+                strokeWidth={2.5} 
+              />
+              {isFreeCourse ? (
+                <span style={{
+                  background: 'linear-gradient(90deg, #ec4899, #a855f7)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  fontSize: '14px',
+                  lineHeight: 1.5,
+                  fontWeight: '600'
+                }}>
+                  {feature}
+                </span>
+              ) : (
+                <span style={{
+                  color: 'rgba(240, 240, 240, 0.75)',
+                  fontSize: '14px',
+                  lineHeight: 1.5
+                }}>
+                  {feature}
+                </span>
+              )}
+            </div>
+          );
+        })}
       </div>
       
       {/* CTA Button - Outline style matching Book Free Introcall */}
