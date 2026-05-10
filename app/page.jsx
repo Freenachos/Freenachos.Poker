@@ -40,31 +40,6 @@ const PokerToolboxHome = () => {
   const heroSectionRef = useRef(null);
   const cinemaCarouselRef = useRef(null);
 
-  // Easter pricing countdown - expires April 6, 2026 (Easter Monday) at 23:59 CET
-  const EASTER_PRICING_END = new Date('2026-04-06T23:59:59+02:00').getTime();
-  const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: false });
-
-  useEffect(() => {
-    const updateCountdown = () => {
-      const now = Date.now();
-      const diff = EASTER_PRICING_END - now;
-      if (diff <= 0) {
-        setCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: true });
-        return;
-      }
-      setCountdown({
-        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((diff / (1000 * 60)) % 60),
-        seconds: Math.floor((diff / 1000) % 60),
-        expired: false
-      });
-    };
-    updateCountdown();
-    const interval = setInterval(updateCountdown, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   // ============================================
   // DATA
   // ============================================
@@ -128,44 +103,44 @@ const PokerToolboxHome = () => {
   const mentorshipBenefits = [
     {
       icon: Crosshair,
-      title: 'Full Database Review',
-      description: "I go through your database and compare your ranges to GTO. We find where you're losing money, why, and build a study plan around fixing it."
+      title: 'Surgical Leak Correction',
+      description: "We skip the small talk and audit your ranges against GTO to identify exactly where you are bleeding EV. By comparing your ranges to the GTO range composition, we build a personalized study plan and custom protocols to plug your leaks."
     },
     {
       icon: Swords,
-      title: 'Weekly Group Study Sessions',
-      description: "Every week we get together as a group to break down hands and talk through spots. It keeps you sharp and gives you perspectives you won't get studying alone."
+      title: 'High-Stakes War Room',
+      description: 'Join weekly live study sessions with a group of motivated crushers. Dissect hands, debate lines, and stay accountable in a high-performance environment designed to help you improve consistently.'
     },
     {
       icon: Zap,
-      title: "Get Access to Nachos' Statchecker",
-      description: "A custom tool I built that compares your range structure against solver outputs. You'll see exactly where your strategy is off and what to work on."
+      title: "The 'Nacho' Stat Validator",
+      description: "Exclusive access to a unique tool that compares your entire range structure to solver outputs. Instantly visualize where your strategy deviates from optimal play and see where your leaks are in an X-ray of your game."
     },
     {
       icon: Brain,
       title: 'Performance by Design',
-      description: 'Get access to a full mindset course I built from my own experience playing high volume. Covers tilt, focus, discipline, and how to stay consistent over long sessions.'
+      description: 'A complete mental operating system tailored for the reality of high-volume grinding. Eliminate tilt, master your focus, and build the discipline required for long-term consistency and confidence at the tables.'
     },
     {
       icon: Lock,
-      title: 'Private Notion Access',
-      description: "A library of hand reviews, deep dives, and strategy breakdowns covering the concepts I use to beat 1KNL+. New content added regularly."
+      title: 'The Strategy Vault',
+      description: 'Unlock access to a growing library of high-stakes analyses, hand reviews, and deep theoretical dives. These videos cover the exact concepts and strategies used to beat 1KNL and above.'
     },
     {
       icon: MessageCircle,
       title: 'Direct Mentor Access',
-      description: "Message me directly on Discord. Post hands, ask questions, get feedback. You're not figuring this out alone."
+      description: 'You are never alone on the grind. Get direct priority support via my private Discord to post hands, ask questions, and get strategy breakdowns from me personally.'
     }
   ];
 
   const pricingPlans = [
     {
       name: '3-Month Kickstart',
-      totalPrice: '2,999',
+      totalPrice: '1,999',
       paymentNote: 'Paid in full',
       featured: false,
       features: [
-        '6 Private 1-on-1 Sessions',
+        '5 Private 1-on-1 Sessions',
         'Lifetime Weekly Group Coaching',
         'Full Database Review',
         'Personalized Study Plan',
@@ -175,12 +150,12 @@ const PokerToolboxHome = () => {
     },
     {
       name: '6-Month Accelerator',
-      totalPrice: '4,999',
+      totalPrice: '2,999',
       paymentNote: 'Pay in full or 3 monthly installments',
-      featured: false,
+      featured: true,
       savings: 'Save €1,000 vs. Quarterly',
       features: [
-        '12 Private 1-on-1 Sessions',
+        '10 Private 1-on-1 Sessions',
         'Lifetime Weekly Group Coaching',
         'Quarterly Database Review',
         'Quarterly Updated Study Plan',
@@ -191,20 +166,18 @@ const PokerToolboxHome = () => {
     },
     {
       name: '12-Month Mastery',
-      totalPrice: '6,999',
-      originalPrice: '8,999',
+      totalPrice: '4,999',
       paymentNote: 'Pay in full or quarterly installments',
-      featured: true,
-      badge: 'EASTER SALE',
-      savings: 'Save €2,000 + Free RIO Course',
+      featured: false,
+      badge: 'BEST VALUE',
+      savings: 'Save €3,000 vs. Quarterly',
       features: [
-        '24 Private 1-on-1 Sessions',
+        '20 Private 1-on-1 Sessions',
         'Lifetime Weekly Group Coaching',
         'Quarterly Database Review',
         'Quarterly Updated Study Plan',
         'Lifetime Discord Access',
-        'Priority Scheduling',
-        'Free Dominate With Data RIO Course'
+        'Priority Scheduling'
       ],
       buttonText: 'Book Free Introcall'
     }
@@ -218,7 +191,7 @@ const PokerToolboxHome = () => {
 Additionally, you'll participate in weekly group sessions that foster a collaborative learning environment. In one-on-one sessions, we'll conduct a detailed analysis of your database using advanced tools to identify and address leaks, focusing on GTO range composition and exploiting areas of weakness to elevate your game.
 
 The 3-month program consists of:
-• 6 one-on-one coaching sessions (55 min)
+• 5 one-on-one coaching sessions (55 min)
 • 13 group coaching sessions (55 min)
 • Advanced database review`
     },
@@ -752,7 +725,7 @@ The 3-month program consists of:
     );
   });
 
-  const PricingCard = React.memo(({ plan, isPromoActive }) => (
+  const PricingCard = React.memo(({ plan }) => (
     <div 
       className={`pricing-card-authority ${plan.featured ? 'featured' : ''}`}
       style={{
@@ -829,22 +802,6 @@ The 3-month program consists of:
         position: 'relative',
         zIndex: 1
       }}>
-        {isPromoActive && plan.originalPrice && (
-          <div style={{
-            marginBottom: '6px'
-          }}>
-            <span style={{
-              color: 'rgba(240, 240, 240, 0.35)',
-              fontSize: '22px',
-              fontWeight: '600',
-              textDecoration: 'line-through',
-              textDecorationColor: 'rgba(220, 80, 80, 0.6)',
-              letterSpacing: '-0.01em'
-            }}>
-              €{plan.originalPrice}
-            </span>
-          </div>
-        )}
         <span style={{
           color: '#FFFFFF',
           fontSize: '52px',
@@ -906,44 +863,27 @@ The 3-month program consists of:
         position: 'relative',
         zIndex: 1
       }}>
-        {plan.features.map((feature, idx) => {
-          const isFreeCourse = feature.includes('Free Dominate With Data');
-          return (
-            <div key={idx} style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: '12px'
+        {plan.features.map((feature, idx) => (
+          <div key={idx} style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '12px'
+          }}>
+            <Check size={15} color="#a88b46" style={{ flexShrink: 0, marginTop: '2px' }} strokeWidth={2.5} />
+            <span style={{
+              color: 'rgba(240, 240, 240, 0.75)',
+              fontSize: '14px',
+              lineHeight: 1.5
             }}>
-              <Check 
-                size={15} 
-                color={isFreeCourse ? '#c471ed' : '#a88b46'} 
-                style={{ flexShrink: 0, marginTop: '2px' }} 
-                strokeWidth={2.5} 
-              />
-              {isFreeCourse ? (
-                <span className="gradient-flow-text" style={{
-                  fontSize: '14px',
-                  lineHeight: 1.5
-                }}>
-                  {feature}
-                </span>
-              ) : (
-                <span style={{
-                  color: 'rgba(240, 240, 240, 0.75)',
-                  fontSize: '14px',
-                  lineHeight: 1.5
-                }}>
-                  {feature}
-                </span>
-              )}
-            </div>
-          );
-        })}
+              {feature}
+            </span>
+          </div>
+        ))}
       </div>
       
       {/* CTA Button - Outline style matching Book Free Introcall */}
       <a
-        href="https://calendly.com/patrickgerritsen90/30min"
+        href="https://calendly.com/freenachos/intro"
         target="_blank"
         rel="noopener noreferrer"
         className="pricing-cta-btn"
@@ -2329,7 +2269,7 @@ The 3-month program consists of:
               
               {/* CTA Button */}
               <a 
-                href="https://calendly.com/patrickgerritsen90/30min" 
+                href="https://calendly.com/freenachos/intro" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="btn-hover cta-primary"
@@ -2487,7 +2427,7 @@ The 3-month program consists of:
 
               {/* CTA Button */}
               <a 
-                href="https://calendly.com/patrickgerritsen90/30min" 
+                href="https://calendly.com/freenachos/intro" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="btn-hover authority-cta-btn"
@@ -2553,7 +2493,7 @@ The 3-month program consists of:
                     transition: 'all 0.3s ease'
                   }}>
                   <img 
-                    src="https://i.gyazo.com/9cdbd1da3b1ac551bbdce274be82df1c.png"
+                    src="https://static.runitonce.com/static/img/courses/dominate-with-data/chart.bcc69818f43c.jpg"
                     alt="Freenachos Results Graph - 6.2bb/100 at High Stakes"
                     style={{
                       width: '100%',
@@ -2722,7 +2662,7 @@ The 3-month program consists of:
                   overflow: 'hidden'
                 }}>
                   <img 
-                    src="https://i.gyazo.com/9cdbd1da3b1ac551bbdce274be82df1c.png"
+                    src="https://static.runitonce.com/static/img/courses/dominate-with-data/chart.bcc69818f43c.jpg"
                     alt="Freenachos Results Graph - 6.2bb/100 at High Stakes"
                     style={{
                       width: '100%',
@@ -3845,80 +3785,6 @@ The 3-month program consists of:
             }}>
               Select the path that fits your goals and timeline.
             </p>
-
-            {/* Easter Pricing Countdown */}
-            {!countdown.expired && (
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '12px',
-                marginTop: '28px',
-                padding: '18px 32px',
-                background: 'rgba(168, 139, 70, 0.08)',
-                border: '1px solid rgba(168, 139, 70, 0.2)',
-                borderRadius: '14px'
-              }}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '20px',
-                  flexWrap: 'wrap',
-                  justifyContent: 'center'
-                }}>
-                  <span style={{
-                    color: '#a88b46',
-                    fontSize: '13px',
-                    fontWeight: '600',
-                    letterSpacing: '0.04em',
-                    textTransform: 'uppercase',
-                    whiteSpace: 'nowrap'
-                  }}>
-                    Easter pricing ends in
-                  </span>
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    {[
-                      { val: countdown.days, label: 'd' },
-                      { val: countdown.hours, label: 'h' },
-                      { val: countdown.minutes, label: 'm' },
-                      { val: countdown.seconds, label: 's' }
-                    ].map((unit, i) => (
-                      <div key={i} style={{
-                        display: 'flex',
-                        alignItems: 'baseline',
-                        gap: '2px'
-                      }}>
-                        <span style={{
-                          color: '#FFFFFF',
-                          fontSize: '20px',
-                          fontWeight: '700',
-                          fontVariantNumeric: 'tabular-nums',
-                          minWidth: '28px',
-                          textAlign: 'right'
-                        }}>
-                          {String(unit.val).padStart(2, '0')}
-                        </span>
-                        <span style={{
-                          color: 'rgba(168, 139, 70, 0.6)',
-                          fontSize: '12px',
-                          fontWeight: '500'
-                        }}>
-                          {unit.label}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <p style={{
-                  color: 'rgba(240, 240, 240, 0.6)',
-                  fontSize: '14px',
-                  margin: 0,
-                  textAlign: 'center'
-                }}>
-                  1-Year Mentorship on sale with <span className="gradient-flow-text">Dominate With Data</span> course included free.
-                </p>
-              </div>
-            )}
           </div>
 
           <div 
@@ -3932,26 +3798,12 @@ The 3-month program consists of:
               margin: '0 auto'
             }}>
             {pricingPlans.map((plan, idx) => (
-              <PricingCard key={idx} plan={plan} isPromoActive={!countdown.expired} />
+              <PricingCard key={idx} plan={plan} />
             ))}
           </div>
 
           {/* Pricing card styles */}
           <style>{`
-            @keyframes gradientFlow {
-              0% { background-position: 0% 50%; }
-              50% { background-position: 100% 50%; }
-              100% { background-position: 0% 50%; }
-            }
-            .gradient-flow-text {
-              background: linear-gradient(90deg, #ec4899, #a855f7, #ec4899, #a855f7);
-              background-size: 200% auto;
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
-              background-clip: text;
-              animation: gradientFlow 3s ease infinite;
-              font-weight: 600;
-            }
             .pricing-card-authority {
               box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
             }
@@ -4119,7 +3971,7 @@ The 3-month program consists of:
             marginTop: '56px'
           }}>
             <a 
-              href="https://calendly.com/patrickgerritsen90/30min"
+              href="https://calendly.com/freenachos/intro"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-hover cta-primary"
