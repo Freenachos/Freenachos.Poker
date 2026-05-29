@@ -24,68 +24,42 @@ export async function POST(request) {
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    // Check if already subscribed in our DB
-    const { data: existing } = await supabase
-      .from('subscribers')
-      .select('id, confirmed, unsubscribed_at')
-      .eq('email', normalizedEmail)
-      .single();
+    // Subscribe to Beehiiv first -- this is the primary newsletter platform
+    if (BEEHIIV_API_KEY && BEEHIIV_PUBLICATION_ID) {
+      await subscribeToBeehiiv(normalizedEmail, source);
+    }
 
-    if (existing) {
-      // If previously unsubscribed, resubscribe them
-      if (existing.unsubscribed_at) {
+    // Sync to Supabase for local tracking (best-effort, don't block on failure)
+    try {
+      const { data: existing } = await supabase
+        .from('subscribers')
+        .select('id, confirmed, unsubscribed_at')
+        .eq('email', normalizedEmail)
+        .maybeSingle();
+
+      if (existing) {
+        if (existing.unsubscribed_at) {
+          await supabase
+            .from('subscribers')
+            .update({ 
+              unsubscribed_at: null, 
+              subscribed_at: new Date().toISOString(),
+              source 
+            })
+            .eq('id', existing.id);
+        }
+      } else {
         await supabase
           .from('subscribers')
-          .update({ 
-            unsubscribed_at: null, 
-            subscribed_at: new Date().toISOString(),
-            source 
-          })
-          .eq('id', existing.id);
-
-        // Also resubscribe in Beehiiv
-        if (BEEHIIV_API_KEY && BEEHIIV_PUBLICATION_ID) {
-          await subscribeToBeehiiv(normalizedEmail, source);
-        }
-
-        return NextResponse.json({ 
-          success: true, 
-          message: 'Welcome back! You\'ve been resubscribed.' 
-        });
+          .insert([{ 
+            email: normalizedEmail, 
+            source,
+            confirmed: true,
+            confirmed_at: new Date().toISOString()
+          }]);
       }
-
-      // Already subscribed
-      return NextResponse.json({ 
-        success: true, 
-        message: 'You\'re already subscribed!' 
-      });
-    }
-
-    // Insert new subscriber to Supabase
-    const { data: subscriber, error: insertError } = await supabase
-      .from('subscribers')
-      .insert([{ 
-        email: normalizedEmail, 
-        source,
-        confirmed: true, // Beehiiv handles double opt-in if you enable it
-        confirmed_at: new Date().toISOString()
-      }])
-      .select()
-      .single();
-
-    if (insertError) {
-      console.error('Supabase insert error:', insertError);
-      throw new Error('Failed to save subscription');
-    }
-
-    // Add to Beehiiv for email delivery
-    if (BEEHIIV_API_KEY && BEEHIIV_PUBLICATION_ID) {
-      try {
-        await subscribeToBeehiiv(normalizedEmail, source);
-      } catch (beehiivError) {
-        console.error('Beehiiv sync error:', beehiivError);
-        // Don't fail the whole request if Beehiiv fails
-      }
+    } catch (dbError) {
+      console.error('Supabase sync error (non-blocking):', dbError);
     }
 
     return NextResponse.json({ 
