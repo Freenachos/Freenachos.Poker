@@ -97,9 +97,10 @@ async function subscribeToBeehiiv(email, source) {
   );
 
   if (!response.ok) {
-    const errorData = await response.json();
-    console.error('Beehiiv API error:', errorData);
-    throw new Error('Beehiiv subscription failed');
+    const errorData = await response.json().catch(() => ({}));
+    console.error('Beehiiv API error:', response.status, errorData);
+    const detail = errorData?.message || errorData?.error || JSON.stringify(errorData);
+    throw new Error(`Beehiiv subscription failed (${response.status}): ${detail}`);
   }
 
   return response.json();
