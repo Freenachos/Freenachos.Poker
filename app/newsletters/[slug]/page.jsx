@@ -13,7 +13,7 @@ export async function generateMetadata({ params }) {
 
   const description =
     post.subtitle ||
-    post.content?.free?.web?.html?.replace(/<[^>]*>/g, "").slice(0, 155) + "..." ||
+    (post.content?.free?.web?.replace(/<[^>]*>/g, "").slice(0, 155) + "...") ||
     "Read this edition of the Nachos Exploits Newsletter.";
 
   return {

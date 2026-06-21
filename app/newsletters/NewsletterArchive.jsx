@@ -156,7 +156,7 @@ export default function NewsletterArchive({ posts, currentPage, totalPages, tota
                       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
                         <Clock size={12} color={TEXT_DIM} />
                         <span style={{ fontSize: 12, color: TEXT_DIM }}>
-                          {estimateReadTime(post.content?.free?.web?.html)}
+                          {estimateReadTime(post.content?.free?.web)}
                         </span>
                       </div>
                     </div>
@@ -173,7 +173,7 @@ export default function NewsletterArchive({ posts, currentPage, totalPages, tota
 
                     {/* Preview */}
                     <p style={{ fontSize: 13, color: TEXT_SUB, lineHeight: 1.6, flex: 1, marginBottom: 16 }}>
-                      {post.subtitle || stripHtmlPreview(post.content?.free?.web?.html)}
+                      {post.subtitle || stripHtmlPreview(post.content?.free?.web)}
                     </p>
 
                     {/* Read more */}

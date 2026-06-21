@@ -31,7 +31,7 @@ function estimateReadTime(content) {
 }
 
 export default function NewsletterPost({ post }) {
-  const htmlContent = post.content?.free?.web?.html || "";
+  const htmlContent = post.content?.free?.web || "";
 
   return (
     <div
