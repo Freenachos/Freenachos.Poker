@@ -37,7 +37,7 @@ export default function NewsletterPost({ post }) {
     <div
       style={{
         minHeight: "100vh",
-        background: "#0A0A0A",
+        background: "#0A0E1A",
         color: TEXT,
         fontFamily: "Manrope, Inter, -apple-system, BlinkMacSystemFont, sans-serif",
       }}

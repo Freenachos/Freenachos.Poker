@@ -301,7 +301,7 @@ const PokerSeatEVTool = () => {
   // ============================================
 
   return (
-    <div style={{minHeight: '100vh', background: '#0A0A0A', position: 'relative', overflow: 'hidden', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+    <div style={{minHeight: '100vh', background: '#0A0E1A', position: 'relative', overflow: 'hidden', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'}}>
       {/* Noise/Grain Texture Overlay */}
       <div 
         style={{

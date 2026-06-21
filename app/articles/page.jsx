@@ -1374,7 +1374,7 @@ export default function FreenachosArticles() {
   // Modals are now rendered inline in the return statement to prevent focus loss
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0A0A0A', color: '#fff', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif', position: 'relative', overflow: 'hidden' }}>
+    <div style={{ minHeight: '100vh', background: '#0A0E1A', color: '#E5E7EB', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif', position: 'relative', overflow: 'hidden' }}>
       {/* Login Modal - Inline JSX to prevent focus loss */}
       {showLogin && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>

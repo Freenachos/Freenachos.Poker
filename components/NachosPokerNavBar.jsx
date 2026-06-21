@@ -146,7 +146,7 @@ const NachosPokerNavBar = () => {
           gap: 16px;
           position: relative;
           /* Glassmorphism effect */
-          background: rgba(10, 10, 10, calc(0.75 + 0.2 * var(--scroll-progress, 0)));
+          background: rgba(10, 14, 26, calc(0.85 + 0.15 * var(--scroll-progress, 0)));
           backdrop-filter: blur(calc(12px + 8px * var(--scroll-progress, 0)));
           -webkit-backdrop-filter: blur(calc(12px + 8px * var(--scroll-progress, 0)));
           /* Gold bottom border - 1px solid #a88b46 */
@@ -337,7 +337,7 @@ const NachosPokerNavBar = () => {
           left: 50%;
           transform: translateX(-50%) translateY(-8px);
           /* Glassmorphism */
-          background: rgba(15, 12, 8, 0.95);
+          background: rgba(10, 14, 26, 0.95);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
           border: 1px solid rgba(168, 139, 70, 0.3);

@@ -979,7 +979,7 @@ The 3-month program consists of:
   // ============================================
 
   return (
-    <div style={{minHeight: '100vh', background: '#0A0A0A', position: 'relative', overflow: 'hidden', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+    <div style={{minHeight: '100vh', background: '#0A0E1A', position: 'relative', overflow: 'hidden', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'}}>
       {/* Newsletter Popup */}
       <NewsletterPopup />
       
@@ -2324,7 +2324,7 @@ The 3-month program consists of:
             left: 0,
             width: '100%',
             height: '25vh',
-            background: 'linear-gradient(to top, #0A0A0A 0%, rgba(10, 10, 10, 0.6) 50%, transparent 100%)',
+            background: 'linear-gradient(to top, #0A0E1A 0%, rgba(10, 14, 26, 0.6) 50%, transparent 100%)',
             zIndex: 25,
             pointerEvents: 'none'
           }}
@@ -3452,7 +3452,7 @@ The 3-month program consists of:
               top: 0,
               bottom: 0,
               width: '100px',
-              background: 'linear-gradient(to right, #0A0A0A 0%, transparent 100%)',
+              background: 'linear-gradient(to right, #0A0E1A 0%, transparent 100%)',
               zIndex: 10,
               pointerEvents: 'none'
             }} />
@@ -3462,7 +3462,7 @@ The 3-month program consists of:
               top: 0,
               bottom: 0,
               width: '100px',
-              background: 'linear-gradient(to left, #0A0A0A 0%, transparent 100%)',
+              background: 'linear-gradient(to left, #0A0E1A 0%, transparent 100%)',
               zIndex: 10,
               pointerEvents: 'none'
             }} />

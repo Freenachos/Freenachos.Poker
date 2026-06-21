@@ -3609,7 +3609,7 @@ const NachoStatsDashboard = () => {
   // ============================================================
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white font-sans relative overflow-hidden">
+    <div className="min-h-screen bg-[#0A0E1A] text-white font-sans relative overflow-hidden">
       {/* Noise/Grain Texture Overlay */}
       <div 
         className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03]"

@@ -67,8 +67,8 @@ export default function NewsletterPage() {
   return (
     <div style={{ 
       minHeight: '100vh', 
-      background: '#0A0A0A', 
-      color: '#fff', 
+      background: '#0A0E1A', 
+      color: '#E5E7EB', 
       fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
       position: 'relative',
       overflow: 'hidden'

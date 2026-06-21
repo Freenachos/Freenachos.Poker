@@ -331,7 +331,7 @@ const PokerProfitCalculator = () => {
   // ============================================
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-[#0A0E1A] relative overflow-hidden font-sans">
       {/* Noise/Grain Texture Overlay */}
       <div 
         className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03]"

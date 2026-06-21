@@ -722,7 +722,7 @@ const PokerEVSimulation = () => {
   return (
     <div style={{
       minHeight: '100vh', 
-      background: '#0A0A0A', 
+      background: '#0A0E1A', 
       position: 'relative', 
       overflow: 'hidden', 
       fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
@@ -1633,7 +1633,7 @@ const PokerEVSimulation = () => {
                                 style={{cursor: 'pointer', padding: '12px 14px'}}
                               >
                                 {stakes.map(stake => (
-                                  <option key={stake.value} value={stake.value} style={{background: '#0A0A0A'}}>
+                                  <option key={stake.value} value={stake.value} style={{background: '#0A0E1A'}}>
                                     {stake.label}
                                   </option>
                                 ))}

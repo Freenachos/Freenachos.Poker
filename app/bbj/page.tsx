@@ -1138,7 +1138,7 @@ const BBJDashboard: React.FC = () => {
   // ============================================
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] relative overflow-hidden font-['Inter',_-apple-system,_BlinkMacSystemFont,_sans-serif]">
+    <div className="min-h-screen bg-[#0A0E1A] relative overflow-hidden font-['Inter',_-apple-system,_BlinkMacSystemFont,_sans-serif]">
       {/* Noise/Grain Texture Overlay */}
       <div 
         className="noise-overlay"
