@@ -161,18 +161,24 @@ export default function NewsletterPost({ post }) {
         </article>
       </div>
 
-      {/* Content styling */}
+      {/* Content styling - force dark theme over Beehiiv's white inline styles */}
       <style>{`
         .newsletter-content {
           font-size: 16px;
           line-height: 1.8;
           color: ${TEXT_SUB};
         }
+        .newsletter-content * {
+          background-color: transparent !important;
+          background: transparent !important;
+          color: inherit !important;
+          border-color: ${BORDER} !important;
+        }
         .newsletter-content h1,
         .newsletter-content h2,
         .newsletter-content h3,
         .newsletter-content h4 {
-          color: ${TEXT};
+          color: ${TEXT} !important;
           font-weight: 700;
           margin-top: 2em;
           margin-bottom: 0.5em;
@@ -182,9 +188,17 @@ export default function NewsletterPost({ post }) {
         .newsletter-content h3 { font-size: 20px; }
         .newsletter-content p {
           margin-bottom: 1.2em;
+          color: ${TEXT_SUB} !important;
+        }
+        .newsletter-content span {
+          color: ${TEXT_SUB} !important;
+        }
+        .newsletter-content strong,
+        .newsletter-content b {
+          color: ${TEXT} !important;
         }
         .newsletter-content a {
-          color: ${GOLD};
+          color: ${GOLD} !important;
           text-decoration: underline;
           text-underline-offset: 3px;
         }
@@ -196,7 +210,8 @@ export default function NewsletterPost({ post }) {
           height: auto;
           border-radius: 10px;
           margin: 1.5em 0;
-          border: 1px solid ${BORDER};
+          border: 1px solid ${BORDER} !important;
+          background: transparent !important;
         }
         .newsletter-content ul,
         .newsletter-content ol {
@@ -205,22 +220,27 @@ export default function NewsletterPost({ post }) {
         }
         .newsletter-content li {
           margin-bottom: 0.5em;
+          color: ${TEXT_SUB} !important;
         }
         .newsletter-content blockquote {
-          border-left: 3px solid ${GOLD};
+          border-left: 3px solid ${GOLD} !important;
+          border-top: none !important;
+          border-right: none !important;
+          border-bottom: none !important;
           padding-left: 20px;
           margin: 1.5em 0;
           font-style: italic;
-          color: rgba(255,255,255,0.7);
+          color: rgba(255,255,255,0.7) !important;
         }
         .newsletter-content pre,
         .newsletter-content code {
-          background: rgba(255,255,255,0.05);
-          border: 1px solid ${BORDER};
+          background: rgba(255,255,255,0.05) !important;
+          border: 1px solid ${BORDER} !important;
           border-radius: 8px;
           padding: 16px;
           overflow-x: auto;
           font-size: 14px;
+          color: ${TEXT_SUB} !important;
         }
         .newsletter-content code {
           padding: 2px 6px;
@@ -233,19 +253,36 @@ export default function NewsletterPost({ post }) {
         }
         .newsletter-content th,
         .newsletter-content td {
-          border: 1px solid ${BORDER};
+          border: 1px solid ${BORDER} !important;
           padding: 10px 14px;
           text-align: left;
+          color: ${TEXT_SUB} !important;
         }
         .newsletter-content th {
-          background: rgba(167,138,67,0.1);
-          color: ${TEXT};
+          background: rgba(167,138,67,0.1) !important;
+          color: ${TEXT} !important;
           font-weight: 600;
         }
         .newsletter-content hr {
-          border: none;
-          border-top: 1px solid ${BORDER};
+          border: none !important;
+          border-top: 1px solid ${BORDER} !important;
           margin: 2em 0;
+        }
+        .newsletter-content div,
+        .newsletter-content section,
+        .newsletter-content article,
+        .newsletter-content header,
+        .newsletter-content footer,
+        .newsletter-content td,
+        .newsletter-content tr,
+        .newsletter-content tbody,
+        .newsletter-content table {
+          background: transparent !important;
+          background-color: transparent !important;
+        }
+        .newsletter-content [style*="background"] {
+          background: transparent !important;
+          background-color: transparent !important;
         }
       `}</style>
     </div>
