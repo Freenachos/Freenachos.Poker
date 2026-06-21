@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import NachosPokerNavBar from "@/components/NachosPokerNavBar";
 import { Mail, ArrowRight, ChevronLeft, ChevronRight, Calendar, Clock } from "lucide-react";
 
 const GOLD = "#A78A43";
@@ -40,11 +41,13 @@ export default function NewsletterArchive({ posts, currentPage, totalPages, tota
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%)",
+        background: "#0A0A0A",
         color: TEXT,
         fontFamily: "Manrope, Inter, -apple-system, BlinkMacSystemFont, sans-serif",
       }}
     >
+      <NachosPokerNavBar />
+
       {/* Ambient glow */}
       <div
         style={{

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import NachosPokerNavBar from "@/components/NachosPokerNavBar";
 import { ArrowRight, User, Users } from "lucide-react";
 
 const GOLD = "#A78A43";
@@ -17,11 +18,15 @@ export default function CoachingLandingPage() {
   return (
     <div style={{
       minHeight: "100vh",
-      background: "linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%)",
+      background: "#0A0A0A",
       color: TEXT, fontFamily: FONT,
-      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      padding: "80px 32px",
     }}>
+      <NachosPokerNavBar />
+
+      <div style={{
+        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+        padding: "40px 32px 80px",
+      }}>
 
       {/* Avatar */}
       <div style={{
@@ -131,6 +136,7 @@ export default function CoachingLandingPage() {
         Not sure which is right for you? Private coaching is for players who want dedicated 1-on-1 mentorship.
         The CFP is for players who want backing, tools, and a complete system.
       </p>
+      </div>
     </div>
   );
 }
