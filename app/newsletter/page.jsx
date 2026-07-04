@@ -308,7 +308,7 @@ export default function NewsletterPage() {
           }}
         >
           <img 
-            src="https://i.gyazo.com/ad823c265c17c21f61996bb3aa3283e2.png"
+            src="/proof/coach-hero.png"
             alt="Patrick - Freenachos Coach"
             style={{
               height: '100%',

@@ -57,46 +57,46 @@ const PokerToolboxHome = () => {
       id: 1,
       name: 'Gary Chappell',
       quote: "My time working with Patrick at Nachos Poker has been amazing. He genuinely cares about your progress and puts a lot of thought into how everything is structured. The coaching and resources are clear, practical, and easy to apply. I've already recommended the program to a friend who's seeing great results as well. If you're willing to put in the work, Patrick will help you take your game to the next level.",
-      image: 'https://i.gyazo.com/84fe303f124b23ebd87b11ce00807de6.png'
+      image: '/proof/testimonial-gary.png'
     },
     {
       id: 2,
       name: 'Keven Li',
       subtitle: 'Poker Made Simple',
       quote: "In 2021, I turned pro with a $10k bankroll, struggling through a breakeven stretch until Patrick's data-driven coaching changed everything—my results skyrocketed. His guidance, combined with NachosPoker's training, took me from 100nl to crushing 1000nl. Working with Patrick was the best decision I've made in poker.",
-      image: 'https://i.gyazo.com/64ab37279de8475d58ededffdde851ae.png'
+      image: '/proof/testimonial-keven.png'
     },
     {
       id: 3,
       name: 'Marcelo',
       quote: "Patrick's blog posts and videos on Run It Once were what convinced me to join Nachos Poker, and I haven't looked back since. His approach is very data-driven and practical, and the way he breaks down spots makes complex ideas easy to apply. On top of that, the community he's built is supportive and focused on improving. Whether you're playing 200nl or aiming to move up, working with Patrick is a great place to be.",
-      image: 'https://i.gyazo.com/99dafc2ce6c753470b343dd0cfc7366e.png'
+      image: '/proof/testimonial-marcelo.png'
     },
     {
       id: 4,
       name: 'Andrea',
       quote: "I just finished my learning path with Patrick and I wanted to share my experience working with him. It was my first experience with a coach and I've always been very skeptical about coaching in general, but after working with him I completely changed my mind. What impressed me the most was his empathy. One day I came to a lesson during a downswing and without me saying a word about it, he sensed something and said 'How about we have a mindset talk instead?' To me, that's an innate and truly essential quality in a coach. In about 13 months I went from being breakeven at NL50 to beating NL200, almost ready for NL500.",
       hasBeforeAfter: true,
-      imageBefore: 'https://i.gyazo.com/f4749a49b560a07d3dfd002d97d66354.png',
-      imageAfter: 'https://i.gyazo.com/71a3ce799042d5e469c71e01a9a3c086.png'
+      imageBefore: '/proof/testimonial-andrea-before.png',
+      imageAfter: '/proof/testimonial-andrea-after.png'
     },
     {
       id: 5,
       name: 'Davide',
       quote: "Thanks to NachosPoker, I went from struggling at 100nl to dominating at 1k in under a year! They helped me improve in every aspect of the game, not only strategical, but also mental and logistical. Patrick is always patient, humble, and delivers more than expected. Plus, the community is awesome!",
-      image: 'https://i.gyazo.com/cb6ad67354991a6dfd841d4fd70726f0.png'
+      image: '/proof/testimonial-davide.png'
     },
     {
       id: 6,
       name: 'Brendon',
       quote: "The strategy will anchor you in spots where you typically feel lost. Patrick's methodology elevated my game from a breakeven 100nl reg to dominating 1000nl. The supportive community offers in-depth discussions that have been crucial to my development.",
-      image: 'https://i.gyazo.com/acec149f25437808e9e874d7ead143a7.png'
+      image: '/proof/testimonial-brendon.png'
     },
     {
       id: 7,
       name: 'Peter',
       quote: "After a tough downswing in late 2023 dropped me from 1knl to 200/500nl, I feared my high-stakes dream was over. A friend suggested Freenachos CFP, and it may have been the best decision of my career. Their resources and Patrick's support helped me excel, and I've since skyrocketed back on track, now competing at 2K and aiming higher soon.",
-      image: 'https://i.gyazo.com/f4d4343480fa27271eba2281d25685da.png'
+      image: '/proof/testimonial-peter.png'
     },
   ];
 
@@ -2164,7 +2164,7 @@ The 3-month program consists of:
           }}
         >
           <img 
-            src="https://i.gyazo.com/ad823c265c17c21f61996bb3aa3283e2.png"
+            src="/proof/coach-hero.png"
             alt="Freenachos - High Stakes Poker Coach"
             style={{
               height: '100%',
@@ -2494,7 +2494,7 @@ The 3-month program consists of:
                     transition: 'all 0.3s ease'
                   }}>
                   <img 
-                    src="https://static.runitonce.com/static/img/courses/dominate-with-data/chart.bcc69818f43c.jpg"
+                    src="/proof/results-graph-1knl.jpg"
                     alt="Freenachos Results Graph - 6.2bb/100 at High Stakes"
                     style={{
                       width: '100%',
@@ -2663,7 +2663,7 @@ The 3-month program consists of:
                   overflow: 'hidden'
                 }}>
                   <img 
-                    src="https://static.runitonce.com/static/img/courses/dominate-with-data/chart.bcc69818f43c.jpg"
+                    src="/proof/results-graph-1knl.jpg"
                     alt="Freenachos Results Graph - 6.2bb/100 at High Stakes"
                     style={{
                       width: '100%',

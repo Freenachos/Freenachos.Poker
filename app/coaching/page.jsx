@@ -12,7 +12,7 @@ const TEXT_SUB = "#B0B0B8";
 const TEXT_DIM = "rgba(255,255,255,0.45)";
 const FONT = "Manrope, Inter, -apple-system, BlinkMacSystemFont, sans-serif";
 
-const HEADSHOT = "https://i.gyazo.com/ad823c265c17c21f61996bb3aa3283e2.png";
+const HEADSHOT = "/proof/coach-headshot.png";
 
 export default function CoachingLandingPage() {
   return (
