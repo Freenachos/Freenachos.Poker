@@ -15,10 +15,12 @@ export default async function sitemap() {
     { url: "https://freenachos.poker/coaching", lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
     { url: "https://freenachos.poker/newsletters", lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
     { url: "https://freenachos.poker/newsletter", lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: "https://freenachos.poker/variance", lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+    { url: "https://freenachos.poker/tools", lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    { url: "https://freenachos.poker/variance", lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: "https://freenachos.poker/winrate", lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
     { url: "https://freenachos.poker/seat", lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
     { url: "https://freenachos.poker/profits", lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+    { url: "https://freenachos.poker/bbj", lastModified: new Date(), changeFrequency: "daily", priority: 0.6 },
   ];
 
   return [...staticPages, ...newsletterPages];
