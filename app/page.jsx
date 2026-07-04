@@ -226,8 +226,40 @@ The 3-month program consists of:
     {
       question: 'What payment options and payment plans do you offer?',
       answer: 'Payments can be made via BTC, USDT, Wise, and Revolut. PayPal and Skrill are also accepted, but with a 7% premium. Flexible payment plans are available for both programs. For more details on payment options, please get in touch directly.'
+    },
+    // TODO(patrick): review wording of the five answers below
+    {
+      question: 'What results can I realistically expect?',
+      answer: 'Every student is different, but documented outcomes include going from breakeven at NL50 to beating NL200 in about 13 months, and from NL100 to crushing NL1000. What you get out depends on your volume and how seriously you take the off-table work — poker has variance, and no honest coach guarantees results.'
+    },
+    {
+      question: 'What stakes do I need to be playing?',
+      answer: 'Players at mid-stakes and above tend to get the most out of the data-driven approach, but ambitious low-stakes players who are ready to commit to structured improvement are welcome too. If you\'re unsure whether it makes sense at your stakes, that\'s exactly what the free intro call is for.'
+    },
+    {
+      question: 'How is this different from a CFP or a course?',
+      answer: 'This mentorship is private 1-on-1 coaching: your database, your leaks, and a study plan built around your actual game, plus weekly group sessions. The NachosPoker CFP is a different offer — a full ecosystem with staking, pool data, and playbooks where you play and we invest. Courses give you generic content; here everything is personalized.'
+    },
+    {
+      question: 'What if we\'re in different timezones?',
+      answer: 'Sessions are scheduled individually rather than at fixed times, so most timezones can be accommodated. Mention your timezone on the intro call and we\'ll figure out a schedule that works.'
+    },
+    {
+      question: 'What\'s your refund policy?',
+      answer: 'One-on-one sessions must be used within your package duration, and unused sessions are not reimbursed. The intro call is completely free, so you can evaluate the coaching and the fit before committing to anything.'
     }
   ];
+
+  // FAQPage structured data for search engines
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqItems.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: { '@type': 'Answer', text: item.answer }
+    }))
+  };
 
   const goodFitReasons = [
     'You want to understand why strategies work, not just what to click',
@@ -1035,7 +1067,13 @@ The 3-month program consists of:
     <div style={{minHeight: '100vh', background: '#0A0E1A', position: 'relative', overflow: 'hidden', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'}}>
       {/* Newsletter Popup */}
       <NewsletterPopup />
-      
+
+      {/* FAQ structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
       {/* Noise/Grain Texture Overlay */}
       <div 
         className="noise-overlay"
