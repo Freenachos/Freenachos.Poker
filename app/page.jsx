@@ -6,7 +6,7 @@ import Footer from '@/components/Footer';
 import { track } from '@vercel/analytics';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ExternalLink, Play, ChevronLeft, ChevronRight, Calculator, Target, TrendingUp, BookOpen, User, Youtube, ArrowRight, Sparkles, BarChart3, Percent, DollarSign, Trophy, Activity, Check, X, ChevronDown, GraduationCap, Users, CheckCircle, Video, MessageCircle, Calendar, Star, Award, Database, Headphones, Crosshair, Swords, Brain, Lock, Zap } from 'lucide-react';
+import { ExternalLink, ChevronLeft, ChevronRight, Calculator, BookOpen, Youtube, ArrowRight, Sparkles, Check, X, ChevronDown, Users, MessageCircle, Calendar, Crosshair, Swords, Brain, Lock, Zap } from 'lucide-react';
 
 /**
  * Freenachos Poker Toolbox Homepage
@@ -29,8 +29,6 @@ const PokerToolboxHome = () => {
   // STATE
   // ============================================
   
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState('right');
   const [expandedFAQ, setExpandedFAQ] = useState(0);
@@ -39,7 +37,6 @@ const PokerToolboxHome = () => {
   const [showTestimonialGraphModal, setShowTestimonialGraphModal] = useState(null);
   const [inlineEmail, setInlineEmail] = useState('');
   const [inlineStatus, setInlineStatus] = useState('idle');
-  const nachoRef = useRef(null);
   const aboutSectionRef = useRef(null);
   const heroSectionRef = useRef(null);
   const cinemaCarouselRef = useRef(null);
@@ -273,32 +270,6 @@ The 3-month program consists of:
     'You expect coaching to replace personal responsibility'
   ];
 
-  const articles = [
-    { id: 1, title: 'The Ultimate Guide to Table Selection', category: 'Strategy', readTime: '8 min', excerpt: 'Learn how to identify profitable tables and maximize your hourly rate with proper table selection techniques.', link: '/articles/table-selection' },
-    { id: 2, title: 'Understanding VPIP and What It Tells You', category: 'Fundamentals', readTime: '5 min', excerpt: 'VPIP is one of the most important stats in poker. Here\'s how to use it to categorize your opponents.', link: '/articles/vpip-guide' },
-    { id: 3, title: 'Bankroll Management for Serious Players', category: 'Mindset', readTime: '10 min', excerpt: 'The mathematical approach to never going broke while maximizing your growth potential.', link: '/articles/bankroll-management' },
-  ];
-
-  const tools = [
-    { id: 1, name: 'Variance Calculator', description: 'Simulate your expected variance and downswings over any sample size', icon: BarChart3, color: '#3b82f6', link: '/variance' },
-    { id: 2, name: 'Win Rate Analyzer', description: 'Track and analyze your win rate across different stakes and formats', icon: TrendingUp, color: '#22c55e', link: '/winrate' },
-    { id: 3, name: 'Seat Selection EV', description: 'Visualize how fish position impacts your win rate at 6-max tables', icon: Target, color: '#A78A43', link: '/seat' },
-    { id: 4, name: 'Profits Tracker', description: 'Monitor your poker profits and track your bankroll growth over time', icon: DollarSign, color: '#14b8a6', link: '/profits' },
-    { id: 5, name: 'Bad Beat Jackpot Dashboard', description: 'Track bad beat jackpot sizes and expected value across poker rooms', icon: Trophy, color: '#a855f7', link: '/bad-beat-jackpot' },
-    { id: 6, name: 'Articles', description: 'Strategy guides, tips, and educational content to improve your game', icon: BookOpen, color: '#ef4444', link: '/articles' },
-  ];
-
-  // ============================================
-  // NACHO MASCOT LOGIC
-  // ============================================
-  
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
 
   // Scroll Reveal Animation Observer
   useEffect(() => {
@@ -323,21 +294,6 @@ The 3-month program consists of:
     return () => observer.disconnect();
   }, []);
 
-  const getEyeOffset = () => {
-    if (!nachoRef.current) return { x: 0, y: 0 };
-    const rect = nachoRef.current.getBoundingClientRect();
-    const nachoCenter = {
-      x: rect.left + rect.width / 2,
-      y: rect.top + rect.height / 2
-    };
-    const angle = Math.atan2(mousePos.y - nachoCenter.y, mousePos.x - nachoCenter.x);
-    const distance = Math.min(3, Math.hypot(mousePos.x - nachoCenter.x, mousePos.y - nachoCenter.y) / 50);
-    return {
-      x: Math.cos(angle) * distance,
-      y: Math.sin(angle) * distance
-    };
-  };
-
   // Show sticky CTA when Hero section is mostly scrolled out (only 20% visible)
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -357,13 +313,9 @@ The 3-month program consists of:
     return () => observer.disconnect();
   }, []);
 
-  const eyeOffset = getEyeOffset();
-
   // ============================================
   // CAROUSEL HANDLERS
   // ============================================
-  
-  const maxVideoIndex = Math.max(0, videos.length - 3);
   
   const nextVideo = () => {
     if (cinemaCarouselRef.current) {
@@ -413,388 +365,6 @@ The 3-month program consists of:
   // ============================================
   // COMPONENTS
   // ============================================
-
-  const CartoonNacho = ({ size = 90 }) => (
-    <svg ref={nachoRef} width={size} height={size} viewBox="0 0 100 100" style={{ filter: 'drop-shadow(0 4px 12px rgba(255, 179, 71, 0.4))' }}>
-      <path d="M50 8 L88 85 Q90 92 82 92 L18 92 Q10 92 12 85 Z" fill="#A78A43" stroke="#8B7339" strokeWidth="2"/>
-      <path d="M25 70 Q20 75 22 82 Q24 88 28 85 Q30 80 28 75 Z" fill="#FFD54F" opacity="0.9"/>
-      <path d="M72 65 Q78 72 76 80 Q74 86 70 82 Q68 76 70 70 Z" fill="#FFD54F" opacity="0.9"/>
-      <path d="M48 75 Q45 82 48 88 Q52 92 55 86 Q56 80 52 76 Z" fill="#FFD54F" opacity="0.9"/>
-      <ellipse cx="50" cy="50" rx="22" ry="18" fill="#A78A43" />
-      <ellipse cx="40" cy="48" rx="8" ry="9" fill="white" />
-      <ellipse cx="60" cy="48" rx="8" ry="9" fill="white" />
-      <circle cx={40 + eyeOffset.x} cy={48 + eyeOffset.y} r="4" fill="#1a1a1a" style={{ transition: 'cx 0.1s ease-out, cy 0.1s ease-out' }}/>
-      <circle cx={60 + eyeOffset.x} cy={48 + eyeOffset.y} r="4" fill="#1a1a1a" style={{ transition: 'cx 0.1s ease-out, cy 0.1s ease-out' }}/>
-      <circle cx={38 + eyeOffset.x * 0.5} cy={46 + eyeOffset.y * 0.5} r="1.5" fill="white" opacity="0.8" />
-      <circle cx={58 + eyeOffset.x * 0.5} cy={46 + eyeOffset.y * 0.5} r="1.5" fill="white" opacity="0.8" />
-      <path d="M38 62 Q50 72 62 62" fill="none" stroke="#1a1a1a" strokeWidth="3" strokeLinecap="round"/>
-      <path d="M33 38 Q40 35 47 38" fill="none" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" />
-      <path d="M53 38 Q60 35 67 38" fill="none" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" />
-      <circle cx="30" cy="30" r="2" fill="#8B7339" opacity="0.5" />
-      <circle cx="70" cy="35" r="2.5" fill="#8B7339" opacity="0.5" />
-      <circle cx="35" cy="80" r="2" fill="#8B7339" opacity="0.5" />
-      <circle cx="65" cy="78" r="1.5" fill="#8B7339" opacity="0.5" />
-    </svg>
-  );
-
-  // Graph image component for testimonials
-  const TestimonialGraph = ({ src }) => (
-    <img 
-      src={src} 
-      alt="Results graph"
-      style={{
-        width: '100%',
-        height: '128px',
-        objectFit: 'contain',
-        borderRadius: '8px',
-        display: 'block'
-      }}
-    />
-  );
-
-  // Before/After graph for Andrea's testimonial
-  const BeforeAfterGraph = ({ imageBefore, imageAfter }) => (
-    <div style={{ display: 'flex', gap: '16px', height: '128px' }}>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <div style={{ 
-          fontSize: '12px', 
-          fontWeight: '600', 
-          color: '#ef4444',
-          marginBottom: '8px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          flexShrink: 0
-        }}>Before</div>
-        <img 
-          src={imageBefore} 
-          alt="Before coaching"
-          style={{
-            width: '100%',
-            flex: 1,
-            objectFit: 'contain',
-            borderRadius: '8px',
-            display: 'block'
-          }}
-        />
-      </div>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <div style={{ 
-          fontSize: '12px', 
-          fontWeight: '600', 
-          color: '#22c55e',
-          marginBottom: '8px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          flexShrink: 0
-        }}>After</div>
-        <img 
-          src={imageAfter} 
-          alt="After coaching"
-          style={{
-            width: '100%',
-            flex: 1,
-            objectFit: 'contain',
-            borderRadius: '8px',
-            display: 'block'
-          }}
-        />
-      </div>
-    </div>
-  );
-
-  const VideoCard = ({ video, index = 0 }) => (
-    <a 
-      href={video.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="video-card"
-      style={{
-        background: 'rgba(20, 20, 20, 0.6)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '24px',
-        overflow: 'hidden',
-        cursor: 'pointer',
-        flex: '0 0 300px',
-        transition: 'all 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
-        textDecoration: 'none',
-        position: 'relative'
-      }}
-    >
-      {/* Gold Bloom Glow - appears on hover */}
-      <div 
-        className="video-gold-bloom"
-        style={{
-          position: 'absolute',
-          inset: '-20px',
-          background: 'radial-gradient(circle at 50% 50%, rgba(167, 138, 67, 0.25) 0%, transparent 70%)',
-          opacity: 0,
-          transition: 'opacity 0.5s ease',
-          pointerEvents: 'none',
-          zIndex: 0,
-          filter: 'blur(20px)'
-        }}
-      />
-      <div style={{ position: 'relative', overflow: 'hidden', zIndex: 1 }}>
-        <div 
-          className="video-thumbnail"
-          style={{
-            width: '100%',
-            height: '170px',
-            backgroundImage: `url(${video.thumbnail})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundColor: 'rgba(255, 179, 71, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
-            borderRadius: '24px 24px 0 0'
-          }}
-        >
-          <div className="play-button" style={{
-            width: '60px',
-            height: '60px',
-            borderRadius: '50%',
-            background: 'rgba(255, 179, 71, 0.9)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
-            boxShadow: '0 4px 20px rgba(255, 179, 71, 0.4)'
-          }}>
-            <Play size={24} color="#0a0a0a" fill="#0a0a0a" style={{ marginLeft: '3px' }} />
-          </div>
-        </div>
-        {video.duration && (
-          <div style={{
-            position: 'absolute',
-            bottom: '8px',
-            right: '8px',
-            background: 'rgba(0,0,0,0.85)',
-            padding: '4px 8px',
-            borderRadius: '4px',
-            fontSize: '12px',
-            color: 'white',
-            fontWeight: '500'
-          }}>
-            {video.duration}
-          </div>
-        )}
-      </div>
-      <div style={{ padding: '16px', position: 'relative', zIndex: 1 }}>
-        <h4 style={{
-          color: '#ffffff',
-          fontSize: '14px',
-          fontWeight: '600',
-          marginBottom: '8px',
-          lineHeight: 1.4
-        }}>
-          {video.title}
-        </h4>
-        {video.views && (
-          <span style={{
-            fontSize: '12px',
-            color: 'rgba(255,255,255,0.5)'
-          }}>
-            {video.views} views
-          </span>
-        )}
-      </div>
-    </a>
-  );
-
-  const ArticleCard = ({ article }) => (
-    <a 
-      href={article.link}
-      className="card-hover glass-card"
-      style={{
-        borderRadius: '12px',
-        padding: '24px',
-        cursor: 'pointer',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        textDecoration: 'none'
-      }}
-    >
-      <div style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
-        marginBottom: '12px'
-      }}>
-        <span style={{
-          fontSize: '11px',
-          fontWeight: '600',
-          color: '#A78A43',
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          background: 'rgba(167, 138, 67, 0.15)',
-          padding: '4px 10px',
-          borderRadius: '20px'
-        }}>
-          {article.category}
-        </span>
-        <span style={{
-          fontSize: '11px',
-          color: 'rgba(240, 240, 240, 0.4)'
-        }}>
-          {article.readTime} read
-        </span>
-      </div>
-      <h3 style={{
-        color: '#F0F0F0',
-        fontSize: '18px',
-        fontWeight: '600',
-        marginBottom: '12px',
-        lineHeight: 1.3
-      }}>
-        {article.title}
-      </h3>
-      <p style={{
-        color: 'rgba(240, 240, 240, 0.6)',
-        fontSize: '13px',
-        lineHeight: 1.6,
-        flex: 1,
-        marginBottom: '16px'
-      }}>
-        {article.excerpt}
-      </p>
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '6px',
-        color: '#A78A43',
-        fontSize: '13px',
-        fontWeight: '500'
-      }}>
-        Read more <ArrowRight size={14} />
-      </div>
-    </a>
-  );
-
-  const ToolCard = ({ tool }) => {
-    const Icon = tool.icon;
-    return (
-      <a 
-        href={tool.link}
-        className="card-hover glass-card"
-        style={{
-          borderRadius: '12px',
-          padding: '24px',
-          cursor: 'pointer',
-          transition: 'all 0.3s ease',
-          position: 'relative',
-          overflow: 'hidden',
-          textDecoration: 'none',
-          display: 'block'
-        }}
-      >
-        <div style={{
-          position: 'absolute',
-          top: '-20px',
-          right: '-20px',
-          width: '100px',
-          height: '100px',
-          background: `radial-gradient(circle, ${tool.color}20 0%, transparent 70%)`,
-          pointerEvents: 'none'
-        }} />
-        <div style={{
-          width: '48px',
-          height: '48px',
-          borderRadius: '12px',
-          background: `${tool.color}20`,
-          border: `1px solid ${tool.color}40`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginBottom: '16px'
-        }}>
-          <Icon size={24} color={tool.color} />
-        </div>
-        <h3 style={{
-          color: '#ffffff',
-          fontSize: '16px',
-          fontWeight: '600',
-          marginBottom: '8px'
-        }}>
-          {tool.name}
-        </h3>
-        <p style={{
-          color: 'rgba(255,255,255,0.5)',
-          fontSize: '13px',
-          lineHeight: 1.5,
-          marginBottom: '16px'
-        }}>
-          {tool.description}
-        </p>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          color: tool.color,
-          fontSize: '13px',
-          fontWeight: '500'
-        }}>
-          Open tool <ArrowRight size={14} />
-        </div>
-      </a>
-    );
-  };
-
-  const BenefitCard = React.memo(({ benefit, index }) => {
-    const Icon = benefit.icon;
-    return (
-      <div className="benefit-card">
-        {/* Icon container */}
-        <div 
-          className="benefit-icon"
-          style={{
-            width: '60px',
-            height: '60px',
-            borderRadius: '14px',
-            background: 'rgba(167, 138, 67, 0.08)',
-            border: '1px solid rgba(167, 138, 67, 0.3)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: '24px',
-            pointerEvents: 'none'
-          }}
-        >
-          <Icon size={28} color="#A78A43" strokeWidth={1.5} />
-        </div>
-        
-        {/* Title */}
-        <h3 
-          className="benefit-title"
-          style={{
-            color: '#F0F0F0',
-            fontSize: '18px',
-            fontWeight: '700',
-            marginBottom: '14px',
-            lineHeight: 1.3,
-            pointerEvents: 'none'
-          }}
-        >
-          {benefit.title}
-        </h3>
-        
-        {/* Description */}
-        <p style={{
-          color: 'rgba(240, 240, 240, 0.65)',
-          fontSize: '14px',
-          lineHeight: 1.75,
-          flex: 1,
-          pointerEvents: 'none'
-        }}>
-          {benefit.description}
-        </p>
-      </div>
-    );
-  });
 
   const PricingCard = React.memo(({ plan }) => (
     <div 
@@ -1461,12 +1031,6 @@ The 3-month program consists of:
 
         .faq-item:hover {
           border-color: rgba(167, 138, 67, 0.4);
-        }
-
-        .script-title {
-          font-family: 'Playfair Display', Georgia, serif;
-          font-style: italic;
-          font-weight: 700;
         }
 
         @keyframes carouselSlide {
@@ -2670,10 +2234,10 @@ The 3-month program consists of:
                     }}>
                       {stat.value}
                     </div>
-                    <div style={{ 
-                      fontSize: '10px', 
-                      color: '#a88b46', 
-                      textTransform: 'uppercase', 
+                    <div style={{
+                      fontSize: '12px',
+                      color: '#a88b46',
+                      textTransform: 'uppercase',
                       letterSpacing: '0.1em',
                       fontWeight: '600',
                       lineHeight: 1.3
@@ -2999,7 +2563,7 @@ The 3-month program consists of:
                   
                   {/* Description */}
                   <p style={{
-                    color: 'rgba(240, 240, 240, 0.5)',
+                    color: 'rgba(240, 240, 240, 0.7)',
                     fontSize: '15px',
                     lineHeight: 1.8
                   }}>
