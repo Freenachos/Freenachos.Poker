@@ -42,6 +42,31 @@ const IconTarget = ({ size = 16 }) => (
   </svg>
 );
 
+const IconTrendUp = ({ size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23,6 13.5,15.5 8.5,10.5 1,18" />
+    <polyline points="17,6 23,6 23,12" />
+  </svg>
+);
+
+const IconDollar = ({ size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="1" x2="12" y2="23" />
+    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+  </svg>
+);
+
+const IconTrophy = ({ size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+    <path d="M4 22h16" />
+    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+    <path d="M18 2H6v7a6 6 0 0 0 12 0V2z" />
+  </svg>
+);
+
 const IconChevronDown = ({ size = 12 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="6,9 12,15 18,9" />
@@ -101,10 +126,12 @@ const NachosPokerNavBar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Simplified tool items - only Variance Calculator and BBJ Dashboard
   const toolItems = [
     { href: '/variance', label: 'Variance Calculator', icon: IconCalculator },
-    { href: '/bbj', label: 'BBJ Dashboard', icon: IconTarget },
+    { href: '/winrate', label: 'Win Rate Analyzer', icon: IconTrendUp },
+    { href: '/seat', label: 'Seat Selection EV', icon: IconTarget },
+    { href: '/profits', label: 'Profits Tracker', icon: IconDollar },
+    { href: '/bbj', label: 'BBJ Dashboard', icon: IconTrophy },
   ];
 
   const isActive = (href) => {
@@ -579,7 +606,7 @@ const NachosPokerNavBar = () => {
           {/* Navigation Links */}
           <div className="np-nav-links">
             {/* Primary CTA - Mentorship Program (solid gold button) */}
-            <Link href="/" className="np-nav-cta">
+            <Link href="/#pricing" className="np-nav-cta">
               <IconGraduation size={15} />
               <span>Mentorship Program</span>
             </Link>
