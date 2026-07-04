@@ -36,6 +36,8 @@ const PokerToolboxHome = () => {
   const [showStickyCta, setShowStickyCta] = useState(false);
   const [showGraphModal, setShowGraphModal] = useState(false);
   const [showTestimonialGraphModal, setShowTestimonialGraphModal] = useState(null);
+  const [inlineEmail, setInlineEmail] = useState('');
+  const [inlineStatus, setInlineStatus] = useState('idle');
   const nachoRef = useRef(null);
   const aboutSectionRef = useRef(null);
   const heroSectionRef = useRef(null);
@@ -350,6 +352,29 @@ The 3-month program consists of:
   const prevTestimonial = () => {
     setSlideDirection('left');
     setCurrentTestimonialIndex((prev) => (prev <= 0 ? testimonials.length - 1 : prev - 1));
+  };
+
+  // Inline newsletter capture (Safety Net section)
+  const handleInlineSubscribe = async (e) => {
+    e.preventDefault();
+    if (!inlineEmail || inlineStatus === 'loading') return;
+    setInlineStatus('loading');
+    try {
+      const res = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: inlineEmail, source: 'homepage_inline' })
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Something went wrong');
+      }
+      setInlineStatus('success');
+      track('newsletter_signup', { source: 'homepage_inline' });
+      try { localStorage.setItem('freenachos_newsletter_subscribed', 'true'); } catch {}
+    } catch (err) {
+      setInlineStatus('error');
+    }
   };
 
   // ============================================
@@ -4096,8 +4121,72 @@ The 3-month program consists of:
           </div>
         </div>
 
+        {/* ==================== FINAL CTA SECTION ==================== */}
+        <div
+          className="reveal"
+          style={{
+            marginBottom: '200px',
+            textAlign: 'center'
+          }}
+        >
+          <h2 style={{
+            fontSize: 'clamp(38px, 5vw, 56px)',
+            fontWeight: '800',
+            color: '#FFFFFF',
+            marginBottom: '20px',
+            lineHeight: 1.08,
+            letterSpacing: '-0.025em',
+            fontFamily: 'Manrope, Inter, sans-serif'
+          }}>
+            Ready to Stop <span style={{
+              color: '#A78A43',
+              textShadow: '0 0 60px rgba(167, 138, 67, 0.4)'
+            }}>Guessing</span>?
+          </h2>
+          <p style={{
+            color: 'rgba(240, 240, 240, 0.55)',
+            fontSize: '17px',
+            lineHeight: 1.8,
+            maxWidth: '520px',
+            margin: '0 auto 40px'
+          }}>
+            One free call. See exactly where your win rate is leaking — and whether we're a fit.
+          </p>
+          <a
+            href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=final"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track('cta_click', { placement: 'final' })}
+            className="btn-hover cta-primary"
+            style={{
+              background: '#A78A43',
+              color: '#0a0a0a',
+              padding: '20px 44px',
+              borderRadius: '14px',
+              fontWeight: '700',
+              fontSize: '16px',
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '12px',
+              boxShadow: '0 4px 30px rgba(167, 138, 67, 0.4)',
+              letterSpacing: '0.01em'
+            }}
+          >
+            Book a Free Intro Call <ArrowRight size={20} />
+          </a>
+          <div style={{
+            marginTop: '14px',
+            fontSize: '13px',
+            color: 'rgba(240, 240, 240, 0.45)',
+            letterSpacing: '0.01em'
+          }}>
+            15 minutes · no hard sell · find out if you're a fit
+          </div>
+        </div>
+
         {/* ==================== SAFETY NET SECTION ==================== */}
-        <div 
+        <div
           className="reveal"
           style={{
             marginBottom: '200px'
@@ -4299,6 +4388,112 @@ The 3-month program consists of:
                 Access Tools <ArrowRight size={16} />
               </div>
             </a>
+          </div>
+
+          {/* Inline Newsletter Capture - catches visitors not ready to book */}
+          <div style={{
+            maxWidth: '640px',
+            margin: '72px auto 0',
+            textAlign: 'center'
+          }}>
+            <h3 style={{
+              fontSize: '22px',
+              fontWeight: '700',
+              color: '#F0F0F0',
+              marginBottom: '12px'
+            }}>
+              Not ready for a program?
+            </h3>
+            <p style={{
+              fontSize: '15px',
+              color: 'rgba(240, 240, 240, 0.55)',
+              lineHeight: 1.7,
+              marginBottom: '28px'
+            }}>
+              Get the Nachos Exploits newsletter — population exploits and data-driven strategy every two weeks. Free.
+            </p>
+            {inlineStatus === 'success' ? (
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '10px',
+                color: '#A78A43',
+                fontSize: '15px',
+                fontWeight: '600',
+                padding: '16px 24px',
+                background: 'rgba(167, 138, 67, 0.08)',
+                border: '1px solid rgba(167, 138, 67, 0.3)',
+                borderRadius: '12px'
+              }}>
+                <Check size={18} /> You're in! Check your inbox.
+              </div>
+            ) : (
+              <>
+                <form
+                  onSubmit={handleInlineSubscribe}
+                  className="inline-newsletter-form"
+                  style={{
+                    display: 'flex',
+                    gap: '12px',
+                    justifyContent: 'center',
+                    flexWrap: 'wrap'
+                  }}
+                >
+                  <input
+                    type="email"
+                    required
+                    value={inlineEmail}
+                    onChange={(e) => setInlineEmail(e.target.value)}
+                    placeholder="you@email.com"
+                    style={{
+                      flex: '1 1 280px',
+                      maxWidth: '340px',
+                      padding: '15px 20px',
+                      borderRadius: '12px',
+                      border: '1px solid rgba(167, 138, 67, 0.3)',
+                      background: 'rgba(18, 18, 18, 0.6)',
+                      color: '#F0F0F0',
+                      fontSize: '15px',
+                      outline: 'none'
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={inlineStatus === 'loading'}
+                    className="btn-hover"
+                    style={{
+                      padding: '15px 28px',
+                      borderRadius: '12px',
+                      border: 'none',
+                      background: '#A78A43',
+                      color: '#0a0a0a',
+                      fontWeight: '700',
+                      fontSize: '15px',
+                      cursor: 'pointer',
+                      opacity: inlineStatus === 'loading' ? 0.7 : 1
+                    }}
+                  >
+                    {inlineStatus === 'loading' ? 'Subscribing…' : 'Subscribe'}
+                  </button>
+                </form>
+                <div style={{
+                  marginTop: '14px',
+                  fontSize: '12px',
+                  color: 'rgba(240, 240, 240, 0.4)'
+                }}>
+                  No spam. Unsubscribe anytime.
+                </div>
+                {inlineStatus === 'error' && (
+                  <div style={{
+                    marginTop: '12px',
+                    fontSize: '13px',
+                    color: '#ef4444'
+                  }}>
+                    Something went wrong — please try again.
+                  </div>
+                )}
+              </>
+            )}
           </div>
 
           {/* Safety Net Styles */}
