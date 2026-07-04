@@ -77,7 +77,7 @@ export default function CoachingLandingPage() {
           </ul>
 
           <a
-            href="https://freenachos.poker"
+            href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=coaching_page"
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -87,7 +87,7 @@ export default function CoachingLandingPage() {
               textDecoration: "none", width: "100%",
             }}
           >
-            Learn More <ArrowRight size={16} />
+            Book a Free Intro Call <ArrowRight size={16} />
           </a>
         </div>
 
@@ -116,7 +116,7 @@ export default function CoachingLandingPage() {
           </ul>
 
           <a
-            href="https://nachospoker.com"
+            href="https://nachospoker.com?utm_source=freenachos_poker&utm_medium=referral&utm_campaign=coaching_page"
             target="_blank"
             rel="noopener noreferrer"
             style={{
