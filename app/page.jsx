@@ -2257,7 +2257,7 @@ The 3-month program consists of:
                 marginBottom: '40px',
                 fontWeight: '400'
               }}>
-                Stop guessing. Start executing. The exact data-driven strategies I used to win at 1KNL+ and help my students generate <strong style={{ color: '#FFFFFF', fontWeight: '500' }}>$5M+ in profits</strong>.
+                Stop guessing. Start executing. The exact data-driven strategies I used to win at 1KNL+ and help my students generate <strong style={{ color: '#FFFFFF', fontWeight: '500' }}>$5.5M+ in profits</strong>.
               </p>
               
               {/* CTA Button */}
@@ -2378,7 +2378,7 @@ The 3-month program consists of:
                 pointerEvents: 'none',
                 zIndex: -1
               }} />
-              $5M+
+              $5.5M+
             </span> in Student Profits
           </h2>
 
@@ -2550,10 +2550,10 @@ The 3-month program consists of:
                 gap: '16px'
               }}>
                 {[
-                  { value: '$5M+', label: 'CFP Profits' },
+                  { value: '$5.5M+', label: 'Student Profits' },
                   { value: '200+', label: 'Students' },
                   { value: '6.2bb', label: 'Win Rate' },
-                  { value: '10M+', label: 'Hands' }
+                  { value: '10M+', label: 'Hands Played' }
                 ].map((stat, idx) => (
                   <div 
                     key={idx}
