@@ -63,6 +63,7 @@ const PokerToolboxHome = () => {
       id: 2,
       name: 'Keven Li',
       subtitle: 'Poker Made Simple',
+      result: 'NL100 → crushing NL1000',
       quote: "In 2021, I turned pro with a $10k bankroll, struggling through a breakeven stretch until Patrick's data-driven coaching changed everything—my results skyrocketed. His guidance, combined with NachosPoker's training, took me from 100nl to crushing 1000nl. Working with Patrick was the best decision I've made in poker.",
       image: '/proof/testimonial-keven.png'
     },
@@ -75,6 +76,7 @@ const PokerToolboxHome = () => {
     {
       id: 4,
       name: 'Andrea',
+      result: 'Breakeven NL50 → beating NL200 in 13 months',
       quote: "I just finished my learning path with Patrick and I wanted to share my experience working with him. It was my first experience with a coach and I've always been very skeptical about coaching in general, but after working with him I completely changed my mind. What impressed me the most was his empathy. One day I came to a lesson during a downswing and without me saying a word about it, he sensed something and said 'How about we have a mindset talk instead?' To me, that's an innate and truly essential quality in a coach. In about 13 months I went from being breakeven at NL50 to beating NL200, almost ready for NL500.",
       hasBeforeAfter: true,
       imageBefore: '/proof/testimonial-andrea-before.png',
@@ -83,18 +85,21 @@ const PokerToolboxHome = () => {
     {
       id: 5,
       name: 'Davide',
+      result: 'NL100 → dominating NL1000 in under a year',
       quote: "Thanks to NachosPoker, I went from struggling at 100nl to dominating at 1k in under a year! They helped me improve in every aspect of the game, not only strategical, but also mental and logistical. Patrick is always patient, humble, and delivers more than expected. Plus, the community is awesome!",
       image: '/proof/testimonial-davide.png'
     },
     {
       id: 6,
       name: 'Brendon',
+      result: 'Breakeven NL100 → dominating NL1000',
       quote: "The strategy will anchor you in spots where you typically feel lost. Patrick's methodology elevated my game from a breakeven 100nl reg to dominating 1000nl. The supportive community offers in-depth discussions that have been crucial to my development.",
       image: '/proof/testimonial-brendon.png'
     },
     {
       id: 7,
       name: 'Peter',
+      result: 'Rebuilt from a downswing — now playing NL2000',
       quote: "After a tough downswing in late 2023 dropped me from 1knl to 200/500nl, I feared my high-stakes dream was over. A friend suggested Freenachos CFP, and it may have been the best decision of my career. Their resources and Patrick's support helped me excel, and I've since skyrocketed back on track, now competing at 2K and aiming higher soon.",
       image: '/proof/testimonial-peter.png'
     },
@@ -3151,9 +3156,11 @@ The 3-month program consists of:
                   <div style={{ color: '#fff', fontWeight: '600', fontSize: '15px' }}>
                     {testimonials[currentTestimonialIndex].name}
                   </div>
-                  <div style={{ color: 'rgba(167, 138, 67, 0.8)', fontSize: '13px' }}>
-                    {testimonials[currentTestimonialIndex].result}
-                  </div>
+                  {testimonials[currentTestimonialIndex].result && (
+                    <div style={{ color: 'rgba(167, 138, 67, 0.8)', fontSize: '13px' }}>
+                      {testimonials[currentTestimonialIndex].result}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
