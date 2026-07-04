@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
 import { Mail, Check, Loader, ArrowRight, TrendingUp, Database, Zap, Brain } from 'lucide-react';
+import { track } from '@vercel/analytics';
 
 /**
  * Newsletter Subscription Page
@@ -35,6 +36,7 @@ export default function NewsletterPage() {
       }
 
       setStatus('success');
+      track('newsletter_signup', { source: 'newsletter_page' });
     } catch (err) {
       setStatus('error');
       setErrorMessage(err.message || 'Failed to subscribe');

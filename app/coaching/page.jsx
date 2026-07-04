@@ -3,6 +3,7 @@
 import React from "react";
 import NachosPokerNavBar from "@/components/NachosPokerNavBar";
 import { ArrowRight, User, Users } from "lucide-react";
+import { track } from "@vercel/analytics";
 
 const GOLD = "#A78A43";
 const BORDER = "rgba(255,255,255,0.08)";
@@ -80,6 +81,7 @@ export default function CoachingLandingPage() {
             href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=coaching_page"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => track('cta_click', { placement: 'coaching_page' })}
             style={{
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
               background: GOLD, color: "#0a0a0a",
@@ -119,6 +121,7 @@ export default function CoachingLandingPage() {
             href="https://nachospoker.com?utm_source=freenachos_poker&utm_medium=referral&utm_campaign=coaching_page"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => track('outbound', { target: 'cfp_coaching_page' })}
             style={{
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
               background: "transparent", color: GOLD, border: `2px solid ${GOLD}`,

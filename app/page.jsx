@@ -2,6 +2,7 @@
 
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
 import NewsletterPopup from '@/components/NewsletterPopup';
+import { track } from '@vercel/analytics';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { ExternalLink, Play, ChevronLeft, ChevronRight, Calculator, Target, TrendingUp, BookOpen, User, Youtube, ArrowRight, Sparkles, BarChart3, Percent, DollarSign, Trophy, Activity, Check, X, ChevronDown, GraduationCap, Users, CheckCircle, Video, MessageCircle, Calendar, Star, Award, Database, Headphones, Crosshair, Swords, Brain, Lock, Zap } from 'lucide-react';
@@ -143,6 +144,8 @@ const PokerToolboxHome = () => {
       name: '3-Month Kickstart',
       totalPrice: '2,499',
       paymentNote: 'Paid in full',
+      perSession: '€417 per session',
+      utmContent: 'pricing_3mo',
       featured: false,
       features: [
         '6 Private 1-on-1 Sessions',
@@ -151,15 +154,17 @@ const PokerToolboxHome = () => {
         'Personalized Study Plan',
         'Lifetime Discord Access'
       ],
-      buttonText: 'Book Free Introcall'
+      buttonText: 'Book a Free Intro Call'
     },
     {
       name: '6-Month Accelerator',
       totalPrice: '3,999',
       paymentNote: 'Pay in full or 3 monthly installments',
+      perSession: '€333 per session',
+      utmContent: 'pricing_6mo',
       featured: true,
       badge: 'MOST POPULAR',
-      savings: 'Save €1,000 vs. Quarterly',
+      savings: 'Save €1,000 vs. 3-Month plan',
       features: [
         '12 Private 1-on-1 Sessions',
         'Lifetime Weekly Group Coaching',
@@ -168,15 +173,17 @@ const PokerToolboxHome = () => {
         'Lifetime Discord Access',
         '2-Month Pause Option'
       ],
-      buttonText: 'Book Free Introcall'
+      buttonText: 'Book a Free Intro Call'
     },
     {
       name: '12-Month Mastery',
       totalPrice: '5,999',
       paymentNote: 'Pay in full or quarterly installments',
+      perSession: '€250 per session',
+      utmContent: 'pricing_12mo',
       featured: false,
       badge: 'BEST VALUE',
-      savings: 'Save €3,000 vs. Quarterly',
+      savings: 'Save €3,000 vs. 3-Month plan',
       features: [
         '24 Private 1-on-1 Sessions',
         'Lifetime Weekly Group Coaching',
@@ -185,7 +192,7 @@ const PokerToolboxHome = () => {
         'Lifetime Discord Access',
         'Priority Scheduling'
       ],
-      buttonText: 'Book Free Introcall'
+      buttonText: 'Book a Free Intro Call'
     }
   ];
 
@@ -818,7 +825,21 @@ The 3-month program consists of:
           €{plan.totalPrice}
         </span>
       </div>
-      
+
+      {/* Per-session anchor */}
+      {plan.perSession && (
+        <div style={{
+          color: 'rgba(240, 240, 240, 0.55)',
+          fontSize: '13px',
+          fontWeight: '500',
+          marginBottom: '8px',
+          position: 'relative',
+          zIndex: 1
+        }}>
+          {plan.perSession}
+        </div>
+      )}
+
       {/* Payment Note */}
       <div style={{
         color: 'rgba(240, 240, 240, 0.45)',
@@ -887,11 +908,12 @@ The 3-month program consists of:
         ))}
       </div>
       
-      {/* CTA Button - Outline style matching Book Free Introcall */}
+      {/* CTA Button - Outline style matching primary CTA */}
       <a
-        href="https://calendly.com/freenachos/intro"
+        href={`https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=${plan.utmContent}`}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => track('cta_click', { placement: plan.utmContent })}
         className="pricing-cta-btn"
         style={{
           display: 'block',
@@ -2261,10 +2283,11 @@ The 3-month program consists of:
               </p>
               
               {/* CTA Button */}
-              <a 
-                href="https://calendly.com/freenachos/intro" 
-                target="_blank" 
+              <a
+                href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=hero"
+                target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => track('cta_click', { placement: 'hero' })}
                 className="btn-hover cta-primary"
                 style={{
                   background: '#A78A43',
@@ -2281,8 +2304,18 @@ The 3-month program consists of:
                   letterSpacing: '0.01em'
                 }}
               >
-                Apply for Mentorship <ArrowRight size={20} />
+                Book a Free Intro Call <ArrowRight size={20} />
               </a>
+
+              {/* Friction-reducing microcopy */}
+              <div style={{
+                marginTop: '14px',
+                fontSize: '13px',
+                color: 'rgba(240, 240, 240, 0.45)',
+                letterSpacing: '0.01em'
+              }}>
+                15 minutes · no hard sell · find out if you're a fit
+              </div>
             </div>
           </div>
         </div>
@@ -2419,10 +2452,11 @@ The 3-month program consists of:
               </div>
 
               {/* CTA Button */}
-              <a 
-                href="https://calendly.com/freenachos/intro" 
-                target="_blank" 
+              <a
+                href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=about"
+                target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => track('cta_click', { placement: 'about' })}
                 className="btn-hover authority-cta-btn"
                 style={{
                   marginTop: '48px',
@@ -2441,7 +2475,7 @@ The 3-month program consists of:
                   width: 'fit-content'
                 }}
               >
-                Book Free Introcall <ArrowRight size={16} />
+                Book a Free Intro Call <ArrowRight size={16} />
               </a>
             </div>
 
@@ -3482,6 +3516,7 @@ The 3-month program consists of:
                   href={video.link}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => track('outbound', { target: 'youtube_video' })}
                   className="cinema-video-card"
                   style={{
                     flex: '0 0 380px',
@@ -3662,10 +3697,11 @@ The 3-month program consists of:
 
             {/* View All Link */}
             <div style={{ textAlign: 'center', marginTop: '32px' }}>
-              <a 
-                href="https://www.youtube.com/@nachospoker" 
-                target="_blank" 
+              <a
+                href="https://www.youtube.com/@nachospoker"
+                target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => track('outbound', { target: 'youtube_channel' })}
                 style={{
                   color: '#A78A43',
                   fontSize: '14px',
@@ -3782,7 +3818,9 @@ The 3-month program consists of:
             </p>
           </div>
 
-          <div 
+          {/* TODO(patrick): confirm spots per quarter, e.g. "3 mentorship spots open this quarter" — only ship if true */}
+
+          <div
             className="pricing-grid-authority"
             style={{
               display: 'grid',
@@ -3796,6 +3834,18 @@ The 3-month program consists of:
               <PricingCard key={idx} plan={plan} />
             ))}
           </div>
+
+          {/* Risk reduction */}
+          {/* TODO(patrick): decide refund/guarantee policy (see MARKETING_AUDIT.md §5.6) */}
+          <p style={{
+            textAlign: 'center',
+            marginTop: '32px',
+            fontSize: '14px',
+            color: 'rgba(240, 240, 240, 0.5)',
+            letterSpacing: '0.01em'
+          }}>
+            The intro call is free and there's no obligation to continue.
+          </p>
 
           {/* Pricing card styles */}
           <style>{`
@@ -3965,10 +4015,11 @@ The 3-month program consists of:
             textAlign: 'center',
             marginTop: '56px'
           }}>
-            <a 
-              href="https://calendly.com/freenachos/intro"
+            <a
+              href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=fit"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => track('cta_click', { placement: 'fit' })}
               className="btn-hover cta-primary"
               style={{
                 background: '#A78A43',
@@ -3984,7 +4035,7 @@ The 3-month program consists of:
                 boxShadow: '0 6px 30px rgba(167, 138, 67, 0.45)'
               }}
             >
-              Book Free Intro Call <ArrowRight size={18} />
+              Book a Free Intro Call <ArrowRight size={18} />
             </a>
           </div>
         </div>

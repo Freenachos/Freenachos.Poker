@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, Mail, Check, Loader, ArrowRight } from 'lucide-react';
+import { track } from '@vercel/analytics';
 
 /**
  * NewsletterPopup - Scroll-triggered glassmorphism popup
@@ -76,6 +77,7 @@ export default function NewsletterPopup() {
       }
 
       setStatus('success');
+      track('newsletter_signup', { source: 'popup' });
       localStorage.setItem(SUBSCRIBED_KEY, 'true');
       
       // Auto-close after 3 seconds on success
