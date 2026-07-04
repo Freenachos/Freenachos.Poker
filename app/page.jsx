@@ -2,6 +2,7 @@
 
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
 import NewsletterPopup from '@/components/NewsletterPopup';
+import Footer from '@/components/Footer';
 import { track } from '@vercel/analytics';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -4538,19 +4539,7 @@ The 3-month program consists of:
         `}</style>
 
         {/* Footer */}
-        <div style={{
-          textAlign: 'center',
-          padding: '40px 0',
-          marginTop: '24px',
-          borderTop: '1px solid rgba(167, 138, 67, 0.1)'
-        }}>
-          <p style={{
-            fontSize: '13px',
-            color: 'rgba(240, 240, 240, 0.4)'
-          }}>
-            © 2026 Freenachos Poker. All rights reserved.
-          </p>
-        </div>
+        <Footer />
       </div>
     </div>
   );

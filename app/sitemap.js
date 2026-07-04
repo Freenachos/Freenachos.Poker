@@ -21,6 +21,8 @@ export default async function sitemap() {
     { url: "https://freenachos.poker/seat", lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
     { url: "https://freenachos.poker/profits", lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
     { url: "https://freenachos.poker/bbj", lastModified: new Date(), changeFrequency: "daily", priority: 0.6 },
+    { url: "https://freenachos.poker/privacy", lastModified: new Date(), changeFrequency: "yearly", priority: 0.2 },
+    { url: "https://freenachos.poker/terms", lastModified: new Date(), changeFrequency: "yearly", priority: 0.2 },
   ];
 
   return [...staticPages, ...newsletterPages];
