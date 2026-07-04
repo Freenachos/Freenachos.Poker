@@ -676,7 +676,7 @@ const PokerSeatEVTool = () => {
               Join Our CFP <ExternalLink size={14} />
             </a>
             <a 
-              href="https://calendly.com/patrickgerritsen90/30min"
+              href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=seat_tool"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-hover"

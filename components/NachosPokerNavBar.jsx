@@ -234,7 +234,7 @@ const NachosPokerNavBar = () => {
         /* ============================================
            PRIMARY CTA - Mentorship Program
            Solid #a88b46 gold background with dark text
-           Matches 'Book Free Introcall' button style
+           Matches 'Book a Free Intro Call' button style
            ============================================ */
         .np-nav-cta {
           position: relative;
