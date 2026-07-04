@@ -1,15 +1,20 @@
 "use client";
 
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
+import Footer from '@/components/Footer';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  Search, 
-  ArrowRight, 
-  BarChart3, 
+import {
+  Search,
+  ArrowRight,
+  BarChart3,
   Trophy,
-  Calculator
+  Calculator,
+  TrendingUp,
+  Target,
+  DollarSign
 } from 'lucide-react';
+import { track } from '@vercel/analytics';
 
 /**
  * Freenachos Poker - Tools Page
@@ -42,13 +47,37 @@ const ToolsPage = () => {
       link: '/variance',
       category: 'Analysis'
     },
-    { 
-      id: 2, 
-      name: 'Bad Beat Jackpot', 
-      description: 'Track bad beat jackpot sizes and expected value across poker rooms. Find the most +EV tables.', 
-      icon: Trophy, 
+    {
+      id: 2,
+      name: 'Bad Beat Jackpot',
+      description: 'Track bad beat jackpot sizes and expected value across poker rooms. Find the most +EV tables.',
+      icon: Trophy,
       link: '/bbj',
       category: 'Analysis'
+    },
+    {
+      id: 3,
+      name: 'Win Rate Analyzer',
+      description: 'Track and analyze your win rate across different stakes and formats. See what your sample really says.',
+      icon: TrendingUp,
+      link: '/winrate',
+      category: 'Analysis'
+    },
+    {
+      id: 4,
+      name: 'Seat Selection EV',
+      description: 'Visualize how fish position impacts your win rate at 6-max tables. Pick seats like a pro.',
+      icon: Target,
+      link: '/seat',
+      category: 'Strategy'
+    },
+    {
+      id: 5,
+      name: 'Profits Tracker',
+      description: 'Monitor your poker profits and track your bankroll growth over time.',
+      icon: DollarSign,
+      link: '/profits',
+      category: 'Tracking'
     }
   ];
 
@@ -1164,20 +1193,64 @@ const ToolsPage = () => {
           </div>
         )}
 
-        {/* Footer */}
-        <div style={{
-          textAlign: 'center',
-          padding: '80px 0 40px',
-          marginTop: '80px',
-          borderTop: '1px solid rgba(167, 138, 67, 0.1)'
-        }}>
-          <p style={{
-            fontSize: '13px',
-            color: 'rgba(240, 240, 240, 0.4)'
+        {/* Coaching CTA Banner - tools users are the warmest organic traffic */}
+        <div
+          className="reveal"
+          style={{
+            textAlign: 'center',
+            padding: '64px 40px',
+            marginTop: '80px',
+            background: 'rgba(18, 18, 18, 0.4)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: '1px solid rgba(168, 139, 70, 0.25)',
+            borderRadius: '24px'
+          }}
+        >
+          <h3 style={{
+            fontSize: 'clamp(24px, 3vw, 32px)',
+            fontWeight: '800',
+            color: '#FFFFFF',
+            marginBottom: '14px',
+            letterSpacing: '-0.02em',
+            fontFamily: 'Manrope, Inter, sans-serif'
           }}>
-            © 2026 Freenachos Poker. All rights reserved.
+            These tools tell you <span style={{ color: '#a88b46' }}>what's happening</span>. Coaching fixes it.
+          </h3>
+          <p style={{
+            fontSize: '15px',
+            color: 'rgba(240, 240, 240, 0.55)',
+            lineHeight: 1.7,
+            maxWidth: '480px',
+            margin: '0 auto 32px'
+          }}>
+            Find out exactly where your win rate is leaking with a free 15-minute intro call.
           </p>
+          <a
+            href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=tools_page"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track('cta_click', { placement: 'tools_page' })}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px',
+              background: '#a88b46',
+              color: '#0a0a0a',
+              padding: '16px 32px',
+              borderRadius: '12px',
+              fontWeight: '700',
+              fontSize: '15px',
+              textDecoration: 'none',
+              boxShadow: '0 4px 30px rgba(168, 139, 70, 0.35)'
+            }}
+          >
+            Book a Free Intro Call <ArrowRight size={18} />
+          </a>
         </div>
+
+        {/* Footer */}
+        <Footer />
       </div>
     </div>
   );
