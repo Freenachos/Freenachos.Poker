@@ -1,6 +1,7 @@
 'use client';
 import { motion, AnimatePresence } from 'framer-motion';
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
+import { calendlyUrl } from '@/lib/links';
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { 
   ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine,
@@ -3800,7 +3801,7 @@ const NachoStatsDashboard = () => {
                 Join Our CFP <ExternalLink size={14} />
               </a>
               <a 
-                href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=winrate_tool" 
+                href={calendlyUrl('winrate_tool')}
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="inline-flex items-center gap-2 bg-transparent px-5 py-3 rounded-lg font-semibold text-sm

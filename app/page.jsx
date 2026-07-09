@@ -3,6 +3,7 @@
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
 import NewsletterPopup from '@/components/NewsletterPopup';
 import Footer from '@/components/Footer';
+import { calendlyUrl } from '@/lib/links';
 import { track } from '@vercel/analytics';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -1952,7 +1953,7 @@ The 3-month program consists of:
                 color: 'rgba(240, 240, 240, 0.45)',
                 letterSpacing: '0.01em'
               }}>
-                15 minutes, no sales pitch. Find out if you're a fit.
+                Free call, no sales pitch. Find out if you're a fit.
               </div>
             </div>
           </div>
@@ -3800,7 +3801,7 @@ The 3-month program consists of:
             maxWidth: '540px',
             margin: '0 auto 32px'
           }}>
-            Pick a time below for a free 15 minute intro call. We look at your game, figure out where your win rate is leaking, and see if coaching makes sense for you.
+            Pick a time below for a free intro call. We look at your game, figure out where your win rate is leaking, and see if coaching makes sense for you.
           </p>
 
           {/* Paid-service note (also add this as a required checkbox in Calendly itself) */}
@@ -3829,7 +3830,7 @@ The 3-month program consists of:
           {/* Calendly inline embed */}
           <div
             className="calendly-inline-widget calendly-embed-wrap"
-            data-url="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=embed&hide_gdpr_banner=1&background_color=0a0e1a&text_color=f0f0f0&primary_color=a88b46"
+            data-url={`${calendlyUrl('embed')}&hide_gdpr_banner=1&background_color=0a0e1a&text_color=f0f0f0&primary_color=a88b46`}
             style={{
               minWidth: '320px',
               height: '700px',

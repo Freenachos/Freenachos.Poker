@@ -2,6 +2,7 @@
 
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
 import Footer from '@/components/Footer';
+import { calendlyUrl } from '@/lib/links';
 
 import React, { useState, useEffect, useMemo } from 'react';
 import {
@@ -1224,10 +1225,10 @@ const ToolsPage = () => {
             maxWidth: '480px',
             margin: '0 auto 32px'
           }}>
-            Find out exactly where your win rate is leaking with a free 15-minute intro call.
+            Find out exactly where your win rate is leaking with a free intro call.
           </p>
           <a
-            href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=tools_page"
+            href={calendlyUrl('tools_page')}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => track('cta_click', { placement: 'tools_page' })}

@@ -3,6 +3,7 @@
 import React from "react";
 import NachosPokerNavBar from "@/components/NachosPokerNavBar";
 import { ArrowRight, User, Users } from "lucide-react";
+import { calendlyUrl } from "@/lib/links";
 import { track } from "@vercel/analytics";
 
 const GOLD = "#A78A43";
@@ -78,7 +79,7 @@ export default function CoachingLandingPage() {
           </ul>
 
           <a
-            href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=coaching_page"
+            href={calendlyUrl('coaching_page')}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => track('cta_click', { placement: 'coaching_page' })}

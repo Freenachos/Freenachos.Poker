@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ExternalLink, TrendingUp } from 'lucide-react';
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
+import { calendlyUrl } from '@/lib/links';
 
 /**
  * Poker Seat Selection EV Visualization Tool
@@ -676,7 +677,7 @@ const PokerSeatEVTool = () => {
               Join Our CFP <ExternalLink size={14} />
             </a>
             <a 
-              href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=seat_tool"
+              href={calendlyUrl('seat_tool')}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-hover"
