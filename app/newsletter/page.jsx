@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
 import { Mail, Check, Loader, ArrowRight, TrendingUp, Database, Zap, Brain } from 'lucide-react';
+import { track } from '@vercel/analytics';
 
 /**
  * Newsletter Subscription Page
@@ -35,6 +36,7 @@ export default function NewsletterPage() {
       }
 
       setStatus('success');
+      track('newsletter_signup', { source: 'newsletter_page' });
     } catch (err) {
       setStatus('error');
       setErrorMessage(err.message || 'Failed to subscribe');
@@ -308,7 +310,7 @@ export default function NewsletterPage() {
           }}
         >
           <img 
-            src="https://i.gyazo.com/ad823c265c17c21f61996bb3aa3283e2.png"
+            src="/proof/coach-hero.png"
             alt="Patrick - Freenachos Coach"
             style={{
               height: '100%',

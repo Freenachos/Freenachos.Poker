@@ -3,6 +3,7 @@
 import React from "react";
 import NachosPokerNavBar from "@/components/NachosPokerNavBar";
 import { ArrowRight, User, Users } from "lucide-react";
+import { track } from "@vercel/analytics";
 
 const GOLD = "#A78A43";
 const BORDER = "rgba(255,255,255,0.08)";
@@ -12,7 +13,7 @@ const TEXT_SUB = "#B0B0B8";
 const TEXT_DIM = "rgba(255,255,255,0.45)";
 const FONT = "Manrope, Inter, -apple-system, BlinkMacSystemFont, sans-serif";
 
-const HEADSHOT = "https://i.gyazo.com/ad823c265c17c21f61996bb3aa3283e2.png";
+const HEADSHOT = "/proof/coach-headshot.png";
 
 export default function CoachingLandingPage() {
   return (
@@ -77,9 +78,10 @@ export default function CoachingLandingPage() {
           </ul>
 
           <a
-            href="https://freenachos.poker"
+            href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=coaching_page"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => track('cta_click', { placement: 'coaching_page' })}
             style={{
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
               background: GOLD, color: "#0a0a0a",
@@ -87,7 +89,7 @@ export default function CoachingLandingPage() {
               textDecoration: "none", width: "100%",
             }}
           >
-            Learn More <ArrowRight size={16} />
+            Book a Free Intro Call <ArrowRight size={16} />
           </a>
         </div>
 
@@ -116,9 +118,10 @@ export default function CoachingLandingPage() {
           </ul>
 
           <a
-            href="https://nachospoker.com"
+            href="https://nachospoker.com?utm_source=freenachos_poker&utm_medium=referral&utm_campaign=coaching_page"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => track('outbound', { target: 'cfp_coaching_page' })}
             style={{
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
               background: "transparent", color: GOLD, border: `2px solid ${GOLD}`,

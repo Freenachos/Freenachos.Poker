@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, Mail, Check, Loader, ArrowRight } from 'lucide-react';
+import { track } from '@vercel/analytics';
 
 /**
  * NewsletterPopup - Scroll-triggered glassmorphism popup
@@ -76,6 +77,7 @@ export default function NewsletterPopup() {
       }
 
       setStatus('success');
+      track('newsletter_signup', { source: 'popup' });
       localStorage.setItem(SUBSCRIBED_KEY, 'true');
       
       // Auto-close after 3 seconds on success
@@ -172,7 +174,7 @@ export default function NewsletterPopup() {
               boxShadow: '0 8px 32px rgba(168, 139, 70, 0.3)'
             }}>
               <img
-                src="https://i.gyazo.com/ad823c265c17c21f61996bb3aa3283e2.png"
+                src="/proof/coach-headshot.png"
                 alt="Patrick - Freenachos Coach"
                 style={{
                   width: '100%',

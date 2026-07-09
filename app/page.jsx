@@ -2,9 +2,11 @@
 
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
 import NewsletterPopup from '@/components/NewsletterPopup';
+import Footer from '@/components/Footer';
+import { track } from '@vercel/analytics';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ExternalLink, Play, ChevronLeft, ChevronRight, Calculator, Target, TrendingUp, BookOpen, User, Youtube, ArrowRight, Sparkles, BarChart3, Percent, DollarSign, Trophy, Activity, Check, X, ChevronDown, GraduationCap, Users, CheckCircle, Video, MessageCircle, Calendar, Star, Award, Database, Headphones, Crosshair, Swords, Brain, Lock, Zap } from 'lucide-react';
+import { ExternalLink, ChevronLeft, ChevronRight, Calculator, BookOpen, Youtube, ArrowRight, Sparkles, Check, X, ChevronDown, Users, MessageCircle, Calendar, Crosshair, Swords, Brain, Lock, Zap } from 'lucide-react';
 
 /**
  * Freenachos Poker Toolbox Homepage
@@ -27,15 +29,14 @@ const PokerToolboxHome = () => {
   // STATE
   // ============================================
   
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState('right');
   const [expandedFAQ, setExpandedFAQ] = useState(0);
   const [showStickyCta, setShowStickyCta] = useState(false);
   const [showGraphModal, setShowGraphModal] = useState(false);
   const [showTestimonialGraphModal, setShowTestimonialGraphModal] = useState(null);
-  const nachoRef = useRef(null);
+  const [inlineEmail, setInlineEmail] = useState('');
+  const [inlineStatus, setInlineStatus] = useState('idle');
   const aboutSectionRef = useRef(null);
   const heroSectionRef = useRef(null);
   const cinemaCarouselRef = useRef(null);
@@ -57,46 +58,51 @@ const PokerToolboxHome = () => {
       id: 1,
       name: 'Gary Chappell',
       quote: "My time working with Patrick at Nachos Poker has been amazing. He genuinely cares about your progress and puts a lot of thought into how everything is structured. The coaching and resources are clear, practical, and easy to apply. I've already recommended the program to a friend who's seeing great results as well. If you're willing to put in the work, Patrick will help you take your game to the next level.",
-      image: 'https://i.gyazo.com/84fe303f124b23ebd87b11ce00807de6.png'
+      image: '/proof/testimonial-gary.png'
     },
     {
       id: 2,
       name: 'Keven Li',
       subtitle: 'Poker Made Simple',
+      result: 'NL100 → crushing NL1000',
       quote: "In 2021, I turned pro with a $10k bankroll, struggling through a breakeven stretch until Patrick's data-driven coaching changed everything—my results skyrocketed. His guidance, combined with NachosPoker's training, took me from 100nl to crushing 1000nl. Working with Patrick was the best decision I've made in poker.",
-      image: 'https://i.gyazo.com/64ab37279de8475d58ededffdde851ae.png'
+      image: '/proof/testimonial-keven.png'
     },
     {
       id: 3,
       name: 'Marcelo',
       quote: "Patrick's blog posts and videos on Run It Once were what convinced me to join Nachos Poker, and I haven't looked back since. His approach is very data-driven and practical, and the way he breaks down spots makes complex ideas easy to apply. On top of that, the community he's built is supportive and focused on improving. Whether you're playing 200nl or aiming to move up, working with Patrick is a great place to be.",
-      image: 'https://i.gyazo.com/99dafc2ce6c753470b343dd0cfc7366e.png'
+      image: '/proof/testimonial-marcelo.png'
     },
     {
       id: 4,
       name: 'Andrea',
+      result: 'Breakeven NL50 → beating NL200 in 13 months',
       quote: "I just finished my learning path with Patrick and I wanted to share my experience working with him. It was my first experience with a coach and I've always been very skeptical about coaching in general, but after working with him I completely changed my mind. What impressed me the most was his empathy. One day I came to a lesson during a downswing and without me saying a word about it, he sensed something and said 'How about we have a mindset talk instead?' To me, that's an innate and truly essential quality in a coach. In about 13 months I went from being breakeven at NL50 to beating NL200, almost ready for NL500.",
       hasBeforeAfter: true,
-      imageBefore: 'https://i.gyazo.com/f4749a49b560a07d3dfd002d97d66354.png',
-      imageAfter: 'https://i.gyazo.com/71a3ce799042d5e469c71e01a9a3c086.png'
+      imageBefore: '/proof/testimonial-andrea-before.png',
+      imageAfter: '/proof/testimonial-andrea-after.png'
     },
     {
       id: 5,
       name: 'Davide',
+      result: 'NL100 → dominating NL1000 in under a year',
       quote: "Thanks to NachosPoker, I went from struggling at 100nl to dominating at 1k in under a year! They helped me improve in every aspect of the game, not only strategical, but also mental and logistical. Patrick is always patient, humble, and delivers more than expected. Plus, the community is awesome!",
-      image: 'https://i.gyazo.com/cb6ad67354991a6dfd841d4fd70726f0.png'
+      image: '/proof/testimonial-davide.png'
     },
     {
       id: 6,
       name: 'Brendon',
+      result: 'Breakeven NL100 → dominating NL1000',
       quote: "The strategy will anchor you in spots where you typically feel lost. Patrick's methodology elevated my game from a breakeven 100nl reg to dominating 1000nl. The supportive community offers in-depth discussions that have been crucial to my development.",
-      image: 'https://i.gyazo.com/acec149f25437808e9e874d7ead143a7.png'
+      image: '/proof/testimonial-brendon.png'
     },
     {
       id: 7,
       name: 'Peter',
+      result: 'Rebuilt from a downswing — now playing NL2000',
       quote: "After a tough downswing in late 2023 dropped me from 1knl to 200/500nl, I feared my high-stakes dream was over. A friend suggested Freenachos CFP, and it may have been the best decision of my career. Their resources and Patrick's support helped me excel, and I've since skyrocketed back on track, now competing at 2K and aiming higher soon.",
-      image: 'https://i.gyazo.com/f4d4343480fa27271eba2281d25685da.png'
+      image: '/proof/testimonial-peter.png'
     },
   ];
 
@@ -138,6 +144,8 @@ const PokerToolboxHome = () => {
       name: '3-Month Kickstart',
       totalPrice: '2,499',
       paymentNote: 'Paid in full',
+      perSession: '€417 per session',
+      utmContent: 'pricing_3mo',
       featured: false,
       features: [
         '6 Private 1-on-1 Sessions',
@@ -146,15 +154,17 @@ const PokerToolboxHome = () => {
         'Personalized Study Plan',
         'Lifetime Discord Access'
       ],
-      buttonText: 'Book Free Introcall'
+      buttonText: 'Book a Free Intro Call'
     },
     {
       name: '6-Month Accelerator',
       totalPrice: '3,999',
       paymentNote: 'Pay in full or 3 monthly installments',
+      perSession: '€333 per session',
+      utmContent: 'pricing_6mo',
       featured: true,
       badge: 'MOST POPULAR',
-      savings: 'Save €1,000 vs. Quarterly',
+      savings: 'Save €1,000 vs. 3-Month plan',
       features: [
         '12 Private 1-on-1 Sessions',
         'Lifetime Weekly Group Coaching',
@@ -163,15 +173,17 @@ const PokerToolboxHome = () => {
         'Lifetime Discord Access',
         '2-Month Pause Option'
       ],
-      buttonText: 'Book Free Introcall'
+      buttonText: 'Book a Free Intro Call'
     },
     {
       name: '12-Month Mastery',
       totalPrice: '5,999',
       paymentNote: 'Pay in full or quarterly installments',
+      perSession: '€250 per session',
+      utmContent: 'pricing_12mo',
       featured: false,
       badge: 'BEST VALUE',
-      savings: 'Save €3,000 vs. Quarterly',
+      savings: 'Save €3,000 vs. 3-Month plan',
       features: [
         '24 Private 1-on-1 Sessions',
         'Lifetime Weekly Group Coaching',
@@ -180,7 +192,7 @@ const PokerToolboxHome = () => {
         'Lifetime Discord Access',
         'Priority Scheduling'
       ],
-      buttonText: 'Book Free Introcall'
+      buttonText: 'Book a Free Intro Call'
     }
   ];
 
@@ -211,8 +223,40 @@ The 3-month program consists of:
     {
       question: 'What payment options and payment plans do you offer?',
       answer: 'Payments can be made via BTC, USDT, Wise, and Revolut. PayPal and Skrill are also accepted, but with a 7% premium. Flexible payment plans are available for both programs. For more details on payment options, please get in touch directly.'
+    },
+    // TODO(patrick): review wording of the five answers below
+    {
+      question: 'What results can I realistically expect?',
+      answer: 'Every student is different, but documented outcomes include going from breakeven at NL50 to beating NL200 in about 13 months, and from NL100 to crushing NL1000. What you get out depends on your volume and how seriously you take the off-table work — poker has variance, and no honest coach guarantees results.'
+    },
+    {
+      question: 'What stakes do I need to be playing?',
+      answer: 'Players at mid-stakes and above tend to get the most out of the data-driven approach, but ambitious low-stakes players who are ready to commit to structured improvement are welcome too. If you\'re unsure whether it makes sense at your stakes, that\'s exactly what the free intro call is for.'
+    },
+    {
+      question: 'How is this different from a CFP or a course?',
+      answer: 'This mentorship is private 1-on-1 coaching: your database, your leaks, and a study plan built around your actual game, plus weekly group sessions. The NachosPoker CFP is a different offer — a full ecosystem with staking, pool data, and playbooks where you play and we invest. Courses give you generic content; here everything is personalized.'
+    },
+    {
+      question: 'What if we\'re in different timezones?',
+      answer: 'Sessions are scheduled individually rather than at fixed times, so most timezones can be accommodated. Mention your timezone on the intro call and we\'ll figure out a schedule that works.'
+    },
+    {
+      question: 'What\'s your refund policy?',
+      answer: 'One-on-one sessions must be used within your package duration, and unused sessions are not reimbursed. The intro call is completely free, so you can evaluate the coaching and the fit before committing to anything.'
     }
   ];
+
+  // FAQPage structured data for search engines
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqItems.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: { '@type': 'Answer', text: item.answer }
+    }))
+  };
 
   const goodFitReasons = [
     'You want to understand why strategies work, not just what to click',
@@ -226,32 +270,6 @@ The 3-month program consists of:
     'You expect coaching to replace personal responsibility'
   ];
 
-  const articles = [
-    { id: 1, title: 'The Ultimate Guide to Table Selection', category: 'Strategy', readTime: '8 min', excerpt: 'Learn how to identify profitable tables and maximize your hourly rate with proper table selection techniques.', link: '/articles/table-selection' },
-    { id: 2, title: 'Understanding VPIP and What It Tells You', category: 'Fundamentals', readTime: '5 min', excerpt: 'VPIP is one of the most important stats in poker. Here\'s how to use it to categorize your opponents.', link: '/articles/vpip-guide' },
-    { id: 3, title: 'Bankroll Management for Serious Players', category: 'Mindset', readTime: '10 min', excerpt: 'The mathematical approach to never going broke while maximizing your growth potential.', link: '/articles/bankroll-management' },
-  ];
-
-  const tools = [
-    { id: 1, name: 'Variance Calculator', description: 'Simulate your expected variance and downswings over any sample size', icon: BarChart3, color: '#3b82f6', link: '/variance' },
-    { id: 2, name: 'Win Rate Analyzer', description: 'Track and analyze your win rate across different stakes and formats', icon: TrendingUp, color: '#22c55e', link: '/winrate' },
-    { id: 3, name: 'Seat Selection EV', description: 'Visualize how fish position impacts your win rate at 6-max tables', icon: Target, color: '#A78A43', link: '/seat' },
-    { id: 4, name: 'Profits Tracker', description: 'Monitor your poker profits and track your bankroll growth over time', icon: DollarSign, color: '#14b8a6', link: '/profits' },
-    { id: 5, name: 'Bad Beat Jackpot Dashboard', description: 'Track bad beat jackpot sizes and expected value across poker rooms', icon: Trophy, color: '#a855f7', link: '/bad-beat-jackpot' },
-    { id: 6, name: 'Articles', description: 'Strategy guides, tips, and educational content to improve your game', icon: BookOpen, color: '#ef4444', link: '/articles' },
-  ];
-
-  // ============================================
-  // NACHO MASCOT LOGIC
-  // ============================================
-  
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
 
   // Scroll Reveal Animation Observer
   useEffect(() => {
@@ -276,21 +294,6 @@ The 3-month program consists of:
     return () => observer.disconnect();
   }, []);
 
-  const getEyeOffset = () => {
-    if (!nachoRef.current) return { x: 0, y: 0 };
-    const rect = nachoRef.current.getBoundingClientRect();
-    const nachoCenter = {
-      x: rect.left + rect.width / 2,
-      y: rect.top + rect.height / 2
-    };
-    const angle = Math.atan2(mousePos.y - nachoCenter.y, mousePos.x - nachoCenter.x);
-    const distance = Math.min(3, Math.hypot(mousePos.x - nachoCenter.x, mousePos.y - nachoCenter.y) / 50);
-    return {
-      x: Math.cos(angle) * distance,
-      y: Math.sin(angle) * distance
-    };
-  };
-
   // Show sticky CTA when Hero section is mostly scrolled out (only 20% visible)
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -310,13 +313,9 @@ The 3-month program consists of:
     return () => observer.disconnect();
   }, []);
 
-  const eyeOffset = getEyeOffset();
-
   // ============================================
   // CAROUSEL HANDLERS
   // ============================================
-  
-  const maxVideoIndex = Math.max(0, videos.length - 3);
   
   const nextVideo = () => {
     if (cinemaCarouselRef.current) {
@@ -340,391 +339,32 @@ The 3-month program consists of:
     setCurrentTestimonialIndex((prev) => (prev <= 0 ? testimonials.length - 1 : prev - 1));
   };
 
+  // Inline newsletter capture (Safety Net section)
+  const handleInlineSubscribe = async (e) => {
+    e.preventDefault();
+    if (!inlineEmail || inlineStatus === 'loading') return;
+    setInlineStatus('loading');
+    try {
+      const res = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: inlineEmail, source: 'homepage_inline' })
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Something went wrong');
+      }
+      setInlineStatus('success');
+      track('newsletter_signup', { source: 'homepage_inline' });
+      try { localStorage.setItem('freenachos_newsletter_subscribed', 'true'); } catch {}
+    } catch (err) {
+      setInlineStatus('error');
+    }
+  };
+
   // ============================================
   // COMPONENTS
   // ============================================
-
-  const CartoonNacho = ({ size = 90 }) => (
-    <svg ref={nachoRef} width={size} height={size} viewBox="0 0 100 100" style={{ filter: 'drop-shadow(0 4px 12px rgba(255, 179, 71, 0.4))' }}>
-      <path d="M50 8 L88 85 Q90 92 82 92 L18 92 Q10 92 12 85 Z" fill="#A78A43" stroke="#8B7339" strokeWidth="2"/>
-      <path d="M25 70 Q20 75 22 82 Q24 88 28 85 Q30 80 28 75 Z" fill="#FFD54F" opacity="0.9"/>
-      <path d="M72 65 Q78 72 76 80 Q74 86 70 82 Q68 76 70 70 Z" fill="#FFD54F" opacity="0.9"/>
-      <path d="M48 75 Q45 82 48 88 Q52 92 55 86 Q56 80 52 76 Z" fill="#FFD54F" opacity="0.9"/>
-      <ellipse cx="50" cy="50" rx="22" ry="18" fill="#A78A43" />
-      <ellipse cx="40" cy="48" rx="8" ry="9" fill="white" />
-      <ellipse cx="60" cy="48" rx="8" ry="9" fill="white" />
-      <circle cx={40 + eyeOffset.x} cy={48 + eyeOffset.y} r="4" fill="#1a1a1a" style={{ transition: 'cx 0.1s ease-out, cy 0.1s ease-out' }}/>
-      <circle cx={60 + eyeOffset.x} cy={48 + eyeOffset.y} r="4" fill="#1a1a1a" style={{ transition: 'cx 0.1s ease-out, cy 0.1s ease-out' }}/>
-      <circle cx={38 + eyeOffset.x * 0.5} cy={46 + eyeOffset.y * 0.5} r="1.5" fill="white" opacity="0.8" />
-      <circle cx={58 + eyeOffset.x * 0.5} cy={46 + eyeOffset.y * 0.5} r="1.5" fill="white" opacity="0.8" />
-      <path d="M38 62 Q50 72 62 62" fill="none" stroke="#1a1a1a" strokeWidth="3" strokeLinecap="round"/>
-      <path d="M33 38 Q40 35 47 38" fill="none" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" />
-      <path d="M53 38 Q60 35 67 38" fill="none" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" />
-      <circle cx="30" cy="30" r="2" fill="#8B7339" opacity="0.5" />
-      <circle cx="70" cy="35" r="2.5" fill="#8B7339" opacity="0.5" />
-      <circle cx="35" cy="80" r="2" fill="#8B7339" opacity="0.5" />
-      <circle cx="65" cy="78" r="1.5" fill="#8B7339" opacity="0.5" />
-    </svg>
-  );
-
-  // Graph image component for testimonials
-  const TestimonialGraph = ({ src }) => (
-    <img 
-      src={src} 
-      alt="Results graph"
-      style={{
-        width: '100%',
-        height: '128px',
-        objectFit: 'contain',
-        borderRadius: '8px',
-        display: 'block'
-      }}
-    />
-  );
-
-  // Before/After graph for Andrea's testimonial
-  const BeforeAfterGraph = ({ imageBefore, imageAfter }) => (
-    <div style={{ display: 'flex', gap: '16px', height: '128px' }}>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <div style={{ 
-          fontSize: '12px', 
-          fontWeight: '600', 
-          color: '#ef4444',
-          marginBottom: '8px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          flexShrink: 0
-        }}>Before</div>
-        <img 
-          src={imageBefore} 
-          alt="Before coaching"
-          style={{
-            width: '100%',
-            flex: 1,
-            objectFit: 'contain',
-            borderRadius: '8px',
-            display: 'block'
-          }}
-        />
-      </div>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <div style={{ 
-          fontSize: '12px', 
-          fontWeight: '600', 
-          color: '#22c55e',
-          marginBottom: '8px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          flexShrink: 0
-        }}>After</div>
-        <img 
-          src={imageAfter} 
-          alt="After coaching"
-          style={{
-            width: '100%',
-            flex: 1,
-            objectFit: 'contain',
-            borderRadius: '8px',
-            display: 'block'
-          }}
-        />
-      </div>
-    </div>
-  );
-
-  const VideoCard = ({ video, index = 0 }) => (
-    <a 
-      href={video.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="video-card"
-      style={{
-        background: 'rgba(20, 20, 20, 0.6)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '24px',
-        overflow: 'hidden',
-        cursor: 'pointer',
-        flex: '0 0 300px',
-        transition: 'all 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
-        textDecoration: 'none',
-        position: 'relative'
-      }}
-    >
-      {/* Gold Bloom Glow - appears on hover */}
-      <div 
-        className="video-gold-bloom"
-        style={{
-          position: 'absolute',
-          inset: '-20px',
-          background: 'radial-gradient(circle at 50% 50%, rgba(167, 138, 67, 0.25) 0%, transparent 70%)',
-          opacity: 0,
-          transition: 'opacity 0.5s ease',
-          pointerEvents: 'none',
-          zIndex: 0,
-          filter: 'blur(20px)'
-        }}
-      />
-      <div style={{ position: 'relative', overflow: 'hidden', zIndex: 1 }}>
-        <div 
-          className="video-thumbnail"
-          style={{
-            width: '100%',
-            height: '170px',
-            backgroundImage: `url(${video.thumbnail})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundColor: 'rgba(255, 179, 71, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
-            borderRadius: '24px 24px 0 0'
-          }}
-        >
-          <div className="play-button" style={{
-            width: '60px',
-            height: '60px',
-            borderRadius: '50%',
-            background: 'rgba(255, 179, 71, 0.9)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
-            boxShadow: '0 4px 20px rgba(255, 179, 71, 0.4)'
-          }}>
-            <Play size={24} color="#0a0a0a" fill="#0a0a0a" style={{ marginLeft: '3px' }} />
-          </div>
-        </div>
-        {video.duration && (
-          <div style={{
-            position: 'absolute',
-            bottom: '8px',
-            right: '8px',
-            background: 'rgba(0,0,0,0.85)',
-            padding: '4px 8px',
-            borderRadius: '4px',
-            fontSize: '12px',
-            color: 'white',
-            fontWeight: '500'
-          }}>
-            {video.duration}
-          </div>
-        )}
-      </div>
-      <div style={{ padding: '16px', position: 'relative', zIndex: 1 }}>
-        <h4 style={{
-          color: '#ffffff',
-          fontSize: '14px',
-          fontWeight: '600',
-          marginBottom: '8px',
-          lineHeight: 1.4
-        }}>
-          {video.title}
-        </h4>
-        {video.views && (
-          <span style={{
-            fontSize: '12px',
-            color: 'rgba(255,255,255,0.5)'
-          }}>
-            {video.views} views
-          </span>
-        )}
-      </div>
-    </a>
-  );
-
-  const ArticleCard = ({ article }) => (
-    <a 
-      href={article.link}
-      className="card-hover glass-card"
-      style={{
-        borderRadius: '12px',
-        padding: '24px',
-        cursor: 'pointer',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        textDecoration: 'none'
-      }}
-    >
-      <div style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
-        marginBottom: '12px'
-      }}>
-        <span style={{
-          fontSize: '11px',
-          fontWeight: '600',
-          color: '#A78A43',
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          background: 'rgba(167, 138, 67, 0.15)',
-          padding: '4px 10px',
-          borderRadius: '20px'
-        }}>
-          {article.category}
-        </span>
-        <span style={{
-          fontSize: '11px',
-          color: 'rgba(240, 240, 240, 0.4)'
-        }}>
-          {article.readTime} read
-        </span>
-      </div>
-      <h3 style={{
-        color: '#F0F0F0',
-        fontSize: '18px',
-        fontWeight: '600',
-        marginBottom: '12px',
-        lineHeight: 1.3
-      }}>
-        {article.title}
-      </h3>
-      <p style={{
-        color: 'rgba(240, 240, 240, 0.6)',
-        fontSize: '13px',
-        lineHeight: 1.6,
-        flex: 1,
-        marginBottom: '16px'
-      }}>
-        {article.excerpt}
-      </p>
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '6px',
-        color: '#A78A43',
-        fontSize: '13px',
-        fontWeight: '500'
-      }}>
-        Read more <ArrowRight size={14} />
-      </div>
-    </a>
-  );
-
-  const ToolCard = ({ tool }) => {
-    const Icon = tool.icon;
-    return (
-      <a 
-        href={tool.link}
-        className="card-hover glass-card"
-        style={{
-          borderRadius: '12px',
-          padding: '24px',
-          cursor: 'pointer',
-          transition: 'all 0.3s ease',
-          position: 'relative',
-          overflow: 'hidden',
-          textDecoration: 'none',
-          display: 'block'
-        }}
-      >
-        <div style={{
-          position: 'absolute',
-          top: '-20px',
-          right: '-20px',
-          width: '100px',
-          height: '100px',
-          background: `radial-gradient(circle, ${tool.color}20 0%, transparent 70%)`,
-          pointerEvents: 'none'
-        }} />
-        <div style={{
-          width: '48px',
-          height: '48px',
-          borderRadius: '12px',
-          background: `${tool.color}20`,
-          border: `1px solid ${tool.color}40`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginBottom: '16px'
-        }}>
-          <Icon size={24} color={tool.color} />
-        </div>
-        <h3 style={{
-          color: '#ffffff',
-          fontSize: '16px',
-          fontWeight: '600',
-          marginBottom: '8px'
-        }}>
-          {tool.name}
-        </h3>
-        <p style={{
-          color: 'rgba(255,255,255,0.5)',
-          fontSize: '13px',
-          lineHeight: 1.5,
-          marginBottom: '16px'
-        }}>
-          {tool.description}
-        </p>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          color: tool.color,
-          fontSize: '13px',
-          fontWeight: '500'
-        }}>
-          Open tool <ArrowRight size={14} />
-        </div>
-      </a>
-    );
-  };
-
-  const BenefitCard = React.memo(({ benefit, index }) => {
-    const Icon = benefit.icon;
-    return (
-      <div className="benefit-card">
-        {/* Icon container */}
-        <div 
-          className="benefit-icon"
-          style={{
-            width: '60px',
-            height: '60px',
-            borderRadius: '14px',
-            background: 'rgba(167, 138, 67, 0.08)',
-            border: '1px solid rgba(167, 138, 67, 0.3)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: '24px',
-            pointerEvents: 'none'
-          }}
-        >
-          <Icon size={28} color="#A78A43" strokeWidth={1.5} />
-        </div>
-        
-        {/* Title */}
-        <h3 
-          className="benefit-title"
-          style={{
-            color: '#F0F0F0',
-            fontSize: '18px',
-            fontWeight: '700',
-            marginBottom: '14px',
-            lineHeight: 1.3,
-            pointerEvents: 'none'
-          }}
-        >
-          {benefit.title}
-        </h3>
-        
-        {/* Description */}
-        <p style={{
-          color: 'rgba(240, 240, 240, 0.65)',
-          fontSize: '14px',
-          lineHeight: 1.75,
-          flex: 1,
-          pointerEvents: 'none'
-        }}>
-          {benefit.description}
-        </p>
-      </div>
-    );
-  });
 
   const PricingCard = React.memo(({ plan }) => (
     <div 
@@ -813,7 +453,21 @@ The 3-month program consists of:
           €{plan.totalPrice}
         </span>
       </div>
-      
+
+      {/* Per-session anchor */}
+      {plan.perSession && (
+        <div style={{
+          color: 'rgba(240, 240, 240, 0.55)',
+          fontSize: '13px',
+          fontWeight: '500',
+          marginBottom: '8px',
+          position: 'relative',
+          zIndex: 1
+        }}>
+          {plan.perSession}
+        </div>
+      )}
+
       {/* Payment Note */}
       <div style={{
         color: 'rgba(240, 240, 240, 0.45)',
@@ -882,11 +536,12 @@ The 3-month program consists of:
         ))}
       </div>
       
-      {/* CTA Button - Outline style matching Book Free Introcall */}
+      {/* CTA Button - Outline style matching primary CTA */}
       <a
-        href="https://calendly.com/freenachos/intro"
+        href={`https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=${plan.utmContent}`}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => track('cta_click', { placement: plan.utmContent })}
         className="pricing-cta-btn"
         style={{
           display: 'block',
@@ -982,7 +637,13 @@ The 3-month program consists of:
     <div style={{minHeight: '100vh', background: '#0A0E1A', position: 'relative', overflow: 'hidden', fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'}}>
       {/* Newsletter Popup */}
       <NewsletterPopup />
-      
+
+      {/* FAQ structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
       {/* Noise/Grain Texture Overlay */}
       <div 
         className="noise-overlay"
@@ -998,18 +659,16 @@ The 3-month program consists of:
         }}
       />
 
-      {/* Sticky CTA Button - Discord DM - Only visible after scrolling past hero */}
+      {/* Sticky CTA Button - Book Free Intro Call - Only visible after scrolling past hero */}
       {showStickyCta && (
-        <a 
-          href="https://discord.com/users/420357572109926411" 
-          target="_blank" 
+        <a
+          href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=sticky"
+          target="_blank"
           rel="noopener noreferrer"
-          className="sticky-discord-btn"
+          className="sticky-cta-btn"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-          </svg>
-          DM on Discord
+          <Calendar size={18} />
+          Book Free Intro Call
         </a>
       )}
       
@@ -1162,41 +821,40 @@ The 3-month program consists of:
           background: #FFa31a;
         }
 
-        /* Discord DM Floating Button */
-        .sticky-discord-btn {
+        /* Sticky Intro Call Button */
+        .sticky-cta-btn {
           position: fixed;
           bottom: 24px;
           right: 24px;
           z-index: 1000;
-          background: #5865F2;
-          color: #FFFFFF;
+          background: #A78A43;
+          color: #0a0a0a;
           padding: 14px 24px;
-          border-radius: 10px;
-          font-weight: 600;
+          border-radius: 12px;
+          font-weight: 700;
           font-size: 15px;
           text-decoration: none;
           display: inline-flex;
           align-items: center;
           gap: 10px;
-          box-shadow: 0 4px 14px rgba(88, 101, 242, 0.4);
+          box-shadow: 0 4px 30px rgba(167, 138, 67, 0.4);
           border: none;
           cursor: pointer;
           transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-          animation: discordBtnEnter 0.4s ease-out, discordShake 0.5s ease-in-out 0.4s;
+          animation: stickyCtaEnter 0.4s ease-out;
         }
 
-        .sticky-discord-btn:hover {
-          background: #4752C4;
-          box-shadow: 0 6px 20px rgba(88, 101, 242, 0.5);
+        .sticky-cta-btn:hover {
+          background: #bfa050;
+          box-shadow: 0 6px 24px rgba(167, 138, 67, 0.5);
           transform: translateY(-2px);
         }
 
-        .sticky-discord-btn:active {
+        .sticky-cta-btn:active {
           transform: translateY(0);
-          background: #3C45A5;
         }
 
-        @keyframes discordBtnEnter {
+        @keyframes stickyCtaEnter {
           from {
             opacity: 0;
             transform: translateY(20px);
@@ -1205,16 +863,6 @@ The 3-month program consists of:
             opacity: 1;
             transform: translateY(0);
           }
-        }
-
-        @keyframes discordShake {
-          0%, 100% { transform: translateX(0); }
-          15% { transform: translateX(-6px) rotate(-2deg); }
-          30% { transform: translateX(5px) rotate(2deg); }
-          45% { transform: translateX(-4px) rotate(-1deg); }
-          60% { transform: translateX(3px) rotate(1deg); }
-          75% { transform: translateX(-2px); }
-          90% { transform: translateX(1px); }
         }
         
         .spark-border {
@@ -1383,12 +1031,6 @@ The 3-month program consists of:
 
         .faq-item:hover {
           border-color: rgba(167, 138, 67, 0.4);
-        }
-
-        .script-title {
-          font-family: 'Playfair Display', Georgia, serif;
-          font-style: italic;
-          font-weight: 700;
         }
 
         @keyframes carouselSlide {
@@ -2164,7 +1806,7 @@ The 3-month program consists of:
           }}
         >
           <img 
-            src="https://i.gyazo.com/ad823c265c17c21f61996bb3aa3283e2.png"
+            src="/proof/coach-hero.png"
             alt="Freenachos - High Stakes Poker Coach"
             style={{
               height: '100%',
@@ -2265,14 +1907,15 @@ The 3-month program consists of:
                 marginBottom: '40px',
                 fontWeight: '400'
               }}>
-                Stop guessing. Start executing. The exact data-driven strategies I used to win at 1KNL+ and help my students generate <strong style={{ color: '#FFFFFF', fontWeight: '500' }}>$5M+ in profits</strong>.
+                Stop guessing. Start executing. The exact data-driven strategies I used to win at 1KNL+ and help my students generate <strong style={{ color: '#FFFFFF', fontWeight: '500' }}>$5.5M+ in profits</strong>.
               </p>
               
               {/* CTA Button */}
-              <a 
-                href="https://calendly.com/freenachos/intro" 
-                target="_blank" 
+              <a
+                href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=hero"
+                target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => track('cta_click', { placement: 'hero' })}
                 className="btn-hover cta-primary"
                 style={{
                   background: '#A78A43',
@@ -2289,8 +1932,18 @@ The 3-month program consists of:
                   letterSpacing: '0.01em'
                 }}
               >
-                Apply for Mentorship <ArrowRight size={20} />
+                Book a Free Intro Call <ArrowRight size={20} />
               </a>
+
+              {/* Friction-reducing microcopy */}
+              <div style={{
+                marginTop: '14px',
+                fontSize: '13px',
+                color: 'rgba(240, 240, 240, 0.45)',
+                letterSpacing: '0.01em'
+              }}>
+                15 minutes · no hard sell · find out if you're a fit
+              </div>
             </div>
           </div>
         </div>
@@ -2386,7 +2039,7 @@ The 3-month program consists of:
                 pointerEvents: 'none',
                 zIndex: -1
               }} />
-              $5M+
+              $5.5M+
             </span> in Student Profits
           </h2>
 
@@ -2427,10 +2080,11 @@ The 3-month program consists of:
               </div>
 
               {/* CTA Button */}
-              <a 
-                href="https://calendly.com/freenachos/intro" 
-                target="_blank" 
+              <a
+                href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=about"
+                target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => track('cta_click', { placement: 'about' })}
                 className="btn-hover authority-cta-btn"
                 style={{
                   marginTop: '48px',
@@ -2449,7 +2103,7 @@ The 3-month program consists of:
                   width: 'fit-content'
                 }}
               >
-                Book Free Introcall <ArrowRight size={16} />
+                Book a Free Intro Call <ArrowRight size={16} />
               </a>
             </div>
 
@@ -2494,7 +2148,7 @@ The 3-month program consists of:
                     transition: 'all 0.3s ease'
                   }}>
                   <img 
-                    src="https://static.runitonce.com/static/img/courses/dominate-with-data/chart.bcc69818f43c.jpg"
+                    src="/proof/results-graph-1knl.jpg"
                     alt="Freenachos Results Graph - 6.2bb/100 at High Stakes"
                     style={{
                       width: '100%',
@@ -2558,10 +2212,10 @@ The 3-month program consists of:
                 gap: '16px'
               }}>
                 {[
-                  { value: '$5M+', label: 'CFP Profits' },
+                  { value: '$5.5M+', label: 'Student Profits' },
                   { value: '200+', label: 'Students' },
                   { value: '6.2bb', label: 'Win Rate' },
-                  { value: '10M+', label: 'Hands' }
+                  { value: '10M+', label: 'Hands Played' }
                 ].map((stat, idx) => (
                   <div 
                     key={idx}
@@ -2580,10 +2234,10 @@ The 3-month program consists of:
                     }}>
                       {stat.value}
                     </div>
-                    <div style={{ 
-                      fontSize: '10px', 
-                      color: '#a88b46', 
-                      textTransform: 'uppercase', 
+                    <div style={{
+                      fontSize: '12px',
+                      color: '#a88b46',
+                      textTransform: 'uppercase',
                       letterSpacing: '0.1em',
                       fontWeight: '600',
                       lineHeight: 1.3
@@ -2663,7 +2317,7 @@ The 3-month program consists of:
                   overflow: 'hidden'
                 }}>
                   <img 
-                    src="https://static.runitonce.com/static/img/courses/dominate-with-data/chart.bcc69818f43c.jpg"
+                    src="/proof/results-graph-1knl.jpg"
                     alt="Freenachos Results Graph - 6.2bb/100 at High Stakes"
                     style={{
                       width: '100%',
@@ -2909,7 +2563,7 @@ The 3-month program consists of:
                   
                   {/* Description */}
                   <p style={{
-                    color: 'rgba(240, 240, 240, 0.5)',
+                    color: 'rgba(240, 240, 240, 0.7)',
                     fontSize: '15px',
                     lineHeight: 1.8
                   }}>
@@ -3164,9 +2818,11 @@ The 3-month program consists of:
                   <div style={{ color: '#fff', fontWeight: '600', fontSize: '15px' }}>
                     {testimonials[currentTestimonialIndex].name}
                   </div>
-                  <div style={{ color: 'rgba(167, 138, 67, 0.8)', fontSize: '13px' }}>
-                    {testimonials[currentTestimonialIndex].result}
-                  </div>
+                  {testimonials[currentTestimonialIndex].result && (
+                    <div style={{ color: 'rgba(167, 138, 67, 0.8)', fontSize: '13px' }}>
+                      {testimonials[currentTestimonialIndex].result}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -3488,6 +3144,7 @@ The 3-month program consists of:
                   href={video.link}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => track('outbound', { target: 'youtube_video' })}
                   className="cinema-video-card"
                   style={{
                     flex: '0 0 380px',
@@ -3668,10 +3325,11 @@ The 3-month program consists of:
 
             {/* View All Link */}
             <div style={{ textAlign: 'center', marginTop: '32px' }}>
-              <a 
-                href="https://www.youtube.com/@nachospoker" 
-                target="_blank" 
+              <a
+                href="https://www.youtube.com/@nachospoker"
+                target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => track('outbound', { target: 'youtube_channel' })}
                 style={{
                   color: '#A78A43',
                   fontSize: '14px',
@@ -3788,7 +3446,9 @@ The 3-month program consists of:
             </p>
           </div>
 
-          <div 
+          {/* TODO(patrick): confirm spots per quarter, e.g. "3 mentorship spots open this quarter" — only ship if true */}
+
+          <div
             className="pricing-grid-authority"
             style={{
               display: 'grid',
@@ -3802,6 +3462,18 @@ The 3-month program consists of:
               <PricingCard key={idx} plan={plan} />
             ))}
           </div>
+
+          {/* Risk reduction */}
+          {/* TODO(patrick): decide refund/guarantee policy (see MARKETING_AUDIT.md §5.6) */}
+          <p style={{
+            textAlign: 'center',
+            marginTop: '32px',
+            fontSize: '14px',
+            color: 'rgba(240, 240, 240, 0.5)',
+            letterSpacing: '0.01em'
+          }}>
+            The intro call is free and there's no obligation to continue.
+          </p>
 
           {/* Pricing card styles */}
           <style>{`
@@ -3971,10 +3643,11 @@ The 3-month program consists of:
             textAlign: 'center',
             marginTop: '56px'
           }}>
-            <a 
-              href="https://calendly.com/freenachos/intro"
+            <a
+              href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=fit"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => track('cta_click', { placement: 'fit' })}
               className="btn-hover cta-primary"
               style={{
                 background: '#A78A43',
@@ -3990,7 +3663,7 @@ The 3-month program consists of:
                 boxShadow: '0 6px 30px rgba(167, 138, 67, 0.45)'
               }}
             >
-              Book Free Intro Call <ArrowRight size={18} />
+              Book a Free Intro Call <ArrowRight size={18} />
             </a>
           </div>
         </div>
@@ -4051,8 +3724,72 @@ The 3-month program consists of:
           </div>
         </div>
 
+        {/* ==================== FINAL CTA SECTION ==================== */}
+        <div
+          className="reveal"
+          style={{
+            marginBottom: '200px',
+            textAlign: 'center'
+          }}
+        >
+          <h2 style={{
+            fontSize: 'clamp(38px, 5vw, 56px)',
+            fontWeight: '800',
+            color: '#FFFFFF',
+            marginBottom: '20px',
+            lineHeight: 1.08,
+            letterSpacing: '-0.025em',
+            fontFamily: 'Manrope, Inter, sans-serif'
+          }}>
+            Ready to Stop <span style={{
+              color: '#A78A43',
+              textShadow: '0 0 60px rgba(167, 138, 67, 0.4)'
+            }}>Guessing</span>?
+          </h2>
+          <p style={{
+            color: 'rgba(240, 240, 240, 0.55)',
+            fontSize: '17px',
+            lineHeight: 1.8,
+            maxWidth: '520px',
+            margin: '0 auto 40px'
+          }}>
+            One free call. See exactly where your win rate is leaking — and whether we're a fit.
+          </p>
+          <a
+            href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=final"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track('cta_click', { placement: 'final' })}
+            className="btn-hover cta-primary"
+            style={{
+              background: '#A78A43',
+              color: '#0a0a0a',
+              padding: '20px 44px',
+              borderRadius: '14px',
+              fontWeight: '700',
+              fontSize: '16px',
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '12px',
+              boxShadow: '0 4px 30px rgba(167, 138, 67, 0.4)',
+              letterSpacing: '0.01em'
+            }}
+          >
+            Book a Free Intro Call <ArrowRight size={20} />
+          </a>
+          <div style={{
+            marginTop: '14px',
+            fontSize: '13px',
+            color: 'rgba(240, 240, 240, 0.45)',
+            letterSpacing: '0.01em'
+          }}>
+            15 minutes · no hard sell · find out if you're a fit
+          </div>
+        </div>
+
         {/* ==================== SAFETY NET SECTION ==================== */}
-        <div 
+        <div
           className="reveal"
           style={{
             marginBottom: '200px'
@@ -4097,7 +3834,7 @@ The 3-month program consists of:
             }}>
             {/* Card A - Strategy Vault (Articles) */}
             <a 
-              href="/articles"
+              href="/newsletters"
               className="safety-net-card"
               style={{
                 display: 'flex',
@@ -4256,6 +3993,112 @@ The 3-month program consists of:
             </a>
           </div>
 
+          {/* Inline Newsletter Capture - catches visitors not ready to book */}
+          <div style={{
+            maxWidth: '640px',
+            margin: '72px auto 0',
+            textAlign: 'center'
+          }}>
+            <h3 style={{
+              fontSize: '22px',
+              fontWeight: '700',
+              color: '#F0F0F0',
+              marginBottom: '12px'
+            }}>
+              Not ready for a program?
+            </h3>
+            <p style={{
+              fontSize: '15px',
+              color: 'rgba(240, 240, 240, 0.55)',
+              lineHeight: 1.7,
+              marginBottom: '28px'
+            }}>
+              Get the Nachos Exploits newsletter — population exploits and data-driven strategy every two weeks. Free.
+            </p>
+            {inlineStatus === 'success' ? (
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '10px',
+                color: '#A78A43',
+                fontSize: '15px',
+                fontWeight: '600',
+                padding: '16px 24px',
+                background: 'rgba(167, 138, 67, 0.08)',
+                border: '1px solid rgba(167, 138, 67, 0.3)',
+                borderRadius: '12px'
+              }}>
+                <Check size={18} /> You're in! Check your inbox.
+              </div>
+            ) : (
+              <>
+                <form
+                  onSubmit={handleInlineSubscribe}
+                  className="inline-newsletter-form"
+                  style={{
+                    display: 'flex',
+                    gap: '12px',
+                    justifyContent: 'center',
+                    flexWrap: 'wrap'
+                  }}
+                >
+                  <input
+                    type="email"
+                    required
+                    value={inlineEmail}
+                    onChange={(e) => setInlineEmail(e.target.value)}
+                    placeholder="you@email.com"
+                    style={{
+                      flex: '1 1 280px',
+                      maxWidth: '340px',
+                      padding: '15px 20px',
+                      borderRadius: '12px',
+                      border: '1px solid rgba(167, 138, 67, 0.3)',
+                      background: 'rgba(18, 18, 18, 0.6)',
+                      color: '#F0F0F0',
+                      fontSize: '15px',
+                      outline: 'none'
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={inlineStatus === 'loading'}
+                    className="btn-hover"
+                    style={{
+                      padding: '15px 28px',
+                      borderRadius: '12px',
+                      border: 'none',
+                      background: '#A78A43',
+                      color: '#0a0a0a',
+                      fontWeight: '700',
+                      fontSize: '15px',
+                      cursor: 'pointer',
+                      opacity: inlineStatus === 'loading' ? 0.7 : 1
+                    }}
+                  >
+                    {inlineStatus === 'loading' ? 'Subscribing…' : 'Subscribe'}
+                  </button>
+                </form>
+                <div style={{
+                  marginTop: '14px',
+                  fontSize: '12px',
+                  color: 'rgba(240, 240, 240, 0.4)'
+                }}>
+                  No spam. Unsubscribe anytime.
+                </div>
+                {inlineStatus === 'error' && (
+                  <div style={{
+                    marginTop: '12px',
+                    fontSize: '13px',
+                    color: '#ef4444'
+                  }}>
+                    Something went wrong — please try again.
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+
           {/* Safety Net Styles */}
           <style>{`
             .safety-net-card {
@@ -4298,19 +4141,7 @@ The 3-month program consists of:
         `}</style>
 
         {/* Footer */}
-        <div style={{
-          textAlign: 'center',
-          padding: '40px 0',
-          marginTop: '24px',
-          borderTop: '1px solid rgba(167, 138, 67, 0.1)'
-        }}>
-          <p style={{
-            fontSize: '13px',
-            color: 'rgba(240, 240, 240, 0.4)'
-          }}>
-            © 2026 Freenachos Poker. All rights reserved.
-          </p>
-        </div>
+        <Footer />
       </div>
     </div>
   );
