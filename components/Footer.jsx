@@ -73,8 +73,8 @@ const Footer = () => (
           <div className="footer-heading">Legal</div>
           <Link href="/privacy" className="footer-link">Privacy Policy</Link>
           <Link href="/terms" className="footer-link">Terms of Service</Link>
-          {/* TODO(patrick): replace with real contact email */}
-          <a href="mailto:TODO@freenachos.poker" className="footer-link">Contact</a>
+          {/* TODO(patrick): confirm preferred public contact email (currently personal gmail) */}
+          <a href="mailto:patrickgerritsen90@gmail.com" className="footer-link">Contact</a>
         </div>
       </div>
 

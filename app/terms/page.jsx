@@ -79,8 +79,8 @@ export default function TermsPage() {
         <div style={sectionStyle}>
           <h2 style={h2Style}>Contact</h2>
           <p style={pStyle}>
-            {/* TODO(patrick): replace with real contact email */}
-            Questions about these terms: TODO@freenachos.poker
+            {/* TODO(patrick): confirm preferred public contact email (currently personal gmail) */}
+            Questions about these terms: patrickgerritsen90@gmail.com
           </p>
         </div>
       </div>
