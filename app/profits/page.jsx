@@ -898,13 +898,13 @@ const PokerProfitCalculator = () => {
                               })()}
                             </td>
                             <td className="px-3 py-3 text-center">
-                              <span className="text-zinc-600 text-[11px]">—</span>
+                              <span className="text-zinc-600 text-[11px]">-</span>
                             </td>
                             <td className="px-3 py-3 text-center">
-                              <span className="text-zinc-600 text-[11px]">—</span>
+                              <span className="text-zinc-600 text-[11px]">-</span>
                             </td>
                             <td className="px-3 py-3 text-center bg-[rgba(168,139,70,0.1)]">
-                              <span className="text-zinc-600 text-[11px]">—</span>
+                              <span className="text-zinc-600 text-[11px]">-</span>
                             </td>
                             <td className="px-3 py-3 text-center whitespace-nowrap">
                               {(() => {
@@ -1000,7 +1000,7 @@ const PokerProfitCalculator = () => {
                 </h3>
               </div>
               <p className="text-zinc-400 text-[13px] leading-relaxed">
-                The rake values shown are averages — your actual rake depends on your playing style, table selection, and how often you see flops. Tighter players pay less rake.
+                The rake values shown are averages. Your actual rake depends on your playing style, table selection, and how often you see flops. Tighter players pay less rake.
               </p>
             </motion.div>
 
@@ -1040,7 +1040,7 @@ const PokerProfitCalculator = () => {
           <div className="mt-8 p-5 bg-zinc-950/50 rounded-xl border border-zinc-800 text-center">
             <p className="text-zinc-500 text-[13px] leading-relaxed">
               <strong className="text-[#a88b46]">Pro Tip:</strong> These projections assume a stable win rate. In reality, variance can cause significant short-term swings. 
-              Focus on volume and continuous improvement — the math will work out over time.
+              Focus on volume and continuous improvement. The math will work out over time.
             </p>
           </div>
         </motion.div>

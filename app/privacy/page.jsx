@@ -1,4 +1,4 @@
-// TODO(patrick): have this reviewed — template text, not legal advice
+// TODO(patrick): have this reviewed. Template text, not legal advice.
 
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
 import Footer from '@/components/Footer';
@@ -51,15 +51,15 @@ export default function PrivacyPage() {
         <div style={sectionStyle}>
           <h2 style={h2Style}>What we collect</h2>
           <p style={pStyle}>
-            <strong>Email address</strong> — when you subscribe to the newsletter. Used only to
+            <strong>Email address</strong>: when you subscribe to the newsletter. Used only to
             send you the newsletter and related strategy content.
           </p>
           <p style={pStyle}>
-            <strong>Usage analytics</strong> — anonymous page-view and interaction data via
+            <strong>Usage analytics</strong>: anonymous page-view and interaction data via
             Vercel Analytics, used to improve the site. No cross-site tracking cookies are set.
           </p>
           <p style={pStyle}>
-            <strong>Booking details</strong> — if you book an intro call, scheduling data is
+            <strong>Booking details</strong>: if you book an intro call, scheduling data is
             processed by Calendly under their own privacy policy.
           </p>
         </div>

@@ -1962,7 +1962,7 @@ const BBJDashboard: React.FC = () => {
             <h1 className="text-2xl md:text-3xl font-bold text-white">BBJ Pool Size & Expected Value</h1>
           </div>
           <p className="text-center text-zinc-500 text-sm mb-8 max-w-3xl mx-auto">
-            Adjust the pool size and your stakes to see how they affect your expected value. These calculations are based on historical data and should be used as indicative estimates only—actual results may vary due to the inherent randomness of poker and changing jackpot conditions.
+            Adjust the pool size and your stakes to see how they affect your expected value. These calculations are based on historical data and should be used as indicative estimates only. Actual results may vary due to the inherent randomness of poker and changing jackpot conditions.
           </p>
 
           {/* Pool Size & Stake Input */}

@@ -2348,7 +2348,7 @@ const PokerEVSimulation = () => {
                   <p style={{color: 'rgba(240, 240, 240, 0.6)', fontSize: '14px', margin: 0, lineHeight: 1.7}}>
                     Notice how players with different win rates can have overlapping results in the short term. 
                     A {Math.max(...players.map(p => p.winrate))} BB/100 winner can run below a {Math.min(...players.map(p => p.winrate))} BB/100 player for thousands of hands. 
-                    This is why sample size matters — variance masks true skill in the short run.
+                    This is why sample size matters: variance masks true skill in the short run.
                   </p>
                 </div>
               </div>

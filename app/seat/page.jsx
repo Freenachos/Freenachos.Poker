@@ -281,7 +281,7 @@ const PokerSeatEVTool = () => {
           color: colors.text,
           lineHeight: 1
         }}>
-          {isRec ? '—' : `${winRate >= 0 ? '+' : ''}${winRate.toFixed(1)}`}
+          {isRec ? '-' : `${winRate >= 0 ? '+' : ''}${winRate.toFixed(1)}`}
         </div>
         
         {/* Unit label */}

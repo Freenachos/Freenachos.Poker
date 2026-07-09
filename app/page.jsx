@@ -6,7 +6,11 @@ import Footer from '@/components/Footer';
 import { track } from '@vercel/analytics';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ExternalLink, ChevronLeft, ChevronRight, Calculator, BookOpen, Youtube, ArrowRight, Sparkles, Check, X, ChevronDown, Users, MessageCircle, Calendar, Crosshair, Swords, Brain, Lock, Zap } from 'lucide-react';
+import { ExternalLink, ChevronLeft, ChevronRight, Calculator, BookOpen, Youtube, ArrowRight, Sparkles, Check, X, ChevronDown, User, Users, MessageCircle, Calendar, Crosshair, Swords, Brain, Lock, Zap } from 'lucide-react';
+
+// Mentorship capacity shown in the pricing section. Update these as students come and go.
+const MENTORSHIP_SPOTS_TOTAL = 12;
+const MENTORSHIP_SPOTS_OPEN = 3;
 
 /**
  * Freenachos Poker Toolbox Homepage
@@ -65,7 +69,7 @@ const PokerToolboxHome = () => {
       name: 'Keven Li',
       subtitle: 'Poker Made Simple',
       result: 'NL100 → crushing NL1000',
-      quote: "In 2021, I turned pro with a $10k bankroll, struggling through a breakeven stretch until Patrick's data-driven coaching changed everything—my results skyrocketed. His guidance, combined with NachosPoker's training, took me from 100nl to crushing 1000nl. Working with Patrick was the best decision I've made in poker.",
+      quote: "In 2021, I turned pro with a $10k bankroll, struggling through a breakeven stretch until Patrick's data-driven coaching changed everything. My results skyrocketed. His guidance, combined with NachosPoker's training, took me from 100nl to crushing 1000nl. Working with Patrick was the best decision I've made in poker.",
       image: '/proof/testimonial-keven.png'
     },
     {
@@ -100,7 +104,7 @@ const PokerToolboxHome = () => {
     {
       id: 7,
       name: 'Peter',
-      result: 'Rebuilt from a downswing — now playing NL2000',
+      result: 'Back from a downswing, now playing NL2000',
       quote: "After a tough downswing in late 2023 dropped me from 1knl to 200/500nl, I feared my high-stakes dream was over. A friend suggested Freenachos CFP, and it may have been the best decision of my career. Their resources and Patrick's support helped me excel, and I've since skyrocketed back on track, now competing at 2K and aiming higher soon.",
       image: '/proof/testimonial-peter.png'
     },
@@ -227,7 +231,7 @@ The 3-month program consists of:
     // TODO(patrick): review wording of the five answers below
     {
       question: 'What results can I realistically expect?',
-      answer: 'Every student is different, but documented outcomes include going from breakeven at NL50 to beating NL200 in about 13 months, and from NL100 to crushing NL1000. What you get out depends on your volume and how seriously you take the off-table work — poker has variance, and no honest coach guarantees results.'
+      answer: 'Every student is different. Some real examples: one went from breakeven at NL50 to beating NL200 in about 13 months, another from NL100 to crushing NL1000. What you get out of it depends on your volume and how seriously you take the off-table work. Poker has variance and no honest coach guarantees results.'
     },
     {
       question: 'What stakes do I need to be playing?',
@@ -235,7 +239,7 @@ The 3-month program consists of:
     },
     {
       question: 'How is this different from a CFP or a course?',
-      answer: 'This mentorship is private 1-on-1 coaching: your database, your leaks, and a study plan built around your actual game, plus weekly group sessions. The NachosPoker CFP is a different offer — a full ecosystem with staking, pool data, and playbooks where you play and we invest. Courses give you generic content; here everything is personalized.'
+      answer: 'This mentorship is private 1-on-1 coaching: your database, your leaks, and a study plan built around your actual game, plus weekly group sessions. The NachosPoker CFP is a different offer. That one is a full ecosystem with staking, pool data, and playbooks, where you play and we invest. Courses give you generic content. Here everything is personalized.'
     },
     {
       question: 'What if we\'re in different timezones?',
@@ -311,6 +315,17 @@ The 3-month program consists of:
     }
 
     return () => observer.disconnect();
+  }, []);
+
+  // Load the Calendly script for the inline booking calendar
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://assets.calendly.com/assets/external/widget.js';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      if (script.parentNode) script.parentNode.removeChild(script);
+    };
   }, []);
 
   // ============================================
@@ -538,9 +553,7 @@ The 3-month program consists of:
       
       {/* CTA Button - Outline style matching primary CTA */}
       <a
-        href={`https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=${plan.utmContent}`}
-        target="_blank"
-        rel="noopener noreferrer"
+        href="#book"
         onClick={() => track('cta_click', { placement: plan.utmContent })}
         className="pricing-cta-btn"
         style={{
@@ -662,9 +675,8 @@ The 3-month program consists of:
       {/* Sticky CTA Button - Book Free Intro Call - Only visible after scrolling past hero */}
       {showStickyCta && (
         <a
-          href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=sticky"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="#book"
+          onClick={() => track('cta_click', { placement: 'sticky' })}
           className="sticky-cta-btn"
         >
           <Calendar size={18} />
@@ -1912,9 +1924,7 @@ The 3-month program consists of:
               
               {/* CTA Button */}
               <a
-                href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=hero"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#book"
                 onClick={() => track('cta_click', { placement: 'hero' })}
                 className="btn-hover cta-primary"
                 style={{
@@ -1942,7 +1952,7 @@ The 3-month program consists of:
                 color: 'rgba(240, 240, 240, 0.45)',
                 letterSpacing: '0.01em'
               }}>
-                15 minutes · no hard sell · find out if you're a fit
+                15 minutes, no sales pitch. Find out if you're a fit.
               </div>
             </div>
           </div>
@@ -2081,9 +2091,7 @@ The 3-month program consists of:
 
               {/* CTA Button */}
               <a
-                href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=about"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#book"
                 onClick={() => track('cta_click', { placement: 'about' })}
                 className="btn-hover authority-cta-btn"
                 style={{
@@ -3446,7 +3454,46 @@ The 3-month program consists of:
             </p>
           </div>
 
-          {/* TODO(patrick): confirm spots per quarter, e.g. "3 mentorship spots open this quarter" — only ship if true */}
+          {/* Capacity indicator. Numbers live in MENTORSHIP_SPOTS_* at the top of this file. */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '12px',
+            marginBottom: '56px'
+          }}>
+            <div style={{
+              display: 'flex',
+              gap: '6px',
+              flexWrap: 'wrap',
+              justifyContent: 'center'
+            }}>
+              {Array.from({ length: MENTORSHIP_SPOTS_TOTAL }, (_, i) => {
+                const taken = i < MENTORSHIP_SPOTS_TOTAL - MENTORSHIP_SPOTS_OPEN;
+                return (
+                  <User
+                    key={i}
+                    size={20}
+                    strokeWidth={2}
+                    color={taken ? '#A78A43' : 'rgba(240, 240, 240, 0.25)'}
+                    fill={taken ? 'rgba(167, 138, 67, 0.35)' : 'none'}
+                  />
+                );
+              })}
+            </div>
+            <div style={{ fontSize: '14px', color: 'rgba(240, 240, 240, 0.7)' }}>
+              <span style={{ color: '#A78A43', fontWeight: '700' }}>
+                {MENTORSHIP_SPOTS_TOTAL - MENTORSHIP_SPOTS_OPEN} active students
+              </span>
+              {' · '}
+              <span style={{ color: '#FFFFFF', fontWeight: '700' }}>
+                {MENTORSHIP_SPOTS_OPEN} spots open
+              </span>
+            </div>
+            <div style={{ fontSize: '13px', color: 'rgba(240, 240, 240, 0.45)' }}>
+              Once all spots are filled, enrollment closes until one frees up.
+            </div>
+          </div>
 
           <div
             className="pricing-grid-authority"
@@ -3644,9 +3691,7 @@ The 3-month program consists of:
             marginTop: '56px'
           }}>
             <a
-              href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=fit"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#book"
               onClick={() => track('cta_click', { placement: 'fit' })}
               className="btn-hover cta-primary"
               style={{
@@ -3724,12 +3769,14 @@ The 3-month program consists of:
           </div>
         </div>
 
-        {/* ==================== FINAL CTA SECTION ==================== */}
+        {/* ==================== BOOKING SECTION (inline Calendly) ==================== */}
         <div
+          id="book"
           className="reveal"
           style={{
             marginBottom: '200px',
-            textAlign: 'center'
+            textAlign: 'center',
+            scrollMarginTop: '90px'
           }}
         >
           <h2 style={{
@@ -3750,42 +3797,55 @@ The 3-month program consists of:
             color: 'rgba(240, 240, 240, 0.55)',
             fontSize: '17px',
             lineHeight: 1.8,
-            maxWidth: '520px',
-            margin: '0 auto 40px'
+            maxWidth: '540px',
+            margin: '0 auto 32px'
           }}>
-            One free call. See exactly where your win rate is leaking — and whether we're a fit.
+            Pick a time below for a free 15 minute intro call. We look at your game, figure out where your win rate is leaking, and see if coaching makes sense for you.
           </p>
-          <a
-            href="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=final"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => track('cta_click', { placement: 'final' })}
-            className="btn-hover cta-primary"
-            style={{
-              background: '#A78A43',
-              color: '#0a0a0a',
-              padding: '20px 44px',
-              borderRadius: '14px',
-              fontWeight: '700',
-              fontSize: '16px',
-              textDecoration: 'none',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '12px',
-              boxShadow: '0 4px 30px rgba(167, 138, 67, 0.4)',
-              letterSpacing: '0.01em'
-            }}
-          >
-            Book a Free Intro Call <ArrowRight size={20} />
-          </a>
+
+          {/* Paid-service note (also add this as a required checkbox in Calendly itself) */}
           <div style={{
-            marginTop: '14px',
-            fontSize: '13px',
-            color: 'rgba(240, 240, 240, 0.45)',
-            letterSpacing: '0.01em'
+            display: 'inline-flex',
+            alignItems: 'flex-start',
+            gap: '12px',
+            textAlign: 'left',
+            maxWidth: '560px',
+            padding: '16px 20px',
+            background: 'rgba(167, 138, 67, 0.06)',
+            border: '1px solid rgba(167, 138, 67, 0.25)',
+            borderRadius: '12px',
+            marginBottom: '40px'
           }}>
-            15 minutes · no hard sell · find out if you're a fit
+            <Check size={16} color="#A78A43" style={{ flexShrink: 0, marginTop: '3px' }} />
+            <span style={{
+              fontSize: '13px',
+              color: 'rgba(240, 240, 240, 0.6)',
+              lineHeight: 1.7
+            }}>
+              The intro call is free and there is no obligation. Coaching itself is a paid service, so book the call if you would be in a position to invest in your game should we both decide it is a fit.
+            </span>
           </div>
+
+          {/* Calendly inline embed */}
+          <div
+            className="calendly-inline-widget calendly-embed-wrap"
+            data-url="https://calendly.com/freenachos/intro?utm_source=freenachos_site&utm_content=embed&hide_gdpr_banner=1&background_color=0a0e1a&text_color=f0f0f0&primary_color=a88b46"
+            style={{
+              minWidth: '320px',
+              height: '700px',
+              maxWidth: '1000px',
+              margin: '0 auto',
+              borderRadius: '16px',
+              overflow: 'hidden'
+            }}
+          />
+          <style>{`
+            @media (max-width: 680px) {
+              .calendly-embed-wrap {
+                height: 1000px !important;
+              }
+            }
+          `}</style>
         </div>
 
         {/* ==================== SAFETY NET SECTION ==================== */}
@@ -4013,7 +4073,7 @@ The 3-month program consists of:
               lineHeight: 1.7,
               marginBottom: '28px'
             }}>
-              Get the Nachos Exploits newsletter — population exploits and data-driven strategy every two weeks. Free.
+              Get the Nachos Exploits newsletter. Population exploits and data-driven strategy every two weeks, free.
             </p>
             {inlineStatus === 'success' ? (
               <div style={{
@@ -4092,7 +4152,7 @@ The 3-month program consists of:
                     fontSize: '13px',
                     color: '#ef4444'
                   }}>
-                    Something went wrong — please try again.
+                    Something went wrong. Please try again.
                   </div>
                 )}
               </>

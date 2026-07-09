@@ -1,4 +1,4 @@
-// TODO(patrick): have this reviewed — template text, not legal advice
+// TODO(patrick): have this reviewed. Template text, not legal advice.
 
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
 import Footer from '@/components/Footer';
