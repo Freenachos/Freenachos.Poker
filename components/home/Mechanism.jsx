@@ -47,7 +47,7 @@ const STEPS = [
     icon: Wrench,
     body: (
       <>
-        Knowing a leak exists doesn&apos;t close it. Each priority gets a fix installed through 1-on-1 sessions, frontloaded and biweekly for the first two months, plus a personal study queue and drills between calls. You don&apos;t just watch. You implement. The goal is not theoretical perfection; the goal is to translate data into profit.
+        Knowing a leak exists doesn&apos;t close it. The fixes get installed through biweekly 1-on-1 sessions, one call per branch of the game tree, each followed by a tailored PDF: summary, action points, study suggestions. You don&apos;t just watch. You implement. The goal is not theoretical perfection; the goal is to translate data into profit.
       </>
     ),
     asset: '/mechanism/install.png',

@@ -104,10 +104,26 @@ Or: create the demo account (MFA off, synthetic data), add `SCREENSHOT_EMAIL` /
 `SCREENSHOT_PASSWORD` to `NachosHQ/.env.local`, run the app, then
 `node scripts/capture-marketing-screenshots.mjs` (script is untracked in NachosHQ).
 
+## Offer restructure (owner direction, 2026-08-08 afternoon)
+
+Superseded the plan's original €7,500 / 9-call structure:
+- **€6,000** for 6 months (1.5x the old €3,999 6-month tier), installments drafted as
+  3 × €2,100 (TODO: confirm amount).
+- **12 calls, biweekly**: one call per branch of the game tree (Stat Checker taxonomy),
+  each followed by a tailored PDF (summary, action points, study suggestions). Roadmap
+  rows drafted from the Stat Checker sidebar order; TODO: confirm order + per-call jobs.
+- **Extension: €3,000** after the six months (drafted as another six months, mirroring
+  the old 24-month program's loose-calls phase; TODO: confirm length + cadence). The
+  retainer copy was replaced by the extension; RETAINER stays in lib/offer.js unsold.
+- Mechanism screenshot #1 (diagnose) supplied by owner; drop the CROPPED version (the
+  raw capture shows the account bar with name + gmail) at `public/mechanism/diagnose.png`
+  and flip `hasAsset: true` for step 1 in `components/home/Mechanism.jsx`.
+
 ## Master TODO(patrick) list
 
 1. `patrick@freenachos.poker` before deploy (Footer.jsx:81, privacy:94, terms:82).
-2. Audit price €750 vs €500 (lib/offer.js:17); program price → 9500 when 3 case studies live or 2 straight unhesitating acceptances (lib/offer.js:7).
+2. Audit price €750 vs €500 (lib/offer.js); installment amount (3 × €2,100 drafted);
+   extension length + cadence; roadmap formation order.
 3. Discord webhook + `APPLY_WEBHOOK_URL` + `SUPABASE_SERVICE_ROLE_KEY` in Vercel (app/api/apply/route.js:7,81).
 4. Screenshot account or manual capture (Mechanism.jsx:27,41,55,69) — checklist above.
 5. Case-study data for Davide/Keven/Peter + approve `/results` going live (app/results/page.jsx:27–59, CaseStudy.jsx placeholders; then uncomment app/page.jsx:1094, Footer.jsx:60, NachosPokerNavBar.jsx:642, sitemap.js:17 and drop the noindex in app/results/layout.jsx).

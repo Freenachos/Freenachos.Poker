@@ -2,7 +2,7 @@
 
 import { ArrowRight, Check } from 'lucide-react';
 import { track } from '@vercel/analytics';
-import { OFFER, AUDIT } from '@/lib/offer';
+import { OFFER, AUDIT, EXTENSION } from '@/lib/offer';
 import RoadmapTable from './RoadmapTable';
 
 const euro = (n) => `€${n.toLocaleString('en-US')}`;
@@ -19,9 +19,9 @@ const NAME_LAST = NAME_WORDS[NAME_WORDS.length - 1];
  */
 const DELIVERABLES = [
   'A full database audit with a prioritized, costed leak list',
-  `${OFFER.calls} 1-on-1 sessions, frontloaded (biweekly months 1–2, then monthly), each with a defined job`,
+  `${OFFER.calls} 1-on-1 sessions, biweekly: one call, one branch of the game tree`,
+  'A tailored PDF after every call: summary, action points, study suggestions',
   'Monthly stat recalibration against your fresh sample',
-  'A personal study queue and drills between calls',
   'Weekly group coaching during the program + 90 days after, plus the alumni Discord',
   'A final re-audit with documented before/after stat movement'
 ];
@@ -153,7 +153,7 @@ const OfferSection = () => (
         lineHeight: 1.8,
         marginBottom: '36px'
       }}>
-        After the six months, alumni can continue on a monthly recalibration retainer. Most students who hit their targets stay a few quarters. Details at your exit review.
+        After the six months you can extend for another six at {EXTENSION.priceFormatted}. Details at your exit review.
       </p>
 
       {/* CTA */}

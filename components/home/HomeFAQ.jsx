@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { OFFER, AUDIT, FIT } from '@/lib/offer';
+import { OFFER, AUDIT, FIT, EXTENSION } from '@/lib/offer';
 
 /**
  * Homepage FAQ (P1.7). Items are plain strings so the FAQPage JSON-LD is
@@ -17,7 +17,7 @@ export const faqItems = [
   },
   {
     question: 'Why is there an application?',
-    answer: `Because the method only works on players with a real sample and real volume, and I take a small number of new students per quarter: frontloaded 1-on-1 cadence doesn't scale, and I still play. That's not scarcity marketing; it's a calendar. I read every application, and the fit call starts from your answers. If you're not a fit, I'll say so and point you at the course or the CFP instead.`
+    answer: `Because the method only works on players with a real sample and real volume, and I take a small number of new students per quarter: a biweekly 1-on-1 cadence doesn't scale, and I still play. That's not scarcity marketing; it's a calendar. I read every application, and the fit call starts from your answers. If you're not a fit, I'll say so and point you at the course or the CFP instead.`
   },
   {
     question: `${OFFER.priceFormatted} is a lot. How do I evaluate that?`,
@@ -25,7 +25,7 @@ export const faqItems = [
   },
   {
     question: 'What happens after the six months?',
-    answer: `You leave with the re-audit, the full recorded vault, and the alumni Discord. If you want ongoing oversight, there's a monthly recalibration retainer: one call a quarter, monthly stat checks, re-audit every six months. No obligation either way; it's presented at your exit review.`
+    answer: `You leave with the re-audit, the full recorded vault, and the alumni Discord. If you want to keep going, you can extend for another six months at ${EXTENSION.priceFormatted}; we set the plan at your exit review. No obligation either way.`
   },
   {
     question: `What's the time commitment?`,
