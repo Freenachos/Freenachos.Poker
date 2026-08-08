@@ -54,8 +54,13 @@ const Footer = () => (
         {/* Site */}
         <div>
           <div className="footer-heading">Site</div>
-          <Link href="/#pricing" className="footer-link">Mentorship</Link>
-          <Link href="/coaching" className="footer-link">Coaching</Link>
+          <Link href="/#program" className="footer-link">The Program</Link>
+          <Link href="/apply" className="footer-link">Apply</Link>
+          <Link href="/audit" className="footer-link">Database Audit</Link>
+          {/* TODO(patrick): enable once /results has 2+ complete case studies (P4)
+          <Link href="/results" className="footer-link">Results</Link>
+          */}
+          <Link href="/coaching" className="footer-link">Which path?</Link>
           <Link href="/tools" className="footer-link">Tools</Link>
           <Link href="/newsletters" className="footer-link">Articles</Link>
           <Link href="/newsletter" className="footer-link">Newsletter</Link>

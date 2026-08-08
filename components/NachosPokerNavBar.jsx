@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { track } from '@vercel/analytics';
 
 // Minimalist gold-line icon components (#a88b46)
 const IconGraduation = ({ size = 16 }) => (
@@ -78,6 +79,23 @@ const IconExternalLink = ({ size = 12 }) => (
     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
     <polyline points="15,3 21,3 21,9" />
     <line x1="10" y1="14" x2="21" y2="3" />
+  </svg>
+);
+
+const IconAudit = ({ size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="7" />
+    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    <line x1="8" y1="11" x2="8" y2="12.5" />
+    <line x1="11" y1="9" x2="11" y2="12.5" />
+    <line x1="14" y1="10" x2="14" y2="12.5" />
+  </svg>
+);
+
+const IconCompass = ({ size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <polygon points="16.24,7.76 14.12,14.12 7.76,16.24 9.88,9.88" />
   </svg>
 );
 
@@ -232,9 +250,9 @@ const NachosPokerNavBar = () => {
         }
         
         /* ============================================
-           PRIMARY CTA - Mentorship Program
+           PRIMARY CTA - Mentorship Program -> /apply
            Solid #a88b46 gold background with dark text
-           Matches 'Book a Free Intro Call' button style
+           Matches the 'Apply for the Program' button style
            ============================================ */
         .np-nav-cta {
           position: relative;
@@ -605,12 +623,38 @@ const NachosPokerNavBar = () => {
           
           {/* Navigation Links */}
           <div className="np-nav-links">
-            {/* Primary CTA - Mentorship Program (solid gold button) */}
-            <Link href="/#pricing" className="np-nav-cta">
+            {/* Primary CTA - Mentorship Program (solid gold button) -> application */}
+            <Link
+              href="/apply"
+              className="np-nav-cta"
+              onClick={() => track('cta_click', { placement: 'nav' })}
+            >
               <IconGraduation size={15} />
               <span>Mentorship Program</span>
             </Link>
-            
+
+            {/* The Program (offer section on the homepage) */}
+            <Link href="/#program" className="np-nav-link">
+              <IconTrophy size={15} />
+              <span>The Program</span>
+            </Link>
+
+            {/* TODO(patrick): enable once /results has 2+ complete case studies (P4)
+            <Link href="/results" className={`np-nav-link ${isActive('/results') ? 'active' : ''}`}>
+              <IconTrendUp size={15} />
+              <span>Results</span>
+            </Link>
+            */}
+
+            {/* Database Audit */}
+            <Link
+              href="/audit"
+              className={`np-nav-link ${isActive('/audit') ? 'active' : ''}`}
+            >
+              <IconAudit size={15} />
+              <span>Database Audit</span>
+            </Link>
+
             {/* Tools Dropdown */}
             <div 
               className={`np-tools-dropdown ${toolsOpen ? 'open' : ''}`}
@@ -657,24 +701,13 @@ const NachosPokerNavBar = () => {
               <span>Articles</span>
             </Link>
 
-            {/* CFP External Link (gold outline button) */}
-            <a
-              href="https://www.nachospoker.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="np-nav-external"
-            >
-              <span>CFP</span>
-              <IconExternalLink size={13} />
-            </a>
-            
-            {/* Newsletter Link */}
+            {/* Which path? (course / program / CFP comparison) */}
             <Link
-              href="/newsletter"
-              className={`np-nav-link ${isActive('/newsletter') ? 'active' : ''}`}
+              href="/coaching"
+              className={`np-nav-link ${isActive('/coaching') ? 'active' : ''}`}
             >
-              <IconNewsletter size={15} />
-              <span>Newsletter</span>
+              <IconCompass size={15} />
+              <span>Which path?</span>
             </Link>
           </div>
         </div>
