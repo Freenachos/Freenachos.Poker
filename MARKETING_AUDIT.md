@@ -1,3 +1,5 @@
+> SUPERSEDED by CLAUDE_CODE_BUILD_PLAN.md (2026-08) — funnel replaced; do not implement pricing/CTA tasks from this file.
+
 # Freenachos.poker — Marketing Layout & Conversion Audit
 
 **Date:** 2026-07-04

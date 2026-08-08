@@ -11,8 +11,8 @@ import { RIO_COURSE_URL, COURSE, cfpUrl } from '@/lib/links';
 
 /**
  * /apply — the application form (P2.1). Questions in the exact order from the
- * build plan. No public Calendly anywhere: the fit-call booking link is sent
- * personally after review.
+ * build plan. No public booking link anywhere: the fit-call invite is sent
+ * personally after review (see lib/links.js).
  */
 
 const GOLD = '#A78A43';

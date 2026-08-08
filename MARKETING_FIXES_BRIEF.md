@@ -1,3 +1,5 @@
+> SUPERSEDED by CLAUDE_CODE_BUILD_PLAN.md (2026-08) — funnel replaced; do not implement pricing/CTA tasks from this file.
+
 # Marketing Fixes — Implementation Brief for Droid
 
 **Repo:** this repo (freenachos.poker, Next.js App Router)

@@ -4,9 +4,9 @@ import { ArrowRight } from 'lucide-react';
 import { track } from '@vercel/analytics';
 
 /**
- * Final CTA (P1.8) — the closing push, takes the slot the inline Calendly
- * booking section used to occupy. #book anchor kept so old /#book links land
- * on the closing CTA instead of a dead anchor.
+ * Final CTA (P1.8) — the closing push, takes the slot the old inline booking
+ * section used to occupy. #book anchor kept so old /#book links land on the
+ * closing CTA instead of a dead anchor.
  */
 const FinalCTA = () => (
   <div
