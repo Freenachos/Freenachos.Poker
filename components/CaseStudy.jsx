@@ -180,13 +180,13 @@ const CaseStudy = ({ study }) => (
       {study.varianceCaveat}
     </p>
 
-    <style>{`
+    <style dangerouslySetInnerHTML={{ __html: `
       @media (max-width: 760px) {
         .case-study-grid {
           grid-template-columns: 1fr !important;
         }
       }
-    `}</style>
+    ` }} />
   </div>
 );
 

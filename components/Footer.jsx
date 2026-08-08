@@ -94,7 +94,7 @@ const Footer = () => (
       </div>
     </div>
 
-    <style>{`
+    <style dangerouslySetInnerHTML={{ __html: `
       .footer-heading {
         font-size: 12px;
         font-weight: 700;
@@ -125,7 +125,7 @@ const Footer = () => (
           grid-template-columns: 1fr !important;
         }
       }
-    `}</style>
+    ` }} />
   </footer>
 );
 

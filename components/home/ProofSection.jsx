@@ -373,7 +373,7 @@ const ProofSection = ({ sectionRef }) => {
       )}
 
       {/* Authority Split Responsive Styles */}
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .authority-cta-btn:hover {
           background: rgba(168, 139, 70, 0.08) !important;
           border-color: #a88b46 !important;
@@ -444,7 +444,7 @@ const ProofSection = ({ sectionRef }) => {
             flex: 0 0 calc(50% - 12px) !important;
           }
         }
-      `}</style>
+      ` }} />
     </div>
   );
 };

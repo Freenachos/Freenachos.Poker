@@ -350,7 +350,7 @@ export default function NewsletterPopup() {
       </div>
 
       {/* Animations */}
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
@@ -372,7 +372,7 @@ export default function NewsletterPopup() {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
-      `}</style>
+      ` }} />
     </>
   );
 }

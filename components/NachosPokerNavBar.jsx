@@ -163,7 +163,7 @@ const NachosPokerNavBar = () => {
 
   return (
     <>
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         /* ============================================
            GOLD DESIGN SYSTEM - Matching Homepage
            Primary Gold: #a88b46
@@ -606,7 +606,7 @@ const NachosPokerNavBar = () => {
         .np-navbar-spacer {
           height: 80px;
         }
-      `}</style>
+      ` }} />
       
       <nav className="np-navbar" style={{ '--scroll-progress': scrollProgress }}>
         <div className="np-navbar-inner">

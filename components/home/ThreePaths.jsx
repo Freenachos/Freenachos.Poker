@@ -152,7 +152,7 @@ const ThreePaths = ({ compact = false, context = 'home' }) => {
         })}
       </div>
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .threepaths-card:hover {
           transform: translateY(-6px);
           border-color: rgba(168, 139, 70, 0.5) !important;
@@ -164,7 +164,7 @@ const ThreePaths = ({ compact = false, context = 'home' }) => {
             max-width: 460px !important;
           }
         }
-      `}</style>
+      ` }} />
     </div>
   );
 };

@@ -222,7 +222,7 @@ const Hero = ({ sectionRef }) => (
     </div>
 
     {/* Responsive Styles for Hero */}
-    <style>{`
+    <style dangerouslySetInnerHTML={{ __html: `
       @media (max-width: 1400px) {
         .hero-image-mask {
           right: -5% !important;
@@ -240,7 +240,7 @@ const Hero = ({ sectionRef }) => (
           display: none !important;
         }
       }
-    `}</style>
+    ` }} />
 
     {/* === FLOOR FOG: Soft Bottom Transition (z-25) === */}
     <div

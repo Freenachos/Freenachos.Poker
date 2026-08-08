@@ -253,7 +253,7 @@ const Mechanism = () => (
       ))}
     </div>
 
-    <style>{`
+    <style dangerouslySetInnerHTML={{ __html: `
       @media (max-width: 900px) {
         .mechanism-row {
           grid-template-columns: 1fr !important;
@@ -270,7 +270,7 @@ const Mechanism = () => (
           padding-bottom: 140px !important;
         }
       }
-    `}</style>
+    ` }} />
   </div>
 );
 

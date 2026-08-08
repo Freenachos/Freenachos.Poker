@@ -237,7 +237,7 @@ const PokerToolboxHome = () => {
         </a>
       )}
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
 
         /* Smooth Scroll Behavior & Prevent Horizontal Scroll from Peripheral Bokeh */
@@ -512,7 +512,7 @@ const PokerToolboxHome = () => {
           mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
           -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
         }
-      `}</style>
+      ` }} />
 
       {/* ==================== LAYER 0: BACKGROUND GLOWS (Fixed, z-0) ==================== */}
       <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
@@ -1457,7 +1457,7 @@ const PokerToolboxHome = () => {
           )}
 
           {/* Testimonial styles */}
-          <style>{`
+          <style dangerouslySetInnerHTML={{ __html: `
             @keyframes slideInRight {
               0% {
                 opacity: 0;
@@ -1507,7 +1507,7 @@ const PokerToolboxHome = () => {
                 padding: 28px !important;
               }
             }
-          `}</style>
+          ` }} />
         </div>
 
         {/* ==================== DEAD SPACE: Cinema Transition Zone (halved per audit) ==================== */}
@@ -1810,7 +1810,7 @@ const PokerToolboxHome = () => {
           </div>
 
           {/* Cinema Carousel Styles - Warm Gold Cinema */}
-          <style>{`
+          <style dangerouslySetInnerHTML={{ __html: `
             .cinema-carousel::-webkit-scrollbar {
               display: none;
             }
@@ -1866,7 +1866,7 @@ const PokerToolboxHome = () => {
                 height: 180px !important;
               }
             }
-          `}</style>
+          ` }} />
         </div>
 
         {/* ==================== OFFER - The 6-Month Program ==================== */}
@@ -2324,7 +2324,7 @@ const PokerToolboxHome = () => {
           </div>
 
           {/* Safety Net Styles */}
-          <style>{`
+          <style dangerouslySetInnerHTML={{ __html: `
             .safety-net-card {
               box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
             }
@@ -2345,7 +2345,7 @@ const PokerToolboxHome = () => {
                 padding: 40px 32px !important;
               }
             }
-          `}</style>
+          ` }} />
         </div>
 
         {/* Footer */}

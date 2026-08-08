@@ -196,7 +196,7 @@ const OfferSection = () => (
       </div>
     </div>
 
-    <style>{`
+    <style dangerouslySetInnerHTML={{ __html: `
       @media (max-width: 768px) {
         .offer-deliverables {
           padding: 36px 28px !important;
@@ -205,7 +205,7 @@ const OfferSection = () => (
           grid-template-columns: 1fr !important;
         }
       }
-    `}</style>
+    ` }} />
   </div>
 );
 

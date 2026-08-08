@@ -494,7 +494,7 @@ export default function ApplyPage() {
       position: 'relative',
       fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
     }}>
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
         .glass-card {
           background: rgba(18, 18, 18, 0.4);
@@ -509,7 +509,7 @@ export default function ApplyPage() {
         .btn-hover:hover:not(:disabled) { transform: translateY(-3px); }
         .btn-hover:active:not(:disabled) { transform: translateY(-1px); }
         select option { background: #12121a; color: #F0F0F0; }
-      `}</style>
+      ` }} />
 
       <NachosPokerNavBar />
 

@@ -70,7 +70,7 @@ export default function ResultsPage() {
       position: 'relative',
       fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
     }}>
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
         .glass-card {
           background: rgba(18, 18, 18, 0.4);
@@ -83,7 +83,7 @@ export default function ResultsPage() {
           transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
         }
         .btn-hover:hover:not(:disabled) { transform: translateY(-3px); }
-      `}</style>
+      ` }} />
 
       <NachosPokerNavBar />
 
