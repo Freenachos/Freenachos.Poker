@@ -1874,7 +1874,7 @@ Supported formats:
               gap: '8px',
               boxShadow: '0 4px 20px rgba(168, 139, 70, 0.3)'
             }}>Join Our CFP <ExternalLink size={14} /></a>
-            <a href="https://calendly.com/patrickgerritsen90/30min" target="_blank" rel="noopener noreferrer" className="btn-hover" style={{ 
+            <a href="/apply" className="btn-hover" style={{ 
               background: 'transparent', 
               border: '1.5px solid #a88b46', 
               color: '#a88b46', 

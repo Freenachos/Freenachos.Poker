@@ -2,7 +2,6 @@
 
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
 import Footer from '@/components/Footer';
-import { calendlyUrl } from '@/lib/links';
 
 import React, { useState, useEffect, useMemo } from 'react';
 import {
@@ -1225,12 +1224,10 @@ const ToolsPage = () => {
             maxWidth: '480px',
             margin: '0 auto 32px'
           }}>
-            Find out exactly where your win rate is leaking with a free intro call.
+            Find out exactly where your win rate is leaking — the program starts with a full audit of your database.
           </p>
           <a
-            href={calendlyUrl('tools_page')}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/apply"
             onClick={() => track('cta_click', { placement: 'tools_page' })}
             style={{
               display: 'inline-flex',
@@ -1246,7 +1243,7 @@ const ToolsPage = () => {
               boxShadow: '0 4px 30px rgba(168, 139, 70, 0.35)'
             }}
           >
-            Book a Free Intro Call <ArrowRight size={18} />
+            Apply for the Program <ArrowRight size={18} />
           </a>
         </div>
 

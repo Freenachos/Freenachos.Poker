@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ExternalLink, TrendingUp } from 'lucide-react';
+import { ArrowRight, ExternalLink, TrendingUp } from 'lucide-react';
+import { track } from '@vercel/analytics';
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
-import { calendlyUrl } from '@/lib/links';
 
 /**
  * Poker Seat Selection EV Visualization Tool
@@ -677,9 +677,8 @@ const PokerSeatEVTool = () => {
               Join Our CFP <ExternalLink size={14} />
             </a>
             <a 
-              href={calendlyUrl('seat_tool')}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/apply"
+              onClick={() => track('cta_click', { placement: 'seat_tool' })}
               className="btn-hover"
               style={{
                 background: 'transparent',

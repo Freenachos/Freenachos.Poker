@@ -1,12 +1,12 @@
 'use client';
 
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
-import { calendlyUrl } from '@/lib/links';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  ExternalLink, 
-  Calculator, 
+import {
+  ArrowRight,
+  ExternalLink,
+  Calculator,
   TrendingUp, 
   Plus, 
   Trash2, 
@@ -18,6 +18,7 @@ import {
   Globe,
   Lightbulb
 } from 'lucide-react';
+import { track } from '@vercel/analytics';
 
 /**
  * Poker Profit Calculator Tool
@@ -529,13 +530,12 @@ const PokerProfitCalculator = () => {
                 Join Our CFP <ExternalLink className="w-4 h-4" />
               </a>
               <a 
-                href={calendlyUrl('profits_tool')}
-                target="_blank" 
-                rel="noopener noreferrer"
+                href="/apply"
+                onClick={() => track('cta_click', { placement: 'profits_tool' })}
                 className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5"
                 style={{ border: '1.5px solid #a88b46', color: '#a88b46' }}
               >
-                Private Coaching <ExternalLink className="w-4 h-4" />
+                Private Coaching <ArrowRight className="w-4 h-4" />
               </a>
             </div>
           </div>

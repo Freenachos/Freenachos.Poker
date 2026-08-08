@@ -59,8 +59,13 @@ export default function PrivacyPage() {
             Vercel Analytics, used to improve the site. No cross-site tracking cookies are set.
           </p>
           <p style={pStyle}>
-            <strong>Booking details</strong>: if you book an intro call, scheduling data is
-            processed by Calendly under their own privacy policy.
+            <strong>Application details</strong>: if you apply for the program, the answers you
+            submit (including your name, email, and the poker-related details you provide) are
+            stored in Supabase and used only to evaluate your application and reply to you.
+          </p>
+          <p style={pStyle}>
+            <strong>Booking details</strong>: if you book a fit call after your application is
+            reviewed, scheduling data is processed by Calendly under their own privacy policy.
           </p>
         </div>
 
@@ -68,8 +73,9 @@ export default function PrivacyPage() {
           <h2 style={h2Style}>Who processes your data</h2>
           <p style={pStyle}>
             We use the following processors: Beehiiv (newsletter delivery), Supabase (subscriber
-            storage), Vercel (hosting and analytics), and Calendly (call scheduling). Each
-            processes data under its own terms and applicable data-processing agreements.
+            and application storage), Vercel (hosting and analytics), and Calendly (call
+            scheduling). Each processes data under its own terms and applicable data-processing
+            agreements.
           </p>
         </div>
 
@@ -85,7 +91,7 @@ export default function PrivacyPage() {
         <div style={sectionStyle}>
           <h2 style={h2Style}>Contact</h2>
           <p style={pStyle}>
-            {/* TODO(patrick): confirm preferred public contact email (currently personal gmail) */}
+            {/* TODO(patrick): create patrick@freenachos.poker forwarding to your inbox before deploy */}
             For any privacy-related questions or requests, contact: patrick@freenachos.poker
           </p>
         </div>

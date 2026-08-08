@@ -79,7 +79,7 @@ export default function TermsPage() {
         <div style={sectionStyle}>
           <h2 style={h2Style}>Contact</h2>
           <p style={pStyle}>
-            {/* TODO(patrick): confirm preferred public contact email (currently personal gmail) */}
+            {/* TODO(patrick): create patrick@freenachos.poker forwarding to your inbox before deploy */}
             Questions about these terms: patrick@freenachos.poker
           </p>
         </div>

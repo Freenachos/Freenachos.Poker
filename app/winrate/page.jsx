@@ -1,17 +1,17 @@
 'use client';
 import { motion, AnimatePresence } from 'framer-motion';
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
-import { calendlyUrl } from '@/lib/links';
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { 
   ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine,
   BarChart, Bar, Cell, AreaChart, Area
 } from 'recharts';
-import { 
-  Search, ExternalLink, HelpCircle, TrendingUp, BarChart3, 
+import {
+  ArrowRight, Search, ExternalLink, HelpCircle, TrendingUp, BarChart3,
   Trophy, Crown, Award, LayoutGrid, DollarSign, Layers, Swords,
   Target, Zap, Flame, X
 } from 'lucide-react';
+import { track } from '@vercel/analytics';
 
 // ============================================================
 // BAKED-IN PLAYER DATA - 3,000 records from 30 CSV files
@@ -3801,14 +3801,13 @@ const NachoStatsDashboard = () => {
                 Join Our CFP <ExternalLink size={14} />
               </a>
               <a 
-                href={calendlyUrl('winrate_tool')}
-                target="_blank" 
-                rel="noopener noreferrer" 
+                href="/apply"
+                onClick={() => track('cta_click', { placement: 'winrate_tool' })}
                 className="inline-flex items-center gap-2 bg-transparent px-5 py-3 rounded-lg font-semibold text-sm
                            transition-all duration-300 hover:-translate-y-0.5"
                 style={{ border: '1.5px solid #a88b46', color: '#a88b46' }}
               >
-                Private Coaching <ExternalLink size={14} />
+                Private Coaching <ArrowRight size={14} />
               </a>
             </div>
           </div>
