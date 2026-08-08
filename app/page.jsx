@@ -673,15 +673,15 @@ The 3-month program consists of:
         }}
       />
 
-      {/* Sticky CTA Button - Book Free Intro Call - Only visible after scrolling past hero */}
+      {/* Sticky CTA Button - Apply for the Program - Only visible after scrolling past hero */}
       {showStickyCta && (
         <a
-          href="#book"
+          href="/apply"
           onClick={() => track('cta_click', { placement: 'sticky' })}
           className="sticky-cta-btn"
         >
-          <Calendar size={18} />
-          Book Free Intro Call
+          Apply for the Program
+          <ArrowRight size={18} />
         </a>
       )}
       
