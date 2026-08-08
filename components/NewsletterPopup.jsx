@@ -1,8 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { X, Mail, Check, Loader, ArrowRight } from 'lucide-react';
 import { track } from '@vercel/analytics';
+
+// P5.6: never interrupt the money pages — the popup stays off /apply and /audit.
+const SUPPRESSED_PATHS = ['/apply', '/audit'];
 
 /**
  * NewsletterPopup - Scroll-triggered glassmorphism popup
@@ -18,12 +22,15 @@ const STORAGE_KEY = 'freenachos_newsletter_dismissed';
 const SUBSCRIBED_KEY = 'freenachos_newsletter_subscribed';
 
 export default function NewsletterPopup() {
+  const pathname = usePathname();
+  const suppressed = SUPPRESSED_PATHS.some((p) => pathname?.startsWith(p));
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // idle, loading, success, error
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
+    if (suppressed) return;
     // Don't show if already dismissed or subscribed
     if (typeof window !== 'undefined') {
       const dismissed = localStorage.getItem(STORAGE_KEY);
