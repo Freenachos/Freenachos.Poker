@@ -5,7 +5,7 @@ export const metadata = {
   openGraph: {
     title: "Which Path? Course, Program, or CFP",
     description:
-      "Self-study, private mentorship, or backing — the honest comparison of the three ways to work with Freenachos.",
+      "Self-study, private mentorship, or backing: the honest comparison of the three ways to work with Freenachos.",
     url: "https://freenachos.poker/coaching",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },

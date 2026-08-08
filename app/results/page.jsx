@@ -114,7 +114,7 @@ export default function ResultsPage() {
             maxWidth: '620px',
             margin: '0 auto'
           }}>
-            What the audit found, what was installed, and how the stats moved — documented, student by student.
+            What the audit found, what was installed, and how the stats moved, documented student by student.
           </p>
         </div>
 

@@ -1224,7 +1224,7 @@ const ToolsPage = () => {
             maxWidth: '480px',
             margin: '0 auto 32px'
           }}>
-            Find out exactly where your win rate is leaking — the program starts with a full audit of your database.
+            Find out exactly where your win rate is leaking. The program starts with a full audit of your database.
           </p>
           <a
             href="/apply"

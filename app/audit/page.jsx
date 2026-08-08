@@ -19,11 +19,11 @@ const fmtK = (n) => `${n / 1000}k`;
 const WHAT_YOU_GET = [
   {
     icon: FileSearch,
-    text: 'A full Stat Checker run — every meaningful stat vs both baselines: GTO, and the winning population at your stakes.'
+    text: 'A full Stat Checker run: every meaningful stat vs both baselines, GTO and the winning population at your stakes.'
   },
   {
     icon: PenLine,
-    text: 'A manual review by me — my filters and notes, not just tool output.'
+    text: 'A manual review by me: my filters and notes, not just tool output.'
   },
   {
     icon: ScrollText,
@@ -190,7 +190,7 @@ export default function AuditPage() {
             lineHeight: 1.9,
             margin: 0
           }}>
-            {AUDIT.priceFormatted}. Minimum {fmtK(AUDIT.dbMinHands)}-hand database (HM3, PT4, or Hand2Note export — spec sheet after purchase). Written scorecard within {AUDIT.deliveryDays} days of receiving your database; call within 10. Credited in full toward {OFFER.name} if you enroll within {AUDIT.creditDays} days. Capped at 4 audits per month.
+            {AUDIT.priceFormatted}. Minimum {fmtK(AUDIT.dbMinHands)}-hand database (HM3, PT4, or Hand2Note export; spec sheet after purchase). Written scorecard within {AUDIT.deliveryDays} days of receiving your database; call within 10. Credited in full toward {OFFER.name} if you enroll within {AUDIT.creditDays} days. Capped at 4 audits per month.
           </p>
         </div>
 
@@ -260,7 +260,7 @@ export default function AuditPage() {
             marginLeft: 'auto',
             marginRight: 'auto'
           }}>
-            Not sure whether to start with the audit or apply straight to the program? Apply — the fit call settles it in fifteen minutes.
+            Not sure whether to start with the audit or apply straight to the program? Apply. The fit call settles it in fifteen minutes.
           </p>
         </div>
       </div>

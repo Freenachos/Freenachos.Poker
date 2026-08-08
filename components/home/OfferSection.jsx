@@ -144,7 +144,7 @@ const OfferSection = () => (
         lineHeight: 1.85,
         marginBottom: '10px'
       }}>
-        {OFFER.priceFormatted} for the six months, or {OFFER.plan.installments} payments of {euro(OFFER.plan.amount)}. Paying in full adds {OFFER.pifBonus} — I don&apos;t discount, I add. The {AUDIT.priceFormatted} {AUDIT.name} is available standalone first and is credited in full if you continue within {AUDIT.creditDays} days.
+        {OFFER.priceFormatted} for the six months, or {OFFER.plan.installments} payments of {euro(OFFER.plan.amount)}. Paying in full adds {OFFER.pifBonus}. I don&apos;t discount, I add. The {AUDIT.priceFormatted} {AUDIT.name} is available standalone first and is credited in full if you continue within {AUDIT.creditDays} days.
       </p>
       {/* Continuation line */}
       <p style={{
@@ -153,7 +153,7 @@ const OfferSection = () => (
         lineHeight: 1.8,
         marginBottom: '36px'
       }}>
-        After the six months, alumni can continue on a monthly recalibration retainer — most students who hit their targets stay a few quarters. Details at your exit review.
+        After the six months, alumni can continue on a monthly recalibration retainer. Most students who hit their targets stay a few quarters. Details at your exit review.
       </p>
 
       {/* CTA */}

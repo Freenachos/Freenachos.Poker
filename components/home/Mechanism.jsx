@@ -19,7 +19,7 @@ const STEPS = [
     icon: Crosshair,
     body: (
       <>
-        We start with a full audit of your database — {fmtK(AUDIT.dbMinHands)} hands minimum, {fmtK(FIT.dbPreferredHands)} preferred. My Stat Checker compares every meaningful stat you have against two baselines: GTO, and the winning population at your stakes, drawn from {PROOF.poolHands}. I built the Stat Checker myself, on a pool database I maintain — including tracking {BOTS} so the benchmarks aren&apos;t poisoned. Not what a coach thinks looks off. What the numbers say is off.
+        We start with a full audit of your database: {fmtK(AUDIT.dbMinHands)} hands minimum, {fmtK(FIT.dbPreferredHands)} preferred. My Stat Checker compares every meaningful stat you have against two baselines: GTO, and the winning population at your stakes, drawn from {PROOF.poolHands}. I built the Stat Checker myself, on a pool database I maintain, including tracking {BOTS} so the benchmarks aren&apos;t poisoned. Not what a coach thinks looks off. What the numbers say is off.
       </>
     ),
     asset: '/mechanism/diagnose.png',
@@ -33,7 +33,7 @@ const STEPS = [
     icon: ListOrdered,
     body: (
       <>
-        An audit that finds 40 leaks is useless. Each deviation gets a cost estimate in bb/100, and we rank them. You leave the first month with a short, ordered list: the three to five deviations with the highest estimated cost — and roughly what each one runs you per 100k hands.
+        An audit that finds 40 leaks is useless. Each deviation gets a cost estimate in bb/100, and we rank them. You leave the first month with a short, ordered list: the three to five deviations with the highest estimated cost, and roughly what each one runs you per 100k hands.
       </>
     ),
     asset: '/mechanism/prioritize.png',
@@ -47,7 +47,7 @@ const STEPS = [
     icon: Wrench,
     body: (
       <>
-        Knowing a leak exists doesn&apos;t close it. Each priority gets a fix installed through 1-on-1 sessions — frontloaded, biweekly for the first two months — plus a personal study queue and drills between calls. You don&apos;t just watch. You implement. The goal is not theoretical perfection; the goal is to translate data into profit.
+        Knowing a leak exists doesn&apos;t close it. Each priority gets a fix installed through 1-on-1 sessions, frontloaded and biweekly for the first two months, plus a personal study queue and drills between calls. You don&apos;t just watch. You implement. The goal is not theoretical perfection; the goal is to translate data into profit.
       </>
     ),
     asset: '/mechanism/install.png',
@@ -61,13 +61,13 @@ const STEPS = [
     icon: LineChart,
     body: (
       <>
-        Every month we recalibrate against your fresh sample. At month six, a full re-audit: same stats, same benchmarks, before and after. Win rate over six months is mostly noise — your frequencies aren&apos;t. If your fold-to-3bet moved from 68% to 54%, that&apos;s not variance. That&apos;s the deliverable.
+        Every month we recalibrate against your fresh sample. At month six, a full re-audit: same stats, same benchmarks, before and after. Win rate over six months is mostly noise. Your frequencies aren&apos;t. If your fold-to-3bet moved from 68% to 54%, that&apos;s not variance. That&apos;s the deliverable.
       </>
     ),
     asset: '/mechanism/verify.png',
     isVideo: false,
     hasAsset: false, // TODO(patrick): screenshot pending (Phase 7 pipeline)
-    caption: 'Before/after re-audit panel — same stats, month 1 vs month 6.'
+    caption: 'Before/after re-audit panel: same stats, month 1 vs month 6.'
   }
 ];
 
@@ -134,7 +134,7 @@ const MechanismFigure = ({ step }) => (
           textTransform: 'uppercase',
           color: 'rgba(240, 240, 240, 0.35)'
         }}>
-          Screenshot from the live tool — coming here
+          Screenshot from the live tool, coming soon
         </span>
       </div>
     )}

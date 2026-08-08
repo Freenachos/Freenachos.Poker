@@ -13,19 +13,19 @@ import { OFFER, AUDIT, FIT } from '@/lib/offer';
 export const faqItems = [
   {
     question: 'Why not just buy GTO Wizard and a course?',
-    answer: `You probably should — I sell a course myself, and a serious reg's software stack is worth every euro of the ~$2–4k/year it costs. But a solver tells you the equilibrium answer, and a course tells you the general answer. Neither one looks at your database and tells you which three deviations are costing you the most against your pool. That's a measurement problem, and it needs your data plus population benchmarks. That's the entire program.`
+    answer: `You probably should. I sell a course myself, and a serious reg's software stack is worth every euro of the ~$2–4k/year it costs. But a solver tells you the equilibrium answer, and a course tells you the general answer. Neither one looks at your database and tells you which three deviations are costing you the most against your pool. That's a measurement problem, and it needs your data plus population benchmarks. That's the entire program.`
   },
   {
     question: 'Why is there an application?',
-    answer: `Because the method only works on players with a real sample and real volume, and I take a small number of new students per quarter — frontloaded 1-on-1 cadence doesn't scale, and I still play. That's not scarcity marketing; it's a calendar. I read every application, and the fit call starts from your answers. If you're not a fit, I'll say so and point you at the course or the CFP instead.`
+    answer: `Because the method only works on players with a real sample and real volume, and I take a small number of new students per quarter: frontloaded 1-on-1 cadence doesn't scale, and I still play. That's not scarcity marketing; it's a calendar. I read every application, and the fit call starts from your answers. If you're not a fit, I'll say so and point you at the course or the CFP instead.`
   },
   {
     question: `${OFFER.priceFormatted} is a lot. How do I evaluate that?`,
-    answer: `Do the math you'd do on any spot. The audit gives you a costed leak list before you commit to anything beyond ${AUDIT.priceFormatted} — but the cost estimates are estimates, not a forecast: leaks overlap and they're pool-dependent. What they give you is priority order and rough magnitude. Run your own ROI math against your stakes and volume; if it doesn't clear, don't apply. For comparison: a CFP takes ~50% of your winnings for 12–15 months — I run one, I know exactly what that split is worth, and for a bankrolled winner it's a multiple of this fee. Top independent coaches charge $250–$990/hour for calls with no database work between them.`
+    answer: `Do the math you'd do on any spot. The audit gives you a costed leak list before you commit to anything beyond ${AUDIT.priceFormatted}. But the cost estimates are estimates, not a forecast: leaks overlap and they're pool-dependent. What they give you is priority order and rough magnitude. Run your own ROI math against your stakes and volume; if it doesn't clear, don't apply. For comparison: a CFP takes ~50% of your winnings for 12–15 months. I run one, I know exactly what that split is worth, and for a bankrolled winner it's a multiple of this fee. Top independent coaches charge $250–$990/hour for calls with no database work between them.`
   },
   {
     question: 'What happens after the six months?',
-    answer: `You leave with the re-audit, the full recorded vault, and the alumni Discord. If you want ongoing oversight, there's a monthly recalibration retainer — one call a quarter, monthly stat checks, re-audit every six months. No obligation either way; it's presented at your exit review.`
+    answer: `You leave with the re-audit, the full recorded vault, and the alumni Discord. If you want ongoing oversight, there's a monthly recalibration retainer: one call a quarter, monthly stat checks, re-audit every six months. No obligation either way; it's presented at your exit review.`
   },
   {
     question: `What's the time commitment?`,
@@ -33,11 +33,11 @@ export const faqItems = [
   },
   {
     question: 'Do you guarantee results?',
-    answer: `Not your winrate — you should run from anyone who does. What I guarantee is the process. If the audit doesn't surface leaks whose combined estimated cost exceeds the fee, it's refunded. At the month-${OFFER.checkpointMonth} recalibration we compare your targeted stats against the plan we wrote down in week 1 — if you've done your side and they haven't moved toward benchmark, I extend the program free until they do, or you walk with the remaining months refunded pro-rata. And the final re-audit either shows your frequencies moved or it doesn't. It's measured, not asserted.`
+    answer: `Not your winrate. You should run from anyone who does. What I guarantee is the process. If the audit doesn't surface leaks whose combined estimated cost exceeds the fee, it's refunded. At the month-${OFFER.checkpointMonth} recalibration we compare your targeted stats against the plan we wrote down in week 1. If you've done your side and they haven't moved toward benchmark, I extend the program free until they do, or you walk with the remaining months refunded pro-rata. And the final re-audit either shows your frequencies moved or it doesn't. It's measured, not asserted.`
   },
   {
     question: 'What happens on the fit call?',
-    answer: `Fifteen to twenty minutes. Your stakes, your sample, your goals, my honest read on whether the method fits your situation. It is not a coaching session — I won't diagnose your game from a conversation, because that's exactly the guessing the audit exists to replace.`
+    answer: `Fifteen to twenty minutes. Your stakes, your sample, your goals, my honest read on whether the method fits your situation. It is not a coaching session. I won't diagnose your game from a conversation, because that's exactly the guessing the audit exists to replace.`
   }
 ];
 

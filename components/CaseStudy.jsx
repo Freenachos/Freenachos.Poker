@@ -139,7 +139,7 @@ const CaseStudy = ({ study }) => (
           )}
         </figure>
       ) : (
-        <Pending>[TODO(patrick): results graph — hands on the x-axis]</Pending>
+        <Pending>[TODO(patrick): results graph, hands on the x-axis]</Pending>
       )}
     </div>
 
@@ -166,7 +166,7 @@ const CaseStudy = ({ study }) => (
         fontWeight: '600',
         fontStyle: 'normal'
       }}>
-        — {study.name}
+        {study.name}
       </cite>
     </blockquote>
 

@@ -15,7 +15,7 @@ const ThreePaths = ({ compact = false, context = 'home' }) => {
     {
       icon: BookOpen,
       kicker: 'Self-study',
-      title: 'Dominate with Data — the course',
+      title: 'Dominate with Data: the course',
       description: `Self-study. The full MDA framework, 80+ videos, flashcards, group sessions. For players below ${FIT.stakesFloor} or anyone who wants the method without 1-on-1 work on their database.`,
       ctaLabel: `${COURSE.priceFormatted} on Run It Once`,
       href: RIO_COURSE_URL,

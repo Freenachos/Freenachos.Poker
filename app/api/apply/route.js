@@ -83,7 +83,7 @@ export async function POST(request) {
     const webhookUrl = process.env.APPLY_WEBHOOK_URL;
     if (webhookUrl) {
       const summary = [
-        `**New ${row.intent === 'audit' ? 'AUDIT request' : 'application'}** — ${row.name}`,
+        `**New ${row.intent === 'audit' ? 'AUDIT request' : 'application'}**: ${row.name}`,
         `Site/stake: ${row.site} · ${row.stake} · ${row.volume_bucket} hands/mo`,
         `Database: ${row.no_database ? 'not tracked' : row.db_summary.slice(0, 300)}`,
         `Bankroll: ${row.bankroll}${row.staked_until ? ` (staked until ${row.staked_until})` : ''}`,
@@ -101,7 +101,7 @@ export async function POST(request) {
         console.error('Application webhook failed (row saved):', webhookError);
       }
     } else {
-      console.log('APPLY_WEBHOOK_URL not set — application saved without Discord notification:', data?.id);
+      console.log('APPLY_WEBHOOK_URL not set; application saved without Discord notification:', data?.id);
     }
 
     return NextResponse.json({ success: true });

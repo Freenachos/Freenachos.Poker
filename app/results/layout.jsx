@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Case Studies — Results',
+  title: 'Case Studies',
   description:
     'Documented student case studies: what the audit found, what was installed, and how the stats moved.',
   // Noindex until at least two case studies carry complete before/after data

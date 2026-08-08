@@ -2200,7 +2200,7 @@ const PokerToolboxHome = () => {
                 marginBottom: '28px',
                 flex: 1
               }}>
-                Compare the three ways to work with me — course, program, or CFP.
+                Compare the three ways to work with me: course, program, or CFP.
               </p>
 
               <div style={{

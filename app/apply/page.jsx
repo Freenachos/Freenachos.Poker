@@ -135,7 +135,7 @@ function ApplyForm() {
     if (!form.site) return 'Where do you play? (question 1)';
     if (!form.stake) return 'Your main stake (question 1)';
     if (!form.volume_bucket) return 'Your monthly volume (question 2)';
-    if (!form.no_database && !form.db_summary.trim()) return 'Your database summary — or tick the checkbox (question 3)';
+    if (!form.no_database && !form.db_summary.trim()) return 'Your database summary, or tick the checkbox (question 3)';
     if (!form.bankroll) return 'Your bankroll situation (question 4)';
     if (form.bankroll === 'staked' && !form.staked_until.trim()) return 'Your staking contract end date (question 4)';
     if (!form.study_process.trim()) return 'Your study process (question 5)';
@@ -225,7 +225,7 @@ function ApplyForm() {
           fontSize: '15.5px',
           lineHeight: 1.85
         }}>
-          I read every application myself — you&apos;ll hear from me within 48 hours. If it looks like a fit, you&apos;ll get a booking link for a short fit call. If not, I&apos;ll tell you why and point you somewhere better — usually the course or the CFP.
+          I read every application myself. You&apos;ll hear from me within 48 hours. If it looks like a fit, you&apos;ll get a booking link for a short fit call. If not, I&apos;ll tell you why and point you somewhere better, usually the course or the CFP.
         </p>
       </div>
     );
@@ -244,7 +244,7 @@ function ApplyForm() {
           fontSize: '14px',
           lineHeight: 1.7
         }}>
-          You&apos;re requesting the standalone <span style={{ color: GOLD, fontWeight: 600 }}>Database Audit</span>. Same application — I&apos;ll treat it as an audit request when I review it.
+          You&apos;re requesting the standalone <span style={{ color: GOLD, fontWeight: 600 }}>Database Audit</span>. Same application. I&apos;ll treat it as an audit request when I review it.
         </div>
       )}
 
@@ -286,7 +286,7 @@ function ApplyForm() {
             onChange={(e) => set('db_summary')(e.target.value)}
             disabled={form.no_database}
             rows={3}
-            placeholder="e.g. 180k hands at NL200, 1.8bb/100 — plus 60k at NL500 roughly breakeven"
+            placeholder="e.g. 180k hands at NL200, 1.8bb/100, plus 60k at NL500 roughly breakeven"
             style={{ ...inputStyle, resize: 'vertical', opacity: form.no_database ? 0.45 : 1 }}
           />
           <label style={{
@@ -432,7 +432,7 @@ function ApplyForm() {
           >
             the {COURSE.priceFormatted} course
           </a>{' '}
-          first — most of the theory at a tenth of the price. Want backing instead of paying flat? That&apos;s{' '}
+          first: most of the theory at a tenth of the price. Want backing instead of paying flat? That&apos;s{' '}
           <a
             href={cfpUrl('apply_page')}
             target="_blank"

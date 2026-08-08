@@ -161,7 +161,7 @@ const Hero = ({ sectionRef }) => (
             letterSpacing: '0.01em',
             marginBottom: '8px'
           }}>
-            {PROOF.rioStatus} · Students include Davide — 100NL to 1KNL in under a year
+            {PROOF.rioStatus} · Students include Davide, 100NL to 1KNL in under a year
           </div>
 
           {/* Qualifier line */}

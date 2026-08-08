@@ -56,7 +56,7 @@ export default function CoachingLandingPage() {
           fontSize: 16, color: "#B0B0B8", lineHeight: 1.7, maxWidth: 520,
           textAlign: "center", marginBottom: 72,
         }}>
-          Three ways to work with me — self-study, private mentorship, or backing. Different situations need different deals.
+          Three ways to work with me: self-study, private mentorship, or backing. Different situations need different deals.
         </p>
 
         {/* The three paths */}
@@ -69,7 +69,7 @@ export default function CoachingLandingPage() {
           fontSize: 13.5, color: "rgba(255,255,255,0.45)", marginTop: 72,
           textAlign: "center", maxWidth: 560, lineHeight: 1.8,
         }}>
-          Not sure? Apply for the program and say so — the application asks, and I&apos;ll route you honestly. I&apos;d rather point you at the right thing than sell you the wrong one.
+          Not sure? Apply for the program and say so. The application asks, and I&apos;ll route you honestly. I&apos;d rather point you at the right thing than sell you the wrong one.
         </p>
       </div>
 

@@ -45,10 +45,10 @@ const FitSection = () => {
   ];
 
   const notFit = [
-    <>you&apos;re looking for staking — that&apos;s {cfpLink}, a different business and a different deal</>,
+    <>you&apos;re looking for staking. That&apos;s {cfpLink}, a different business and a different deal</>,
     <>you want shortcuts, &quot;secret lines,&quot; or someone to guarantee you a win rate</>,
-    <>you&apos;re below {FIT.stakesFloor} or building a first bankroll — start with {courseLink}; it&apos;s most of the theory at a tenth of the price</>,
-    <>you won&apos;t share your database — the entire method runs on it</>
+    <>you&apos;re below {FIT.stakesFloor} or building a first bankroll. Start with {courseLink}; it&apos;s most of the theory at a tenth of the price</>,
+    <>you won&apos;t share your database. The entire method runs on it</>
   ];
 
   return (

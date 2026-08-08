@@ -72,6 +72,11 @@ Every number renders from `lib/offer.js`. Copy is verbatim from the build plan.
 - [x] `/#pricing`, `/#mentorship`, `/#book` all land on live sections (alias anchors).
 - [x] `/articles` → `/newsletters` permanent redirect verified.
 
+**Owner copy directive (2026-08-08):** no em dashes anywhere in site copy. All rendered
+strings swept and re-punctuated (periods, colons, commas). En dashes in numeric ranges
+(20–50k, 12–15 months, 200NL–1KNL) kept deliberately; say the word to flatten those to
+hyphens too. Code comments were not treated as copy.
+
 **Known pre-existing (not introduced, left alone):** dev-mode React hydration warnings
 from the site-wide `<style>{...}</style>`-in-JSX pattern (fires identically on untouched
 pages like `/privacy`); missing favicon.ico (404 in console).

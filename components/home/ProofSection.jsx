@@ -276,7 +276,7 @@ const ProofSection = ({ sectionRef }) => {
             color: 'rgba(240, 240, 240, 0.4)',
             lineHeight: 1.6
           }}>
-            {PROOF.studentProfits} — {PROOF.studentProfitsAttribution}. {PROOF.handsPlayed} of my own; benchmarks drawn from {PROOF.poolHands}.
+            {PROOF.studentProfits}: {PROOF.studentProfitsAttribution}. {PROOF.handsPlayed} of my own; benchmarks drawn from {PROOF.poolHands}.
           </div>
         </div>
       </div>
