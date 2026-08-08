@@ -3,53 +3,52 @@
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
 import NewsletterPopup from '@/components/NewsletterPopup';
 import Footer from '@/components/Footer';
-import { calendlyUrl } from '@/lib/links';
+import Hero from '@/components/home/Hero';
+import ProofSection from '@/components/home/ProofSection';
+import Mechanism from '@/components/home/Mechanism';
+import OfferSection from '@/components/home/OfferSection';
+import FitSection from '@/components/home/FitSection';
+import HomeFAQ from '@/components/home/HomeFAQ';
+import FinalCTA from '@/components/home/FinalCTA';
+import ThreePaths from '@/components/home/ThreePaths';
 import { track } from '@vercel/analytics';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ExternalLink, ChevronLeft, ChevronRight, Calculator, BookOpen, Youtube, ArrowRight, Sparkles, Check, X, ChevronDown, User, Users, MessageCircle, Calendar, Crosshair, Swords, Brain, Lock, Zap } from 'lucide-react';
-
-// Mentorship capacity shown in the pricing section. Update these as students come and go.
-const MENTORSHIP_SPOTS_TOTAL = 12;
-const MENTORSHIP_SPOTS_OPEN = 3;
+import { ExternalLink, ChevronLeft, ChevronRight, Calculator, BookOpen, Compass, Youtube, ArrowRight, Check, X } from 'lucide-react';
 
 /**
- * Freenachos Poker Toolbox Homepage
- * 
- * Main landing page featuring:
- * - Hero section with branding
- * - About section
- * - YouTube video carousel
- * - Mentorship benefits
- * - Testimonials carousel
- * - Pricing section
- * - Good fit section
- * - FAQ accordion
- * - Featured articles
- * - Tools preview grid
+ * Freenachos Poker Homepage — premium application funnel.
+ *
+ * Composition (funnel rebuild, 2026-08):
+ * - Hero: "I don't guess what the pool does. I've counted it." → /apply
+ * - ProofSection: coach authority + tracked results
+ * - Mechanism: Diagnose → Prioritize → Install → Verify (#mentorship)
+ * - Testimonials + YouTube cinema (kept)
+ * - OfferSection: the single 6-month program + roadmap (#program, #pricing alias)
+ * - FitSection, HomeFAQ, FinalCTA (#book alias)
+ * - ThreePaths strip + safety net (newsletter capture)
+ *
+ * Section copy lives in components/home/*; numbers live in lib/offer.js.
  */
 
 const PokerToolboxHome = () => {
   // ============================================
   // STATE
   // ============================================
-  
+
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState('right');
-  const [expandedFAQ, setExpandedFAQ] = useState(0);
   const [showStickyCta, setShowStickyCta] = useState(false);
-  const [showGraphModal, setShowGraphModal] = useState(false);
   const [showTestimonialGraphModal, setShowTestimonialGraphModal] = useState(null);
   const [inlineEmail, setInlineEmail] = useState('');
   const [inlineStatus, setInlineStatus] = useState('idle');
-  const aboutSectionRef = useRef(null);
   const heroSectionRef = useRef(null);
   const cinemaCarouselRef = useRef(null);
 
   // ============================================
   // DATA
   // ============================================
-  
+
   const videos = [
     { id: 1, title: 'How We RINSED The Bots for MILLIONS', thumbnail: 'https://img.youtube.com/vi/RqoIVH2_mBE/maxresdefault.jpg', duration: '', views: '', link: 'https://www.youtube.com/watch?v=RqoIVH2_mBE' },
     { id: 2, title: 'Is Rush & Cash On GGPoker Beatable?', thumbnail: 'https://img.youtube.com/vi/J73BGQuDMjg/maxresdefault.jpg', duration: '', views: '', link: 'https://www.youtube.com/watch?v=J73BGQuDMjg' },
@@ -111,171 +110,6 @@ const PokerToolboxHome = () => {
     },
   ];
 
-  const mentorshipBenefits = [
-    {
-      icon: Crosshair,
-      title: 'Surgical Leak Correction',
-      description: "We skip the small talk and audit your ranges against GTO to identify exactly where you are bleeding EV. By comparing your ranges to the GTO range composition, we build a personalized study plan and custom protocols to plug your leaks."
-    },
-    {
-      icon: Swords,
-      title: 'High-Stakes War Room',
-      description: 'Join weekly live study sessions with a group of motivated crushers. Dissect hands, debate lines, and stay accountable in a high-performance environment designed to help you improve consistently.'
-    },
-    {
-      icon: Zap,
-      title: "The 'Nacho' Stat Validator",
-      description: "Exclusive access to a unique tool that compares your entire range structure to solver outputs. Instantly visualize where your strategy deviates from optimal play and see where your leaks are in an X-ray of your game."
-    },
-    {
-      icon: Brain,
-      title: 'Performance by Design',
-      description: 'A complete mental operating system tailored for the reality of high-volume grinding. Eliminate tilt, master your focus, and build the discipline required for long-term consistency and confidence at the tables.'
-    },
-    {
-      icon: Lock,
-      title: 'The Strategy Vault',
-      description: 'Unlock access to a growing library of high-stakes analyses, hand reviews, and deep theoretical dives. These videos cover the exact concepts and strategies used to beat 1KNL and above.'
-    },
-    {
-      icon: MessageCircle,
-      title: 'Direct Mentor Access',
-      description: 'You are never alone on the grind. Get direct priority support via my private Discord to post hands, ask questions, and get strategy breakdowns from me personally.'
-    }
-  ];
-
-  const pricingPlans = [
-    {
-      name: '3-Month Kickstart',
-      totalPrice: '2,499',
-      paymentNote: 'Paid in full',
-      perSession: '€417 per session',
-      utmContent: 'pricing_3mo',
-      featured: false,
-      features: [
-        '6 Private 1-on-1 Sessions',
-        'Lifetime Weekly Group Coaching',
-        'Full Database Review',
-        'Personalized Study Plan',
-        'Lifetime Discord Access'
-      ],
-      buttonText: 'Book a Free Intro Call'
-    },
-    {
-      name: '6-Month Accelerator',
-      totalPrice: '3,999',
-      paymentNote: 'Pay in full or 3 monthly installments',
-      perSession: '€333 per session',
-      utmContent: 'pricing_6mo',
-      featured: true,
-      badge: 'MOST POPULAR',
-      savings: 'Save €1,000 vs. 3-Month plan',
-      features: [
-        '12 Private 1-on-1 Sessions',
-        'Lifetime Weekly Group Coaching',
-        'Quarterly Database Review',
-        'Quarterly Updated Study Plan',
-        'Lifetime Discord Access',
-        '2-Month Pause Option'
-      ],
-      buttonText: 'Book a Free Intro Call'
-    },
-    {
-      name: '12-Month Mastery',
-      totalPrice: '5,999',
-      paymentNote: 'Pay in full or quarterly installments',
-      perSession: '€250 per session',
-      utmContent: 'pricing_12mo',
-      featured: false,
-      badge: 'BEST VALUE',
-      savings: 'Save €3,000 vs. 3-Month plan',
-      features: [
-        '24 Private 1-on-1 Sessions',
-        'Lifetime Weekly Group Coaching',
-        'Quarterly Database Review',
-        'Quarterly Updated Study Plan',
-        'Lifetime Discord Access',
-        'Priority Scheduling'
-      ],
-      buttonText: 'Book a Free Intro Call'
-    }
-  ];
-
-  const faqItems = [
-    {
-      question: 'What is the structure of the mentorship program?',
-      answer: `The mentorship program is structured to provide a comprehensive learning experience through a combination of personalized one-on-one coaching sessions, dynamic group sessions, and access to our exclusive high-stakes community. You'll receive individualized coaching, a full database review, and a personalized study plan tailored to your unique needs, along with homework assignments.
-
-Additionally, you'll participate in weekly group sessions that foster a collaborative learning environment. In one-on-one sessions, we'll conduct a detailed analysis of your database using advanced tools to identify and address leaks, focusing on GTO range composition and exploiting areas of weakness to elevate your game.
-
-The 3-month program consists of:
-• 6 one-on-one coaching sessions (55 min)
-• 13 group coaching sessions (55 min)
-• Advanced database review`
-    },
-    {
-      question: 'What skill level is the mentorship program best suited for?',
-      answer: 'Our program is best suited for driven, motivated players who are eager to learn and take their game to the next level. While we tailor our coaching to each student\'s needs, those playing at mid-stakes or higher will gain the most from our data-driven strategies and advanced techniques. Ambitious low-stakes players ready to make a serious commitment to improvement are also welcome.'
-    },
-    {
-      question: 'Will I receive any materials or resources to use after the program ends?',
-      answer: 'Yes, you will have access to the resources provided during the program, including a personalized study plan and insights from your database review. Additionally, during the program you\'ll gain access to a comprehensive video database containing all past study sessions, presentations that break down complex concepts, and live-play videos. The strategies and concepts covered in both the one-on-one and group sessions are designed to be used and refined as you continue your poker journey.'
-    },
-    {
-      question: 'Is there a deadline for completing the one-on-one or group sessions?',
-      answer: 'The one-on-one coaching sessions must be scheduled within the duration of your chosen package. Unused sessions will not be reimbursed. Unless otherwise agreed, you can book a maximum of one one-on-one coaching session per week. Any unused sessions will not carry over if you renew the program.\n\nThe 6-month program does include a one-time pause option, allowing for a break of up to two months.'
-    },
-    {
-      question: 'What payment options and payment plans do you offer?',
-      answer: 'Payments can be made via BTC, USDT, Wise, and Revolut. PayPal and Skrill are also accepted, but with a 7% premium. Flexible payment plans are available for both programs. For more details on payment options, please get in touch directly.'
-    },
-    // TODO(patrick): review wording of the five answers below
-    {
-      question: 'What results can I realistically expect?',
-      answer: 'Every student is different. Some real examples: one went from breakeven at NL50 to beating NL200 in about 13 months, another from NL100 to crushing NL1000. What you get out of it depends on your volume and how seriously you take the off-table work. Poker has variance and no honest coach guarantees results.'
-    },
-    {
-      question: 'What stakes do I need to be playing?',
-      answer: 'Players at mid-stakes and above tend to get the most out of the data-driven approach, but ambitious low-stakes players who are ready to commit to structured improvement are welcome too. If you\'re unsure whether it makes sense at your stakes, that\'s exactly what the free intro call is for.'
-    },
-    {
-      question: 'How is this different from a CFP or a course?',
-      answer: 'This mentorship is private 1-on-1 coaching: your database, your leaks, and a study plan built around your actual game, plus weekly group sessions. The NachosPoker CFP is a different offer. That one is a full ecosystem with staking, pool data, and playbooks, where you play and we invest. Courses give you generic content. Here everything is personalized.'
-    },
-    {
-      question: 'What if we\'re in different timezones?',
-      answer: 'Sessions are scheduled individually rather than at fixed times, so most timezones can be accommodated. Mention your timezone on the intro call and we\'ll figure out a schedule that works.'
-    },
-    {
-      question: 'What\'s your refund policy?',
-      answer: 'One-on-one sessions must be used within your package duration, and unused sessions are not reimbursed. The intro call is completely free, so you can evaluate the coaching and the fit before committing to anything.'
-    }
-  ];
-
-  // FAQPage structured data for search engines
-  const faqJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqItems.map((item) => ({
-      '@type': 'Question',
-      name: item.question,
-      acceptedAnswer: { '@type': 'Answer', text: item.answer }
-    }))
-  };
-
-  const goodFitReasons = [
-    'You want to understand why strategies work, not just what to click',
-    'You\'re willing to study consistently and review your own play',
-    'You care about long-term improvement over short-term results'
-  ];
-
-  const notAFitReasons = [
-    'You\'re looking for shortcuts or "secret lines"',
-    'You don\'t want to put in off-table work',
-    'You expect coaching to replace personal responsibility'
-  ];
-
-
   // Scroll Reveal Animation Observer
   useEffect(() => {
     const observerOptions = {
@@ -306,7 +140,7 @@ The 3-month program consists of:
         // Show CTA when Hero is NOT intersecting (less than 20% visible)
         setShowStickyCta(!entry.isIntersecting);
       },
-      { 
+      {
         threshold: 0.2
       }
     );
@@ -318,21 +152,10 @@ The 3-month program consists of:
     return () => observer.disconnect();
   }, []);
 
-  // Load the Calendly script for the inline booking calendar
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://assets.calendly.com/assets/external/widget.js';
-    script.async = true;
-    document.body.appendChild(script);
-    return () => {
-      if (script.parentNode) script.parentNode.removeChild(script);
-    };
-  }, []);
-
   // ============================================
   // CAROUSEL HANDLERS
   // ============================================
-  
+
   const nextVideo = () => {
     if (cinemaCarouselRef.current) {
       cinemaCarouselRef.current.scrollBy({ left: 412, behavior: 'smooth' });
@@ -379,271 +202,6 @@ The 3-month program consists of:
   };
 
   // ============================================
-  // COMPONENTS
-  // ============================================
-
-  const PricingCard = React.memo(({ plan }) => (
-    <div 
-      className={`pricing-card-authority ${plan.featured ? 'featured' : ''}`}
-      style={{
-        position: 'relative',
-        background: 'rgba(18, 18, 18, 0.4)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        border: plan.featured ? '1px solid rgba(168, 139, 70, 0.4)' : '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '24px',
-        padding: '40px 32px',
-        transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '560px',
-        overflow: 'hidden'
-      }}
-    >
-      {/* Radial glow for featured card */}
-      {plan.featured && (
-        <div style={{
-          position: 'absolute',
-          top: '0',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '150%',
-          height: '200px',
-          background: 'radial-gradient(ellipse at center top, rgba(168, 139, 70, 0.15) 0%, rgba(168, 139, 70, 0.05) 40%, transparent 70%)',
-          filter: 'blur(30px)',
-          pointerEvents: 'none',
-          zIndex: 0
-        }} />
-      )}
-
-      {/* Badge */}
-      {plan.badge && (
-        <div style={{
-          position: 'absolute',
-          top: '-1px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          background: plan.featured ? '#a88b46' : 'rgba(168, 139, 70, 0.15)',
-          color: plan.featured ? '#0a0a0a' : '#a88b46',
-          fontSize: '10px',
-          fontWeight: '700',
-          padding: '8px 20px',
-          borderRadius: '0 0 12px 12px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-          whiteSpace: 'nowrap',
-          zIndex: 2
-        }}>
-          {plan.badge}
-        </div>
-      )}
-      
-      {/* Plan Name */}
-      <div style={{
-        color: '#a88b46',
-        fontSize: '12px',
-        fontWeight: '600',
-        marginBottom: '20px',
-        marginTop: plan.badge ? '16px' : '0',
-        textTransform: 'uppercase',
-        letterSpacing: '0.12em',
-        position: 'relative',
-        zIndex: 1
-      }}>
-        {plan.name}
-      </div>
-      
-      {/* Price */}
-      <div style={{
-        marginBottom: '8px',
-        position: 'relative',
-        zIndex: 1
-      }}>
-        <span style={{
-          color: '#FFFFFF',
-          fontSize: '52px',
-          fontWeight: '800',
-          lineHeight: 1,
-          letterSpacing: '-0.02em'
-        }}>
-          €{plan.totalPrice}
-        </span>
-      </div>
-
-      {/* Per-session anchor */}
-      {plan.perSession && (
-        <div style={{
-          color: 'rgba(240, 240, 240, 0.55)',
-          fontSize: '13px',
-          fontWeight: '500',
-          marginBottom: '8px',
-          position: 'relative',
-          zIndex: 1
-        }}>
-          {plan.perSession}
-        </div>
-      )}
-
-      {/* Payment Note */}
-      <div style={{
-        color: 'rgba(240, 240, 240, 0.45)',
-        fontSize: '13px',
-        marginBottom: '8px',
-        lineHeight: 1.5,
-        minHeight: '20px',
-        position: 'relative',
-        zIndex: 1
-      }}>
-        {plan.paymentNote}
-      </div>
-      
-      {/* Savings text */}
-      <div style={{
-        height: '22px',
-        marginBottom: '24px',
-        position: 'relative',
-        zIndex: 1
-      }}>
-        {plan.savings && (
-          <span style={{
-            color: '#a88b46',
-            fontSize: '13px',
-            fontWeight: '600'
-          }}>
-            {plan.savings}
-          </span>
-        )}
-      </div>
-      
-      {/* Divider */}
-      <div style={{
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(168, 139, 70, 0.25), transparent)',
-        marginBottom: '28px',
-        position: 'relative',
-        zIndex: 1
-      }} />
-      
-      {/* Features */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '16px',
-        flex: 1,
-        marginBottom: '32px',
-        position: 'relative',
-        zIndex: 1
-      }}>
-        {plan.features.map((feature, idx) => (
-          <div key={idx} style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: '12px'
-          }}>
-            <Check size={15} color="#a88b46" style={{ flexShrink: 0, marginTop: '2px' }} strokeWidth={2.5} />
-            <span style={{
-              color: 'rgba(240, 240, 240, 0.75)',
-              fontSize: '14px',
-              lineHeight: 1.5
-            }}>
-              {feature}
-            </span>
-          </div>
-        ))}
-      </div>
-      
-      {/* CTA Button - Outline style matching primary CTA */}
-      <a
-        href="#book"
-        onClick={() => track('cta_click', { placement: plan.utmContent })}
-        className="pricing-cta-btn"
-        style={{
-          display: 'block',
-          width: '100%',
-          padding: '16px 24px',
-          borderRadius: '12px',
-          fontWeight: '600',
-          fontSize: '15px',
-          textAlign: 'center',
-          textDecoration: 'none',
-          cursor: 'pointer',
-          transition: 'all 0.3s ease',
-          background: plan.featured ? '#a88b46' : 'transparent',
-          color: plan.featured ? '#0a0a0a' : '#a88b46',
-          border: plan.featured ? 'none' : '1.5px solid #a88b46',
-          marginTop: 'auto',
-          position: 'relative',
-          zIndex: 1
-        }}
-      >
-        {plan.buttonText}
-      </a>
-    </div>
-  ));
-
-  const FAQItem = ({ item, index, isExpanded, onToggle }) => (
-    <div 
-      className="faq-item"
-      style={{
-        background: 'rgba(24, 24, 24, 0.9)',
-        border: '1px solid rgba(167, 138, 67, 0.2)',
-        borderRadius: '12px',
-        overflow: 'hidden',
-        transition: 'all 0.3s ease'
-      }}
-    >
-      <button
-        onClick={() => onToggle(index)}
-        style={{
-          width: '100%',
-          padding: '20px 24px',
-          background: 'transparent',
-          border: 'none',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          cursor: 'pointer',
-          textAlign: 'left'
-        }}
-      >
-        <span style={{
-          color: '#F0F0F0',
-          fontSize: '15px',
-          fontWeight: '600',
-          flex: 1,
-          paddingRight: '16px'
-        }}>
-          {item.question}
-        </span>
-        <ChevronDown 
-          size={20} 
-          color="#A78A43"
-          style={{
-            transition: 'transform 0.3s ease',
-            transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-            flexShrink: 0
-          }}
-        />
-      </button>
-      <div style={{
-        maxHeight: isExpanded ? '500px' : '0',
-        overflow: 'hidden',
-        transition: 'max-height 0.4s ease'
-      }}>
-        <div style={{
-          padding: '0 24px 20px',
-          color: 'rgba(240, 240, 240, 0.7)',
-          fontSize: '14px',
-          lineHeight: 1.8,
-          whiteSpace: 'pre-line'
-        }}>
-          {item.answer}
-        </div>
-      </div>
-    </div>
-  );
-
-  // ============================================
   // RENDER
   // ============================================
 
@@ -652,14 +210,8 @@ The 3-month program consists of:
       {/* Newsletter Popup */}
       <NewsletterPopup />
 
-      {/* FAQ structured data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
-
       {/* Noise/Grain Texture Overlay */}
-      <div 
+      <div
         className="noise-overlay"
         style={{
           position: 'fixed',
@@ -684,10 +236,10 @@ The 3-month program consists of:
           <ArrowRight size={18} />
         </a>
       )}
-      
+
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
-        
+
         /* Smooth Scroll Behavior & Prevent Horizontal Scroll from Peripheral Bokeh */
         html, body {
           scroll-behavior: smooth;
@@ -705,7 +257,7 @@ The 3-month program consists of:
           transform: translateY(60px);
           transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        
+
         .reveal.visible {
           opacity: 1;
           transform: translateY(0);
@@ -717,41 +269,12 @@ The 3-month program consists of:
           transform: translateY(80px);
           transition: opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1), transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        
+
         .reveal-first.visible {
           opacity: 1;
           transform: translateY(0);
         }
-        
-        /* === CINEMATIC SPACE DRIFT ANIMATIONS === */
-        @keyframes driftSlow {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          25% { transform: translate(15px, -25px) rotate(45deg); }
-          50% { transform: translate(25px, -40px) rotate(90deg); }
-          75% { transform: translate(10px, -20px) rotate(135deg); }
-          100% { transform: translate(0, 0) rotate(180deg); }
-        }
-        @keyframes driftMedium {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          25% { transform: translate(-20px, -30px) rotate(-60deg); }
-          50% { transform: translate(-10px, -50px) rotate(-120deg); }
-          75% { transform: translate(10px, -25px) rotate(-180deg); }
-          100% { transform: translate(0, 0) rotate(-240deg); }
-        }
-        @keyframes driftFast {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          25% { transform: translate(12px, -18px) rotate(90deg); }
-          50% { transform: translate(20px, -35px) rotate(180deg); }
-          75% { transform: translate(8px, -15px) rotate(270deg); }
-          100% { transform: translate(0, 0) rotate(360deg); }
-        }
-        @keyframes floatNacho {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          25% { transform: translate(calc(var(--moveX) * 0.5), calc(var(--moveY) * 0.5)) rotate(90deg); }
-          50% { transform: translate(var(--moveX), var(--moveY)) rotate(180deg); }
-          75% { transform: translate(calc(var(--moveX) * 0.5), calc(var(--moveY) * 0.5)) rotate(270deg); }
-          100% { transform: translate(0, 0) rotate(360deg); }
-        }
+
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(30px); }
           to { opacity: 1; transform: translateY(0); }
@@ -760,44 +283,13 @@ The 3-month program consists of:
           from { opacity: 0; }
           to { opacity: 1; }
         }
-        @keyframes traceBorder {
-          0% { offset-distance: 0%; }
-          100% { offset-distance: 100%; }
-        }
-        @keyframes bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-5px); }
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.7; }
-        }
-        @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
-        }
-        @keyframes glowPulse {
-          0%, 100% { opacity: 0.6; }
-          50% { opacity: 1; }
-        }
-        
+
         .glass-card {
           background: rgba(18, 18, 18, 0.4);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
           border: 1px solid rgba(167, 138, 67, 0.15);
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-        .card-hover {
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card-hover:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
         .btn-hover {
           transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
@@ -808,12 +300,12 @@ The 3-month program consists of:
         .btn-hover:active:not(:disabled) {
           transform: translateY(-2px);
         }
-        
+
         .cta-primary {
           position: relative;
           overflow: hidden;
         }
-        
+
         .cta-primary::before {
           content: '';
           position: absolute;
@@ -824,17 +316,17 @@ The 3-month program consists of:
           background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
           transition: left 0.5s ease;
         }
-        
+
         .cta-primary:hover::before {
           left: 100%;
         }
-        
+
         .cta-primary:hover {
           box-shadow: 0 0 20px rgba(167, 138, 67, 0.4), 0 10px 40px rgba(167, 138, 67, 0.3);
           background: #FFa31a;
         }
 
-        /* Sticky Intro Call Button */
+        /* Sticky Apply Button */
         .sticky-cta-btn {
           position: fixed;
           bottom: 24px;
@@ -877,250 +369,13 @@ The 3-month program consists of:
             transform: translateY(0);
           }
         }
-        
-        .spark-border {
-          position: relative;
-          overflow: hidden;
-          border-radius: 20px;
-          background: #121212;
-        }
-        
-        .spark-border::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          padding: 2px;
-          background: linear-gradient(135deg, rgba(167, 138, 67, 0.4), rgba(167, 138, 67, 0.1));
-          -webkit-mask: 
-            linear-gradient(#fff 0 0) content-box, 
-            linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          z-index: 1;
-          pointer-events: none;
-        }
-        
-        .spark-border::after {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100px;
-          height: 2px;
-          background: linear-gradient(90deg, transparent 0%, #A78A43 50%, #A78A43 100%);
-          box-shadow: 0 0 15px 2px rgba(167, 138, 67, 0.7);
-          offset-path: rect(0 100% 100% 0 round 20px);
-          animation: traceBorder 5s linear infinite;
-          offset-rotate: auto;
-          offset-anchor: center;
-          z-index: 2;
-          pointer-events: none;
-        }
-
-        .hero-gradient {
-          background: radial-gradient(ellipse at 50% 0%, rgba(167, 138, 67, 0.12) 0%, transparent 50%);
-        }
-
-        .section-title {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          margin-bottom: 24px;
-        }
-        .section-title h2 {
-          font-size: 24px;
-          font-weight: 700;
-          color: #F0F0F0;
-          margin: 0;
-        }
-        .section-title .line {
-          flex: 1;
-          height: 1px;
-          background: linear-gradient(90deg, rgba(167, 138, 67, 0.4), transparent);
-        }
-
-        .carousel-btn {
-          width: 44px;
-          height: 44px;
-          border-radius: 50%;
-          background: rgba(167, 138, 67, 0.15);
-          border: 1px solid rgba(167, 138, 67, 0.3);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-        .carousel-btn:hover {
-          background: rgba(167, 138, 67, 0.25);
-          border-color: #A78A43;
-          box-shadow: 0 0 20px rgba(167, 138, 67, 0.3);
-        }
-
-        .video-card {
-          transform: translateX(0);
-        }
-        .video-card:hover {
-          transform: translateY(-8px) scale(1.05);
-          box-shadow: 0 30px 60px rgba(167, 138, 67, 0.25), 0 0 40px rgba(167, 138, 67, 0.15);
-          border-color: rgba(167, 138, 67, 0.5);
-        }
-        .video-card:hover .video-thumbnail {
-          transform: scale(1.05);
-        }
-        .video-card:hover .play-button {
-          transform: scale(1.15);
-          box-shadow: 0 8px 40px rgba(167, 138, 67, 0.7);
-        }
-        .video-card:hover .video-gold-bloom {
-          opacity: 1 !important;
-        }
-
-        .benefit-card {
-          background: #1A1A1A;
-          border: 1px solid rgba(167, 138, 67, 0.2);
-          border-radius: 16px;
-          padding: 32px;
-          position: relative;
-          overflow: hidden;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          cursor: default;
-          transition: border-color 0.4s ease;
-        }
-
-        .benefit-card > * {
-          pointer-events: none;
-        }
-
-        .benefit-card::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 3px;
-          background: linear-gradient(90deg, transparent, #A78A43, transparent);
-          opacity: 0;
-          transition: opacity 0.4s ease;
-        }
-
-        .benefit-card:hover::before {
-          opacity: 1;
-        }
-
-        .benefit-card:hover {
-          border-color: rgba(167, 138, 67, 0.4);
-        }
-
-        .benefit-card .benefit-icon {
-          transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-        }
-
-        .benefit-card:hover .benefit-icon {
-          background: rgba(167, 138, 67, 0.15);
-          border-color: rgba(167, 138, 67, 0.6);
-          box-shadow: 0 0 20px rgba(167, 138, 67, 0.25);
-        }
-
-        .benefit-card .benefit-title {
-          transition: color 0.4s ease;
-        }
-
-        .benefit-card:hover .benefit-title {
-          color: #A78A43;
-        }
-
-        .pricing-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-        .pricing-card.featured:hover {
-          transform: scale(1.05);
-          box-shadow: 0 0 50px rgba(167, 138, 67, 0.25), 0 25px 50px rgba(0, 0, 0, 0.4);
-        }
 
         .faq-item:hover {
           border-color: rgba(167, 138, 67, 0.4);
         }
 
-        @keyframes carouselSlide {
-          from {
-            transform: translateX(20px);
-          }
-          to {
-            transform: translateX(0);
-          }
-        }
-
-        .video-carousel {
-          animation: carouselSlide 0.3s ease-out;
-        }
-
-        .testimonial-card {
-          transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .testimonial-card-main {
-          transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        @keyframes slideInRight {
-          0% {
-            opacity: 0;
-            transform: translateX(40px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        @keyframes slideInLeft {
-          0% {
-            opacity: 0;
-            transform: translateX(-40px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        .preview-card:hover {
-          opacity: 0.7 !important;
-          transform: scale(0.95) !important;
-        }
-
-        /* Cinematic Nacho Float Animation */
-        @keyframes cinematicFloat {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          25% { transform: translate(15px, -25px) rotate(45deg); }
-          50% { transform: translate(25px, -40px) rotate(90deg); }
-          75% { transform: translate(10px, -20px) rotate(135deg); }
-          100% { transform: translate(0, 0) rotate(180deg); }
-        }
-
-        @keyframes cinematicFloat2 {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          25% { transform: translate(-20px, -30px) rotate(-60deg); }
-          50% { transform: translate(-10px, -50px) rotate(-120deg); }
-          75% { transform: translate(10px, -25px) rotate(-180deg); }
-          100% { transform: translate(0, 0) rotate(-240deg); }
-        }
-
-        @keyframes atmosphereDrift {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          25% { transform: translate(30px, -20px) rotate(15deg); }
-          50% { transform: translate(50px, -35px) rotate(30deg); }
-          75% { transform: translate(25px, -15px) rotate(15deg); }
-          100% { transform: translate(0, 0) rotate(0deg); }
-        }
-
         /* === DEPTH-OF-FIELD BOKEH ANIMATIONS === */
-        
+
         /* PERIPHERAL: Ultra-Large, Extreme Slow Wobble - Lens Edge Effect */
         @keyframes peripheralWobble1 {
           0% { transform: translate(0, 0) rotate(0deg) scale(1); }
@@ -1132,7 +387,7 @@ The 3-month program consists of:
           90% { transform: translate(1px, -2px) rotate(1deg) scale(1); }
           100% { transform: translate(0, 0) rotate(0deg) scale(1); }
         }
-        
+
         @keyframes peripheralWobble2 {
           0% { transform: translate(0, 0) rotate(0deg) scale(1); }
           20% { transform: translate(-4px, -6px) rotate(-3deg) scale(1.02); }
@@ -1141,7 +396,7 @@ The 3-month program consists of:
           80% { transform: translate(-3px, -7px) rotate(-4deg) scale(0.99); }
           100% { transform: translate(0, 0) rotate(0deg) scale(1); }
         }
-        
+
         /* FOREGROUND: Large, Heavy, Slow - Pressurized Float */
         @keyframes foregroundDrift1 {
           0% { transform: translate(0, 0) rotate(0deg) scale(1); }
@@ -1151,7 +406,7 @@ The 3-month program consists of:
           80% { transform: translate(5px, -5px) rotate(12deg) scale(0.99); }
           100% { transform: translate(0, 0) rotate(0deg) scale(1); }
         }
-        
+
         @keyframes foregroundDrift2 {
           0% { transform: translate(0, 0) rotate(0deg) scale(1); }
           25% { transform: translate(-10px, -15px) rotate(-12deg) scale(1.03); }
@@ -1159,14 +414,14 @@ The 3-month program consists of:
           75% { transform: translate(-12px, -10px) rotate(-8deg) scale(1.02); }
           100% { transform: translate(0, 0) rotate(0deg) scale(1); }
         }
-        
+
         @keyframes foregroundDrift3 {
           0% { transform: translate(0, 0) rotate(0deg) scale(1); }
           30% { transform: translate(12px, -20px) rotate(18deg) scale(0.98); }
           60% { transform: translate(6px, -10px) rotate(10deg) scale(1.02); }
           100% { transform: translate(0, 0) rotate(0deg) scale(1); }
         }
-        
+
         /* MIDGROUND: Medium, Moderate Float */
         @keyframes midgroundDrift1 {
           0% { transform: translate(0, 0) rotate(0deg); }
@@ -1176,7 +431,7 @@ The 3-month program consists of:
           80% { transform: translate(10px, -15px) rotate(55deg); }
           100% { transform: translate(0, 0) rotate(0deg); }
         }
-        
+
         @keyframes midgroundDrift2 {
           0% { transform: translate(0, 0) rotate(0deg); }
           25% { transform: translate(-25px, -35px) rotate(-40deg); }
@@ -1184,14 +439,14 @@ The 3-month program consists of:
           75% { transform: translate(-30px, -25px) rotate(-50deg); }
           100% { transform: translate(0, 0) rotate(0deg); }
         }
-        
+
         @keyframes midgroundDrift3 {
           0% { transform: translate(0, 0) rotate(0deg); }
           33% { transform: translate(30px, -25px) rotate(60deg); }
           66% { transform: translate(15px, -45px) rotate(120deg); }
           100% { transform: translate(0, 0) rotate(0deg); }
         }
-        
+
         /* BACKGROUND (FOCAL): Small, Sharp, Fast Darting - Like distant particles */
         @keyframes backgroundDart1 {
           0% { transform: translate(0, 0) rotate(0deg); }
@@ -1203,7 +458,7 @@ The 3-month program consists of:
           85% { transform: translate(20px, -30px) rotate(320deg); }
           100% { transform: translate(0, 0) rotate(360deg); }
         }
-        
+
         @keyframes backgroundDart2 {
           0% { transform: translate(0, 0) rotate(0deg); }
           15% { transform: translate(-35px, -50px) rotate(-60deg); }
@@ -1213,7 +468,7 @@ The 3-month program consists of:
           85% { transform: translate(-15px, -25px) rotate(-310deg); }
           100% { transform: translate(0, 0) rotate(-360deg); }
         }
-        
+
         @keyframes backgroundDart3 {
           0% { transform: translate(0, 0) rotate(0deg); }
           12% { transform: translate(40px, -35px) rotate(70deg); }
@@ -1225,24 +480,24 @@ The 3-month program consists of:
         }
 
         @keyframes heroFadeIn {
-          from { 
-            opacity: 0; 
-            transform: translateY(40px); 
+          from {
+            opacity: 0;
+            transform: translateY(40px);
           }
-          to { 
-            opacity: 1; 
-            transform: translateY(0); 
+          to {
+            opacity: 1;
+            transform: translateY(0);
           }
         }
 
         @keyframes imageReveal {
-          from { 
-            opacity: 0; 
-            transform: translateX(60px); 
+          from {
+            opacity: 0;
+            transform: translateX(60px);
           }
-          to { 
-            opacity: 1; 
-            transform: translateX(0); 
+          to {
+            opacity: 1;
+            transform: translateX(0);
           }
         }
 
@@ -1273,7 +528,7 @@ The 3-month program consists of:
           filter: 'blur(80px)',
           opacity: 0.6
         }} />
-        
+
         {/* Massive Bokeh - Bottom Left */}
         <div style={{
           position: 'absolute',
@@ -1304,11 +559,11 @@ The 3-month program consists of:
       {/* ==================== GLOBAL BOKEH BACKGROUND SYSTEM ==================== */}
       {/* Unified depth-of-field nacho field - persists across entire page */}
       {/* Depth Logic: Large=Blurry/Slow (foreground), Small=Sharp/Fast (background focal point) */}
-      
+
       {/* === LAYER 0: PERIPHERAL BOKEH - Ultra-Large, Extreme Blur, Edge Framing === */}
       {/* Simulates objects very close to the camera lens in peripheral vision */}
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
-        
+
         {/* Peripheral Left - Top */}
         <div style={{
           position: 'absolute',
@@ -1410,10 +665,10 @@ The 3-month program consists of:
           </svg>
         </div>
       </div>
-      
+
       {/* === LAYER 1: FOREGROUND - Large, Very Blurry, Slow Heavy Drift === */}
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 1, overflow: 'hidden' }}>
-        
+
         {/* Foreground Nacho 1 - Top Left */}
         <div className="bokeh-foreground" style={{
           position: 'absolute',
@@ -1484,7 +739,7 @@ The 3-month program consists of:
 
       {/* === LAYER 2: MIDGROUND - Medium, Soft Blur, Moderate Drift === */}
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 2, overflow: 'hidden' }}>
-        
+
         {/* Midground Nacho 1 */}
         <div className="bokeh-midground" style={{
           position: 'absolute',
@@ -1589,7 +844,7 @@ The 3-month program consists of:
 
       {/* === LAYER 3: BACKGROUND (FOCAL POINT) - Small, Sharp, Fast Darting === */}
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 3, overflow: 'hidden' }}>
-        
+
         {/* Background Nacho 1 - Sharp, Fast */}
         <div className="bokeh-background" style={{
           position: 'absolute',
@@ -1762,7 +1017,7 @@ The 3-month program consists of:
 
       {/* ==================== FIXED NAVBAR (z-9999) ==================== */}
       {/* Outside Hero section so it doesn't get affected by the fade mask */}
-      <div 
+      <div
         style={{
           position: 'fixed',
           top: 0,
@@ -1779,226 +1034,12 @@ The 3-month program consists of:
       </div>
 
       {/* ==================== CINEMATIC HERO SECTION ==================== */}
-      <section 
-        ref={heroSectionRef}
-        className="hero-section-fade"
+      <Hero sectionRef={heroSectionRef} />
+
+      {/* ==================== MUSEUM SPACER: Fade Zone (halved per audit) ==================== */}
+      <div
         style={{
-          position: 'relative',
-          minHeight: '100vh',
-          width: '100%',
-          overflow: 'hidden',
-          background: 'transparent',
-          zIndex: 10
-        }}
-      >
-        {/* === HALO LIGHTING: Key Light Behind Coach (z-5) === */}
-        <div style={{
-          position: 'absolute',
-          bottom: '-15%',
-          right: '-5%',
-          width: '800px',
-          height: '800px',
-          background: 'radial-gradient(circle, rgba(167, 138, 67, 0.3) 0%, rgba(167, 138, 67, 0.12) 40%, transparent 70%)',
-          filter: 'blur(120px)',
-          zIndex: 5,
-          pointerEvents: 'none'
-        }} />
-
-        {/* === COACH IMAGE: Anchored Bottom-Right (z-20) === */}
-        <div 
-          className="hero-image-mask"
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            right: 0,
-            height: '88vh',
-            maxHeight: '920px',
-            zIndex: 20,
-            animation: 'imageReveal 1.2s ease-out 0.5s both',
-            pointerEvents: 'none'
-          }}
-        >
-          <img 
-            src="/proof/coach-hero.png"
-            alt="Freenachos - High Stakes Poker Coach"
-            style={{
-              height: '100%',
-              width: 'auto',
-              objectFit: 'contain',
-              objectPosition: 'bottom right'
-            }}
-          />
-        </div>
-
-        {/* === CINEMATIC VIGNETTE: Readability Overlay (z-15) === */}
-        <div 
-          style={{
-            position: 'absolute',
-            inset: 0,
-            zIndex: 15,
-            background: 'linear-gradient(to right, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0.7) 35%, rgba(10, 10, 10, 0.3) 55%, transparent 75%)',
-            pointerEvents: 'none'
-          }}
-        />
-
-        {/* === CONTENT WRAPPER: Constrained Width (z-30) === */}
-        <div 
-          style={{
-            position: 'relative',
-            zIndex: 30,
-            width: '100%',
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center'
-          }}
-        >
-          {/* Max-Width Container - Prevents Ultra-Wide Stretch */}
-          <div 
-            style={{
-              width: '100%',
-              maxWidth: '1280px',
-              margin: '0 auto',
-              padding: '0 48px',
-              paddingTop: '140px',
-              paddingBottom: '80px'
-            }}
-          >
-            <div 
-              style={{
-                maxWidth: '580px',
-                animation: 'heroFadeIn 1s ease-out 0.2s both'
-              }}
-            >
-              {/* Badge */}
-              <div 
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  background: 'rgba(167, 138, 67, 0.1)',
-                  border: '1px solid rgba(167, 138, 67, 0.3)',
-                  borderRadius: '50px',
-                  padding: '10px 20px',
-                  marginBottom: '32px',
-                  backdropFilter: 'blur(8px)'
-                }}
-              >
-                <Users size={16} color="#A78A43" />
-                <span style={{ 
-                  fontSize: '13px', 
-                  color: '#A78A43', 
-                  fontWeight: '600',
-                  letterSpacing: '0.03em'
-                }}>
-                  Trusted by 200+ Winning Regs
-                </span>
-              </div>
-              
-              {/* Headline */}
-              <h1 style={{
-                fontSize: 'clamp(40px, 5vw, 60px)',
-                fontWeight: '800',
-                color: '#FFFFFF',
-                marginBottom: '28px',
-                lineHeight: 1.08,
-                letterSpacing: '-0.025em',
-                fontFamily: 'Manrope, Inter, sans-serif'
-              }}>
-                Master High-Stakes<br />
-                Theory & <span style={{ 
-                  color: '#A78A43',
-                  textShadow: '0 0 80px rgba(167, 138, 67, 0.4)'
-                }}>Exploit the<br />Population</span>.
-              </h1>
-              
-              {/* Subhead */}
-              <p style={{
-                fontSize: '17px',
-                color: '#B0B0B8',
-                maxWidth: '460px',
-                lineHeight: 1.85,
-                marginBottom: '40px',
-                fontWeight: '400'
-              }}>
-                Stop guessing. Start executing. The exact data-driven strategies I used to win at 1KNL+ and help my students generate <strong style={{ color: '#FFFFFF', fontWeight: '500' }}>$5.5M+ in profits</strong>.
-              </p>
-              
-              {/* CTA Button */}
-              <a
-                href="#book"
-                onClick={() => track('cta_click', { placement: 'hero' })}
-                className="btn-hover cta-primary"
-                style={{
-                  background: '#A78A43',
-                  color: '#0a0a0a',
-                  padding: '20px 44px',
-                  borderRadius: '14px',
-                  fontWeight: '700',
-                  fontSize: '16px',
-                  textDecoration: 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  boxShadow: '0 4px 30px rgba(167, 138, 67, 0.4)',
-                  letterSpacing: '0.01em'
-                }}
-              >
-                Book a Free Intro Call <ArrowRight size={20} />
-              </a>
-
-              {/* Friction-reducing microcopy */}
-              <div style={{
-                marginTop: '14px',
-                fontSize: '13px',
-                color: 'rgba(240, 240, 240, 0.45)',
-                letterSpacing: '0.01em'
-              }}>
-                Free call, no sales pitch. Find out if you're a fit.
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Responsive Styles for Hero */}
-        <style>{`
-          @media (max-width: 1400px) {
-            .hero-image-mask {
-              right: -5% !important;
-            }
-          }
-          @media (max-width: 1200px) {
-            .hero-image-mask {
-              right: -10% !important;
-              height: 75vh !important;
-              max-height: 800px !important;
-            }
-          }
-          @media (max-width: 968px) {
-            .hero-image-mask {
-              display: none !important;
-            }
-          }
-        `}</style>
-
-        {/* === FLOOR FOG: Soft Bottom Transition (z-25) === */}
-        <div 
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            width: '100%',
-            height: '25vh',
-            background: 'linear-gradient(to top, #0A0E1A 0%, rgba(10, 14, 26, 0.6) 50%, transparent 100%)',
-            zIndex: 25,
-            pointerEvents: 'none'
-          }}
-        />
-      </section>
-
-      {/* ==================== MUSEUM SPACER: Fade Zone ==================== */}
-      <div 
-        style={{
-          height: '300px',
+          height: '150px',
           position: 'relative',
           zIndex: 0
         }}
@@ -2008,639 +1049,21 @@ The 3-month program consists of:
       <div style={{position: 'relative', zIndex: 10, maxWidth: '1400px', margin: '0 auto', padding: '0 24px'}}>
 
         {/* ==================== COACH SECTION - Authority Split Layout ==================== */}
-        <div 
-          ref={aboutSectionRef}
-          className="reveal-first coach-authority-section"
-          style={{
-            paddingTop: '256px',
-            paddingBottom: '256px',
-            marginBottom: '0',
-            position: 'relative'
-          }}
-        >
-          {/* Centered Headline */}
-          <h2 
-            style={{
-              fontSize: 'clamp(36px, 4.5vw, 56px)',
-              fontWeight: '800',
-              color: '#FFFFFF',
-              marginBottom: '72px',
-              lineHeight: 1.08,
-              letterSpacing: '-0.025em',
-              fontFamily: 'Manrope, Inter, sans-serif',
-              textAlign: 'center'
-            }}
-          >
-            The Coach Behind <span style={{ 
-              color: '#a88b46',
-              textShadow: '0 0 60px rgba(168, 139, 70, 0.4)',
-              position: 'relative',
-              display: 'inline-block'
-            }}>
-              {/* Subtle radial glow anchor */}
-              <span style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: '180%',
-                height: '300%',
-                background: 'radial-gradient(ellipse at center, rgba(168, 139, 70, 0.15) 0%, rgba(168, 139, 70, 0.05) 40%, transparent 70%)',
-                filter: 'blur(20px)',
-                pointerEvents: 'none',
-                zIndex: -1
-              }} />
-              $5.5M+
-            </span> in Student Profits
-          </h2>
+        <ProofSection />
 
-          {/* Two-Column Authority Split */}
-          <div 
-            className="authority-split-grid"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '80px',
-              alignItems: 'start',
-              maxWidth: '1200px',
-              margin: '0 auto'
-            }}
-          >
-            {/* LEFT COLUMN - Copy */}
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              paddingRight: '24px'
-            }}>
-              <div style={{
-                color: 'rgba(240, 240, 240, 0.8)',
-                fontSize: '17px',
-                lineHeight: 1.9,
-                fontWeight: '400'
-              }}>
-                <p style={{ marginBottom: '24px' }}>
-                  I didn't start out winning. I went through long breakeven stretches and downswings, even while studying and putting in serious volume. The problem wasn't a lack of effort. It was that I lacked a system that worked against real opponents.
-                </p>
-                <p style={{ marginBottom: '24px', color: 'rgba(240, 240, 240, 0.7)' }}>
-                  Everything changed when I stopped memorizing solver outputs and started using <span style={{ color: '#a88b46', fontWeight: '500' }}>GTO as a diagnostic tool</span>. By comparing equilibrium to actual population behavior, I learned how to identify recurring imbalances and build strategies that exploit them in a repeatable way.
-                </p>
-                <p style={{ color: 'rgba(240, 240, 240, 0.6)' }}>
-                  I teach you to translate data into profit. The goal is not theoretical perfection. It is a <span style={{ color: '#a88b46', fontWeight: '500' }}>consistent, repeatable system</span> that wins over large samples.
-                </p>
-              </div>
-
-              {/* CTA Button */}
-              <a
-                href="#book"
-                onClick={() => track('cta_click', { placement: 'about' })}
-                className="btn-hover authority-cta-btn"
-                style={{
-                  marginTop: '48px',
-                  background: 'transparent',
-                  color: '#a88b46',
-                  padding: '16px 32px',
-                  borderRadius: '12px',
-                  fontWeight: '600',
-                  fontSize: '15px',
-                  textDecoration: 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  border: '1.5px solid #a88b46',
-                  transition: 'all 0.3s ease',
-                  width: 'fit-content'
-                }}
-              >
-                Book a Free Intro Call <ArrowRight size={16} />
-              </a>
-            </div>
-
-            {/* RIGHT COLUMN - Visual Proof */}
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center'
-            }}>
-              {/* Graph Display */}
-              <div style={{
-                position: 'relative',
-                width: '100%',
-                maxWidth: '480px'
-              }}>
-                {/* Subtle Ambient Glow */}
-                <div style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: '110%',
-                  height: '110%',
-                  background: 'radial-gradient(ellipse at center, rgba(168, 139, 70, 0.12) 0%, transparent 60%)',
-                  filter: 'blur(40px)',
-                  pointerEvents: 'none',
-                  zIndex: 0
-                }} />
-                
-                {/* Graph Frame - Clickable */}
-                <div 
-                  onClick={() => setShowGraphModal(true)}
-                  className="graph-frame-clickable"
-                  style={{
-                    position: 'relative',
-                    zIndex: 1,
-                    border: '1px solid rgba(168, 139, 70, 0.2)',
-                    borderRadius: '16px',
-                    overflow: 'hidden',
-                    boxShadow: '0 24px 64px rgba(0, 0, 0, 0.4)',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease'
-                  }}>
-                  <img 
-                    src="/proof/results-graph-1knl.jpg"
-                    alt="Freenachos Results Graph - 6.2bb/100 at High Stakes"
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                      display: 'block'
-                    }}
-                  />
-                  {/* Hover overlay */}
-                  <div className="graph-hover-overlay" style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'rgba(168, 139, 70, 0.08)',
-                    opacity: 0,
-                    transition: 'opacity 0.3s ease',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    pointerEvents: 'none'
-                  }}>
-                    <span style={{
-                      color: '#a88b46',
-                      fontSize: '13px',
-                      fontWeight: '600',
-                      letterSpacing: '0.05em',
-                      textTransform: 'uppercase'
-                    }}>Click to expand</span>
-                  </div>
-                </div>
-                
-                {/* Caption */}
-                <div style={{ 
-                  textAlign: 'center',
-                  fontSize: '12px',
-                  color: 'rgba(240, 240, 240, 0.45)',
-                  fontStyle: 'italic',
-                  marginTop: '16px',
-                  letterSpacing: '0.02em'
-                }}>
-                  Verified results · 1KNL+
-                </div>
-              </div>
-
-              {/* Separator Line */}
-              <div style={{
-                width: '100%',
-                maxWidth: '480px',
-                height: '1px',
-                background: 'rgba(168, 139, 70, 0.15)',
-                margin: '32px 0'
-              }} />
-
-              {/* Stats Row - 4 in a single row */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                width: '100%',
-                maxWidth: '480px',
-                gap: '16px'
-              }}>
-                {[
-                  { value: '$5.5M+', label: 'Student Profits' },
-                  { value: '200+', label: 'Students' },
-                  { value: '6.2bb', label: 'Win Rate' },
-                  { value: '10M+', label: 'Hands Played' }
-                ].map((stat, idx) => (
-                  <div 
-                    key={idx}
-                    style={{ 
-                      textAlign: 'left',
-                      flex: 1
-                    }}
-                  >
-                    <div style={{ 
-                      fontSize: '24px', 
-                      fontWeight: '800', 
-                      color: '#FFFFFF', 
-                      marginBottom: '4px',
-                      letterSpacing: '-0.02em',
-                      lineHeight: 1
-                    }}>
-                      {stat.value}
-                    </div>
-                    <div style={{
-                      fontSize: '12px',
-                      color: '#a88b46',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.1em',
-                      fontWeight: '600',
-                      lineHeight: 1.3
-                    }}>
-                      {stat.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Graph Modal */}
-          {showGraphModal && (
-            <div 
-              onClick={() => setShowGraphModal(false)}
-              style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'rgba(0, 0, 0, 0.85)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                zIndex: 10000,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '40px',
-                animation: 'modalFadeIn 0.3s ease'
-              }}
-            >
-              <div 
-                onClick={(e) => e.stopPropagation()}
-                style={{
-                  position: 'relative',
-                  maxWidth: '900px',
-                  width: '100%',
-                  background: 'rgba(18, 18, 18, 0.6)',
-                  backdropFilter: 'blur(40px)',
-                  WebkitBackdropFilter: 'blur(40px)',
-                  border: '1px solid rgba(168, 139, 70, 0.25)',
-                  borderRadius: '24px',
-                  padding: '24px',
-                  boxShadow: '0 40px 100px rgba(0, 0, 0, 0.6), 0 0 80px rgba(168, 139, 70, 0.1)',
-                  animation: 'modalScaleIn 0.3s ease'
-                }}
-              >
-                {/* Close Button */}
-                <button
-                  onClick={() => setShowGraphModal(false)}
-                  style={{
-                    position: 'absolute',
-                    top: '16px',
-                    right: '16px',
-                    width: '40px',
-                    height: '40px',
-                    background: 'rgba(168, 139, 70, 0.1)',
-                    border: '1px solid rgba(168, 139, 70, 0.3)',
-                    borderRadius: '10px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'all 0.2s ease',
-                    zIndex: 10
-                  }}
-                  className="modal-close-btn"
-                >
-                  <X size={20} color="#a88b46" />
-                </button>
-                
-                {/* Graph Image */}
-                <div style={{
-                  borderRadius: '16px',
-                  overflow: 'hidden'
-                }}>
-                  <img 
-                    src="/proof/results-graph-1knl.jpg"
-                    alt="Freenachos Results Graph - 6.2bb/100 at High Stakes"
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                      display: 'block'
-                    }}
-                  />
-                </div>
-                
-                {/* Modal Caption */}
-                <div style={{
-                  textAlign: 'center',
-                  fontSize: '13px',
-                  color: 'rgba(240, 240, 240, 0.5)',
-                  marginTop: '16px',
-                  fontStyle: 'italic'
-                }}>
-                  Verified results · 6.2bb/100 at 1KNL+
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Authority Split Responsive Styles */}
-          <style>{`
-            .authority-cta-btn:hover {
-              background: rgba(168, 139, 70, 0.08) !important;
-              border-color: #a88b46 !important;
-              transform: translateY(-2px);
-              box-shadow: 0 8px 24px rgba(168, 139, 70, 0.15);
-            }
-            
-            .graph-frame-clickable:hover {
-              border-color: rgba(168, 139, 70, 0.4) !important;
-              transform: translateY(-2px);
-              box-shadow: 0 28px 72px rgba(0, 0, 0, 0.5), 0 0 30px rgba(168, 139, 70, 0.1) !important;
-            }
-            
-            .graph-frame-clickable:hover .graph-hover-overlay {
-              opacity: 1 !important;
-            }
-            
-            .modal-close-btn:hover {
-              background: rgba(168, 139, 70, 0.2) !important;
-              border-color: rgba(168, 139, 70, 0.5) !important;
-              transform: scale(1.05);
-            }
-            
-            @keyframes modalFadeIn {
-              from { opacity: 0; }
-              to { opacity: 1; }
-            }
-            
-            @keyframes modalScaleIn {
-              from { 
-                opacity: 0;
-                transform: scale(0.95);
-              }
-              to { 
-                opacity: 1;
-                transform: scale(1);
-              }
-            }
-            
-            @media (max-width: 960px) {
-              .authority-split-grid {
-                grid-template-columns: 1fr !important;
-                gap: 64px !important;
-              }
-              .authority-split-grid > div:first-child {
-                padding-right: 0 !important;
-                text-align: center;
-              }
-              .authority-split-grid > div:first-child a {
-                margin-left: auto;
-                margin-right: auto;
-              }
-            }
-            
-            @media (max-width: 768px) {
-              .coach-authority-section {
-                padding-top: 160px !important;
-                padding-bottom: 160px !important;
-              }
-            }
-
-            @media (max-width: 520px) {
-              .authority-split-grid > div:last-child > div:last-child {
-                flex-wrap: wrap !important;
-                gap: 24px !important;
-              }
-              .authority-split-grid > div:last-child > div:last-child > div {
-                flex: 0 0 calc(50% - 12px) !important;
-              }
-            }
-          `}</style>
-        </div>
-
-        {/* ==================== WHAT YOU GET - Interactive Gallery ==================== */}
-        <div 
-          id="mentorship"
-          className="reveal what-you-get-section"
-          style={{
-            paddingTop: '256px',
-            paddingBottom: '256px',
-            marginBottom: '0',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-          }}
-        >
-          {/* Centered Authority Header */}
-          <div style={{ 
-            textAlign: 'center',
-            marginBottom: '80px',
-            maxWidth: '672px'
-          }}>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '10px',
-              background: 'rgba(167, 138, 67, 0.08)',
-              border: '1px solid rgba(167, 138, 67, 0.2)',
-              borderRadius: '30px',
-              padding: '8px 20px',
-              marginBottom: '28px'
-            }}>
-              <Sparkles size={16} color="#A78A43" />
-              <span style={{ fontSize: '13px', color: '#A78A43', fontWeight: '600', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-                Exclusive Access
-              </span>
-            </div>
-            <h2 
-              
-              style={{
-                fontSize: 'clamp(38px, 5vw, 56px)',
-                fontWeight: '800',
-                color: '#FFFFFF',
-                marginBottom: '24px',
-                lineHeight: 1.08,
-                letterSpacing: '-0.025em',
-                fontFamily: 'Manrope, Inter, sans-serif',
-                transition: 'all 0.4s ease'
-              }}
-            >
-              What You <span style={{ 
-                color: '#A78A43',
-                textShadow: '0 0 60px rgba(167, 138, 67, 0.4)',
-                transition: 'all 0.4s ease'
-              }}>Get</span>
-            </h2>
-            <p style={{
-              fontSize: '18px',
-              color: 'rgba(240, 240, 240, 0.6)',
-              lineHeight: 1.85,
-              maxWidth: '520px',
-              margin: '0 auto'
-            }}>
-              Everything you need to transform from a struggling reg into a high-stakes crusher
-            </p>
-          </div>
-          
-          {/* Ghost Grid - Icons Float on the Void */}
-          <div 
-            className="ghost-benefits-grid"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '48px',
-              maxWidth: '1200px',
-              width: '100%'
-            }}
-          >
-            {mentorshipBenefits.map((benefit, idx) => {
-              const Icon = benefit.icon;
-              return (
-                <div 
-                  key={idx}
-                  className="ghost-benefit-item"
-                  style={{
-                    padding: '48px 36px',
-                    borderRadius: '24px',
-                    transition: 'all 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
-                    cursor: 'default',
-                    position: 'relative',
-                    background: 'transparent',
-                    border: '1px solid transparent'
-                  }}
-                >
-                  {/* Icon with Gradient Effect */}
-                  <div 
-                    className="ghost-icon-container"
-                    style={{
-                      position: 'relative',
-                      width: '72px',
-                      height: '72px',
-                      borderRadius: '18px',
-                      background: 'transparent',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginBottom: '28px',
-                      transition: 'all 0.5s ease'
-                    }}
-                  >
-                    {/* Gold Bloom Glow - Hidden by default */}
-                    <div 
-                      className="icon-bloom"
-                      style={{
-                        position: 'absolute',
-                        inset: '-20px',
-                        background: 'radial-gradient(circle, rgba(167, 138, 67, 0.35) 0%, transparent 70%)',
-                        filter: 'blur(20px)',
-                        opacity: 0,
-                        transition: 'opacity 0.5s ease',
-                        pointerEvents: 'none'
-                      }}
-                    />
-                    {/* Icon with Gold-to-White gradient appearance */}
-                    <Icon 
-                      size={36} 
-                      strokeWidth={1.5}
-                      style={{
-                        color: '#A78A43',
-                        filter: 'drop-shadow(0 0 8px rgba(167, 138, 67, 0.3))',
-                        transition: 'all 0.4s ease'
-                      }}
-                      className="ghost-icon"
-                    />
-                  </div>
-                  
-                  {/* Title */}
-                  <h3 style={{
-                    color: '#F0F0F0',
-                    fontSize: '20px',
-                    fontWeight: '700',
-                    marginBottom: '14px',
-                    lineHeight: 1.3,
-                    transition: 'color 0.4s ease'
-                  }}>
-                    {benefit.title}
-                  </h3>
-                  
-                  {/* Description */}
-                  <p style={{
-                    color: 'rgba(240, 240, 240, 0.7)',
-                    fontSize: '15px',
-                    lineHeight: 1.8
-                  }}>
-                    {benefit.description}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-          
-          {/* Ghost Grid Interactive Styles */}
-          <style>{`
-            /* Default: Naked/Ghost state - floating on void */
-            .ghost-benefit-item {
-              background: transparent !important;
-              border: 1px solid transparent !important;
-            }
-            
-            /* Hover: Glass Reveal with Bloom */
-            .ghost-benefit-item:hover {
-              background: rgba(255, 255, 255, 0.05) !important;
-              backdrop-filter: blur(24px);
-              -webkit-backdrop-filter: blur(24px);
-              border: 1px solid rgba(255, 255, 255, 0.10) !important;
-              transform: translateY(-8px);
-              box-shadow: 0 32px 64px rgba(0, 0, 0, 0.3);
-            }
-            
-            /* Icon bloom on hover */
-            .ghost-benefit-item:hover .icon-bloom {
-              opacity: 1 !important;
-            }
-            
-            /* Icon brightens on hover */
-            .ghost-benefit-item:hover .ghost-icon {
-              color: #FFFFFF !important;
-              filter: drop-shadow(0 0 16px rgba(167, 138, 67, 0.6)) !important;
-            }
-            
-            /* Responsive Grid */
-            @media (max-width: 1024px) {
-              .ghost-benefits-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 32px !important;
-              }
-            }
-            @media (max-width: 680px) {
-              .ghost-benefits-grid {
-                grid-template-columns: 1fr !important;
-                gap: 24px !important;
-              }
-              .what-you-get-section {
-                padding-top: 160px !important;
-                padding-bottom: 160px !important;
-              }
-            }
-          `}</style>
-        </div>
+        {/* ==================== MECHANISM - Diagnose / Prioritize / Install / Verify ==================== */}
+        <Mechanism />
 
         {/* ==================== TESTIMONIALS - Individual Cards Only ==================== */}
-        <div 
+        <div
           id="testimonials"
           className="reveal"
           style={{
             paddingTop: '60px',
             paddingBottom: '120px',
-            marginBottom: '250px',
-            overflow: 'visible'
+            marginBottom: '200px',
+            overflow: 'visible',
+            scrollMarginTop: '90px'
           }}
         >
           {/* Centered Header */}
@@ -2654,7 +1077,7 @@ The 3-month program consists of:
               letterSpacing: '-0.025em',
               fontFamily: 'Manrope, Inter, sans-serif'
             }}>
-              What My Students <span style={{ 
+              What My Students <span style={{
                 color: '#A78A43',
                 textShadow: '0 0 60px rgba(167, 138, 67, 0.4)'
               }}>Say</span>
@@ -2666,8 +1089,13 @@ The 3-month program consists of:
               margin: '0 auto',
               lineHeight: 1.7
             }}>
-              Results and testimonials from players I've worked with.
+              Results and testimonials from players I&apos;ve worked with.
             </p>
+            {/* TODO(patrick): enable once /results has 2+ complete case studies (P4)
+            <a href="/results" style={{ color: '#a88b46', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
+              Full case studies →
+            </a>
+            */}
           </div>
 
           {/* Testimonial Carousel with Side Previews */}
@@ -2680,7 +1108,7 @@ The 3-month program consists of:
             padding: '0 20px'
           }}>
             {/* Left Preview Card */}
-            <div 
+            <div
               onClick={prevTestimonial}
               className="testimonial-preview-card"
               style={{
@@ -2711,8 +1139,8 @@ The 3-month program consists of:
                 height: '80px',
                 flexShrink: 0
               }}>
-                <img 
-                  src={testimonials[(currentTestimonialIndex - 1 + testimonials.length) % testimonials.length].image || testimonials[(currentTestimonialIndex - 1 + testimonials.length) % testimonials.length].imageAfter} 
+                <img
+                  src={testimonials[(currentTestimonialIndex - 1 + testimonials.length) % testimonials.length].image || testimonials[(currentTestimonialIndex - 1 + testimonials.length) % testimonials.length].imageAfter}
                   alt="Results"
                   style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
                 />
@@ -2728,12 +1156,12 @@ The 3-month program consists of:
                 WebkitLineClamp: 4,
                 WebkitBoxOrient: 'vertical'
               }}>
-                "{testimonials[(currentTestimonialIndex - 1 + testimonials.length) % testimonials.length].quote.substring(0, 100)}..."
+                &quot;{testimonials[(currentTestimonialIndex - 1 + testimonials.length) % testimonials.length].quote.substring(0, 100)}...&quot;
               </div>
             </div>
 
             {/* Main Testimonial Card */}
-            <div 
+            <div
               key={currentTestimonialIndex}
               className="main-testimonial-card"
               style={{
@@ -2759,12 +1187,12 @@ The 3-month program consists of:
                 fontStyle: 'italic',
                 marginBottom: '24px'
               }}>
-                "{testimonials[currentTestimonialIndex].quote}"
+                &quot;{testimonials[currentTestimonialIndex].quote}&quot;
               </p>
-              
+
               {/* Results Image - Clickable */}
               {(testimonials[currentTestimonialIndex].image || testimonials[currentTestimonialIndex].imageAfter) && (
-                <div 
+                <div
                   onClick={() => setShowTestimonialGraphModal(testimonials[currentTestimonialIndex].image || testimonials[currentTestimonialIndex].imageAfter)}
                   className="testimonial-graph-clickable"
                   style={{
@@ -2776,7 +1204,7 @@ The 3-month program consists of:
                     transition: 'all 0.3s ease',
                     position: 'relative'
                   }}>
-                  <img 
+                  <img
                     src={testimonials[currentTestimonialIndex].image || testimonials[currentTestimonialIndex].imageAfter}
                     alt="Results graph"
                     style={{ width: '100%', height: 'auto', display: 'block' }}
@@ -2806,7 +1234,7 @@ The 3-month program consists of:
                   </div>
                 </div>
               )}
-              
+
               {/* Author Info */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: 'auto' }}>
                 <div style={{
@@ -2837,7 +1265,7 @@ The 3-month program consists of:
             </div>
 
             {/* Right Preview Card */}
-            <div 
+            <div
               onClick={nextTestimonial}
               className="testimonial-preview-card"
               style={{
@@ -2868,8 +1296,8 @@ The 3-month program consists of:
                 height: '80px',
                 flexShrink: 0
               }}>
-                <img 
-                  src={testimonials[(currentTestimonialIndex + 1) % testimonials.length].image || testimonials[(currentTestimonialIndex + 1) % testimonials.length].imageAfter} 
+                <img
+                  src={testimonials[(currentTestimonialIndex + 1) % testimonials.length].image || testimonials[(currentTestimonialIndex + 1) % testimonials.length].imageAfter}
                   alt="Results"
                   style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
                 />
@@ -2885,7 +1313,7 @@ The 3-month program consists of:
                 WebkitLineClamp: 4,
                 WebkitBoxOrient: 'vertical'
               }}>
-                "{testimonials[(currentTestimonialIndex + 1) % testimonials.length].quote.substring(0, 100)}..."
+                &quot;{testimonials[(currentTestimonialIndex + 1) % testimonials.length].quote.substring(0, 100)}...&quot;
               </div>
             </div>
           </div>
@@ -2898,7 +1326,7 @@ The 3-month program consists of:
             alignItems: 'center',
             marginTop: '40px'
           }}>
-            <button 
+            <button
               className="cinema-nav-btn"
               onClick={prevTestimonial}
               style={{
@@ -2916,7 +1344,7 @@ The 3-month program consists of:
             >
               <ChevronLeft size={22} color="#A78A43" />
             </button>
-            
+
             {/* Counter */}
             <div style={{
               color: 'rgba(240, 240, 240, 0.6)',
@@ -2927,8 +1355,8 @@ The 3-month program consists of:
             }}>
               {currentTestimonialIndex + 1} / {testimonials.length}
             </div>
-            
-            <button 
+
+            <button
               className="cinema-nav-btn"
               onClick={nextTestimonial}
               style={{
@@ -2950,7 +1378,7 @@ The 3-month program consists of:
 
           {/* Testimonial Graph Modal */}
           {showTestimonialGraphModal && (
-            <div 
+            <div
               onClick={() => setShowTestimonialGraphModal(null)}
               style={{
                 position: 'fixed',
@@ -2969,7 +1397,7 @@ The 3-month program consists of:
                 animation: 'modalFadeIn 0.3s ease'
               }}
             >
-              <div 
+              <div
                 onClick={(e) => e.stopPropagation()}
                 style={{
                   position: 'relative',
@@ -3008,13 +1436,13 @@ The 3-month program consists of:
                 >
                   <X size={20} color="#a88b46" />
                 </button>
-                
+
                 {/* Graph Image */}
                 <div style={{
                   borderRadius: '16px',
                   overflow: 'hidden'
                 }}>
-                  <img 
+                  <img
                     src={showTestimonialGraphModal}
                     alt="Results graph"
                     style={{
@@ -3030,6 +1458,28 @@ The 3-month program consists of:
 
           {/* Testimonial styles */}
           <style>{`
+            @keyframes slideInRight {
+              0% {
+                opacity: 0;
+                transform: translateX(40px);
+              }
+              100% {
+                opacity: 1;
+                transform: translateX(0);
+              }
+            }
+
+            @keyframes slideInLeft {
+              0% {
+                opacity: 0;
+                transform: translateX(-40px);
+              }
+              100% {
+                opacity: 1;
+                transform: translateX(0);
+              }
+            }
+
             .testimonial-preview-card:hover {
               opacity: 0.8 !important;
               transform: scale(0.95) !important;
@@ -3059,13 +1509,13 @@ The 3-month program consists of:
             }
           `}</style>
         </div>
-        {/* ==================== DEAD SPACE: Cinema Transition Zone ==================== */}
-        {/* 40vh of darkness with drifting nachos before YouTube section */}
-        <div style={{ height: '40vh', position: 'relative', zIndex: 0 }} />
+
+        {/* ==================== DEAD SPACE: Cinema Transition Zone (halved per audit) ==================== */}
+        <div style={{ height: '20vh', position: 'relative', zIndex: 0 }} />
 
         {/* ==================== YOUTUBE CINEMA SECTION ==================== */}
         {/* Premium Masterclass Library - Warm Gold Cinema */}
-        <div 
+        <div
           className="reveal"
           id="videos"
           style={{
@@ -3073,11 +1523,12 @@ The 3-month program consists of:
             zIndex: 30,
             paddingTop: '100px',
             paddingBottom: '160px',
-            marginBottom: '200px'
+            marginBottom: '200px',
+            scrollMarginTop: '90px'
           }}
         >
           {/* Cinematic Heading - Centered Museum Style */}
-          <div style={{ 
+          <div style={{
             textAlign: 'center',
             marginBottom: '72px',
             padding: '0 24px'
@@ -3091,7 +1542,7 @@ The 3-month program consists of:
               letterSpacing: '-0.025em',
               fontFamily: 'Manrope, Inter, sans-serif'
             }}>
-              My Thought Process <span style={{ 
+              My Thought Process <span style={{
                 color: '#A78A43',
                 textShadow: '0 0 60px rgba(167, 138, 67, 0.4)'
               }}>in Action.</span>
@@ -3104,7 +1555,7 @@ The 3-month program consists of:
               lineHeight: 1.85,
               fontWeight: '400'
             }}>
-              See my thought process in action. If this approach makes sense to you, you're in the right place.
+              See my thought process in action. If this approach makes sense to you, you&apos;re in the right place.
             </p>
           </div>
 
@@ -3133,7 +1584,7 @@ The 3-month program consists of:
             }} />
 
             {/* Snap Scroll Carousel */}
-            <div 
+            <div
               ref={cinemaCarouselRef}
               className="cinema-carousel"
               style={{
@@ -3163,7 +1614,7 @@ The 3-month program consists of:
                   }}
                 >
                   {/* Gold Bloom Glow Layer - Pulsing on Hover */}
-                  <div 
+                  <div
                     className="cinema-bloom"
                     style={{
                       position: 'absolute',
@@ -3175,9 +1626,9 @@ The 3-month program consists of:
                       pointerEvents: 'none'
                     }}
                   />
-                  
+
                   {/* Thumbnail Container */}
-                  <div 
+                  <div
                     className="cinema-thumbnail-wrap"
                     style={{
                       position: 'relative',
@@ -3189,7 +1640,7 @@ The 3-month program consists of:
                     }}
                   >
                     {/* Thumbnail Image - Warm Gold Tint Default */}
-                    <div 
+                    <div
                       className="cinema-thumbnail"
                       style={{
                         width: '100%',
@@ -3201,9 +1652,9 @@ The 3-month program consists of:
                         transition: 'all 0.5s ease-in-out'
                       }}
                     />
-                    
+
                     {/* Permanent Play Icon - Subtle Default, Bright on Hover */}
-                    <div 
+                    <div
                       className="cinema-play-icon"
                       style={{
                         position: 'absolute',
@@ -3215,7 +1666,7 @@ The 3-month program consists of:
                         transition: 'all 0.4s ease'
                       }}
                     >
-                      <div 
+                      <div
                         className="play-button-inner"
                         style={{
                           width: '72px',
@@ -3230,10 +1681,10 @@ The 3-month program consists of:
                           transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)'
                         }}
                       >
-                        <svg 
-                          width="28" 
-                          height="28" 
-                          viewBox="0 0 24 24" 
+                        <svg
+                          width="28"
+                          height="28"
+                          viewBox="0 0 24 24"
                           fill="none"
                           className="play-triangle"
                           style={{
@@ -3241,8 +1692,8 @@ The 3-month program consists of:
                             transition: 'all 0.4s ease'
                           }}
                         >
-                          <polygon 
-                            points="5,3 19,12 5,21" 
+                          <polygon
+                            points="5,3 19,12 5,21"
                             fill="rgba(167, 138, 67, 0.6)"
                             stroke="rgba(167, 138, 67, 0.8)"
                             strokeWidth="1.5"
@@ -3252,9 +1703,9 @@ The 3-month program consists of:
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Video Title - Parallax Layer */}
-                  <div 
+                  <div
                     className="cinema-title-wrap"
                     style={{
                       padding: '20px 8px 0',
@@ -3294,7 +1745,7 @@ The 3-month program consists of:
               justifyContent: 'center',
               marginTop: '48px'
             }}>
-              <button 
+              <button
                 className="cinema-nav-btn"
                 onClick={prevVideo}
                 style={{
@@ -3312,7 +1763,7 @@ The 3-month program consists of:
               >
                 <ChevronLeft size={24} color="#A78A43" />
               </button>
-              <button 
+              <button
                 className="cinema-nav-btn"
                 onClick={nextVideo}
                 style={{
@@ -3363,50 +1814,50 @@ The 3-month program consists of:
             .cinema-carousel::-webkit-scrollbar {
               display: none;
             }
-            
+
             @keyframes bloomPulse {
               0%, 100% { opacity: 0.8; transform: scale(1); }
               50% { opacity: 1; transform: scale(1.05); }
             }
-            
+
             .cinema-video-card:hover .cinema-bloom {
               opacity: 1 !important;
               animation: bloomPulse 2s ease-in-out infinite;
             }
-            
+
             .cinema-video-card:hover .cinema-thumbnail-wrap {
               transform: scale(1.05);
               border-color: rgba(167, 138, 67, 0.5);
               box-shadow: 0 0 50px rgba(167, 138, 67, 0.35);
             }
-            
+
             .cinema-video-card:hover .cinema-thumbnail {
               transform: scale(1.08);
               filter: sepia(0) saturate(1) brightness(1) hue-rotate(0deg) !important;
             }
-            
+
             .cinema-video-card:hover .play-button-inner {
               background: rgba(167, 138, 67, 0.2) !important;
               border-color: rgba(255, 215, 0, 0.8) !important;
               transform: scale(1.1);
               box-shadow: 0 0 30px rgba(167, 138, 67, 0.5);
             }
-            
+
             .cinema-video-card:hover .play-triangle polygon {
               fill: #A78A43 !important;
               stroke: #FFFFFF !important;
             }
-            
+
             .cinema-video-card:hover .cinema-title-wrap {
               transform: translateY(-4px);
             }
-            
+
             .cinema-nav-btn:hover {
               background: rgba(167, 138, 67, 0.2) !important;
               border-color: rgba(167, 138, 67, 0.5) !important;
               transform: scale(1.05);
             }
-            
+
             @media (max-width: 768px) {
               .cinema-video-card {
                 flex: 0 0 320px !important;
@@ -3418,435 +1869,66 @@ The 3-month program consists of:
           `}</style>
         </div>
 
-        {/* ==================== PRICING SECTION - Authority Style ==================== */}
-        <div 
-          id="pricing"
+        {/* ==================== OFFER - The 6-Month Program ==================== */}
+        <OfferSection />
+
+        {/* ==================== FIT SECTION ==================== */}
+        <FitSection />
+
+        {/* ==================== FAQ ==================== */}
+        <HomeFAQ />
+
+        {/* ==================== FINAL CTA ==================== */}
+        <FinalCTA />
+
+        {/* ==================== THREE PATHS STRIP ==================== */}
+        <div
           className="reveal"
-          style={{
-            paddingTop: '60px',
-            paddingBottom: '120px',
-            marginBottom: '250px'
-          }}
+          style={{ marginBottom: '200px' }}
         >
-          {/* Centered Header */}
-          <div style={{ textAlign: 'center', marginBottom: '72px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <h2 style={{
-              fontSize: 'clamp(38px, 5vw, 56px)',
+              fontSize: 'clamp(30px, 3.6vw, 42px)',
               fontWeight: '800',
               color: '#FFFFFF',
-              marginBottom: '20px',
+              marginBottom: '14px',
               lineHeight: 1.08,
               letterSpacing: '-0.025em',
               fontFamily: 'Manrope, Inter, sans-serif'
             }}>
-              Choose Your <span style={{ 
+              Three ways to <span style={{
                 color: '#a88b46',
                 textShadow: '0 0 60px rgba(168, 139, 70, 0.4)'
-              }}>Commitment</span>
+              }}>work with me.</span>
             </h2>
             <p style={{
               color: 'rgba(240, 240, 240, 0.5)',
-              fontSize: '17px',
+              fontSize: '15px',
               lineHeight: 1.7,
               maxWidth: '480px',
               margin: '0 auto'
             }}>
-              Select the path that fits your goals and timeline.
+              Different situations need different deals. Pick the honest one for yours.
             </p>
           </div>
-
-          {/* Capacity indicator. Numbers live in MENTORSHIP_SPOTS_* at the top of this file. */}
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '12px',
-            marginBottom: '56px'
-          }}>
-            <div style={{
-              display: 'flex',
-              gap: '6px',
-              flexWrap: 'wrap',
-              justifyContent: 'center'
-            }}>
-              {Array.from({ length: MENTORSHIP_SPOTS_TOTAL }, (_, i) => {
-                const taken = i < MENTORSHIP_SPOTS_TOTAL - MENTORSHIP_SPOTS_OPEN;
-                return (
-                  <User
-                    key={i}
-                    size={20}
-                    strokeWidth={2}
-                    color={taken ? '#A78A43' : 'rgba(240, 240, 240, 0.25)'}
-                    fill={taken ? 'rgba(167, 138, 67, 0.35)' : 'none'}
-                  />
-                );
-              })}
-            </div>
-            <div style={{ fontSize: '14px', color: 'rgba(240, 240, 240, 0.7)' }}>
-              <span style={{ color: '#A78A43', fontWeight: '700' }}>
-                {MENTORSHIP_SPOTS_TOTAL - MENTORSHIP_SPOTS_OPEN} active students
-              </span>
-              {' · '}
-              <span style={{ color: '#FFFFFF', fontWeight: '700' }}>
-                {MENTORSHIP_SPOTS_OPEN} spots open
-              </span>
-            </div>
-            <div style={{ fontSize: '13px', color: 'rgba(240, 240, 240, 0.45)' }}>
-              Once all spots are filled, enrollment closes until one frees up.
-            </div>
-          </div>
-
-          <div
-            className="pricing-grid-authority"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '24px',
-              alignItems: 'stretch',
-              maxWidth: '1100px',
-              margin: '0 auto'
-            }}>
-            {pricingPlans.map((plan, idx) => (
-              <PricingCard key={idx} plan={plan} />
-            ))}
-          </div>
-
-          {/* Risk reduction */}
-          {/* TODO(patrick): decide refund/guarantee policy (see MARKETING_AUDIT.md §5.6) */}
-          <p style={{
-            textAlign: 'center',
-            marginTop: '32px',
-            fontSize: '14px',
-            color: 'rgba(240, 240, 240, 0.5)',
-            letterSpacing: '0.01em'
-          }}>
-            The intro call is free and there's no obligation to continue.
-          </p>
-
-          {/* Pricing card styles */}
-          <style>{`
-            .pricing-card-authority {
-              box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
-            }
-            .pricing-card-authority:hover {
-              transform: translateY(-4px);
-              border-color: rgba(168, 139, 70, 0.3) !important;
-              box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4), 0 0 30px rgba(168, 139, 70, 0.08);
-            }
-            .pricing-card-authority.featured {
-              box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 50px rgba(168, 139, 70, 0.12);
-            }
-            .pricing-card-authority.featured:hover {
-              transform: translateY(-6px);
-              box-shadow: 0 28px 72px rgba(0, 0, 0, 0.5), 0 0 60px rgba(168, 139, 70, 0.15);
-            }
-            .pricing-cta-btn:hover {
-              transform: translateY(-2px);
-            }
-            .pricing-card-authority:not(.featured) .pricing-cta-btn:hover {
-              background: rgba(168, 139, 70, 0.08) !important;
-              box-shadow: 0 8px 24px rgba(168, 139, 70, 0.15);
-            }
-            .pricing-card-authority.featured .pricing-cta-btn:hover {
-              box-shadow: 0 8px 24px rgba(168, 139, 70, 0.4);
-            }
-            @media (max-width: 960px) {
-              .pricing-grid-authority {
-                grid-template-columns: 1fr !important;
-                max-width: 420px !important;
-              }
-            }
-          `}</style>
-        </div>
-
-        {/* ==================== GOOD FIT SECTION - Floating Layout ==================== */}
-        <div 
-          className="reveal"
-          style={{
-            paddingTop: '60px',
-            paddingBottom: '120px',
-            marginBottom: '250px'
-          }}
-        >
-          {/* Centered Header */}
-          <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-            <h2 style={{
-              fontSize: 'clamp(36px, 4.5vw, 52px)',
-              fontWeight: '800',
-              color: '#FFFFFF',
-              marginBottom: '16px',
-              lineHeight: 1.08,
-              letterSpacing: '-0.025em',
-              fontFamily: 'Manrope, Inter, sans-serif'
-            }}>
-              Is This Right <span style={{ 
-                color: '#A78A43',
-                textShadow: '0 0 60px rgba(167, 138, 67, 0.4)'
-              }}>For You</span>?
-            </h2>
-          </div>
-
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '64px',
-            maxWidth: '950px',
-            margin: '0 auto'
-          }}>
-            {/* Good Fit Column */}
-            <div>
-              <h3 style={{
-                fontSize: '22px',
-                fontWeight: '700',
-                color: '#F0F0F0',
-                marginBottom: '28px'
-              }}>
-                You're a good fit if:
-              </h3>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '16px'
-              }}>
-                {goodFitReasons.map((reason, idx) => (
-                  <div key={idx} style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '12px'
-                  }}>
-                    <div style={{
-                      width: '24px',
-                      height: '24px',
-                      borderRadius: '50%',
-                      background: 'rgba(167, 138, 67, 0.2)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                      marginTop: '2px'
-                    }}>
-                      <Check size={14} color="#A78A43" />
-                    </div>
-                    <span style={{
-                      color: 'rgba(240, 240, 240, 0.8)',
-                      fontSize: '15px',
-                      lineHeight: 1.6
-                    }}>
-                      {reason}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Not a Fit Column */}
-            <div>
-              <h3 style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                color: '#F0F0F0',
-                marginBottom: '24px'
-              }}>
-                Not a fit if:
-              </h3>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '16px'
-              }}>
-                {notAFitReasons.map((reason, idx) => (
-                  <div key={idx} style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '12px'
-                  }}>
-                    <div style={{
-                      width: '24px',
-                      height: '24px',
-                      borderRadius: '50%',
-                      background: 'rgba(239, 68, 68, 0.2)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                      marginTop: '2px'
-                    }}>
-                      <X size={14} color="#ef4444" />
-                    </div>
-                    <span style={{
-                      color: 'rgba(240, 240, 240, 0.55)',
-                      fontSize: '15px',
-                      lineHeight: 1.6
-                    }}>
-                      {reason}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* CTA Button */}
-          <div style={{
-            textAlign: 'center',
-            marginTop: '56px'
-          }}>
+          <ThreePaths compact context="home" />
+          <div style={{ textAlign: 'center', marginTop: '32px' }}>
             <a
-              href="#book"
-              onClick={() => track('cta_click', { placement: 'fit' })}
-              className="btn-hover cta-primary"
+              href="/coaching"
+              onClick={() => track('cta_click', { placement: 'threepaths_compare' })}
               style={{
-                background: '#A78A43',
-                color: '#0a0a0a',
-                padding: '20px 44px',
-                borderRadius: '14px',
-                fontWeight: '700',
-                fontSize: '16px',
+                color: '#a88b46',
+                fontSize: '14px',
+                fontWeight: '600',
                 textDecoration: 'none',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '10px',
-                boxShadow: '0 6px 30px rgba(167, 138, 67, 0.45)'
+                gap: '8px'
               }}
             >
-              Book a Free Intro Call <ArrowRight size={18} />
+              Compare the three paths in detail <ArrowRight size={15} />
             </a>
           </div>
-        </div>
-
-        {/* ==================== FAQ - Narrow Glass Accordion ==================== */}
-        <div 
-          className="reveal"
-          style={{
-            paddingTop: '60px',
-            paddingBottom: '120px',
-            marginBottom: '250px'
-          }}
-        >
-          {/* Centered Header */}
-          <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-            <h2 style={{
-              fontSize: 'clamp(36px, 4.5vw, 52px)',
-              fontWeight: '800',
-              color: '#FFFFFF',
-              marginBottom: '16px',
-              lineHeight: 1.08,
-              letterSpacing: '-0.025em',
-              fontFamily: 'Manrope, Inter, sans-serif'
-            }}>
-              Questions & <span style={{ 
-                color: '#A78A43',
-                textShadow: '0 0 60px rgba(167, 138, 67, 0.4)'
-              }}>Answers</span>
-            </h2>
-            <p style={{
-              color: '#8A8A8A',
-              fontSize: '17px',
-              lineHeight: 1.7,
-              maxWidth: '480px',
-              margin: '0 auto'
-            }}>
-              Everything you need to know about the mentorship
-            </p>
-          </div>
-
-          {/* Narrow Accordion Container - max-w-3xl */}
-          <div style={{
-            maxWidth: '768px',
-            margin: '0 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '12px'
-          }}>
-            {faqItems.map((item, idx) => (
-              <FAQItem 
-                key={idx} 
-                item={item} 
-                index={idx}
-                isExpanded={expandedFAQ === idx}
-                onToggle={(i) => setExpandedFAQ(expandedFAQ === i ? -1 : i)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* ==================== BOOKING SECTION (inline Calendly) ==================== */}
-        <div
-          id="book"
-          className="reveal"
-          style={{
-            marginBottom: '200px',
-            textAlign: 'center',
-            scrollMarginTop: '90px'
-          }}
-        >
-          <h2 style={{
-            fontSize: 'clamp(38px, 5vw, 56px)',
-            fontWeight: '800',
-            color: '#FFFFFF',
-            marginBottom: '20px',
-            lineHeight: 1.08,
-            letterSpacing: '-0.025em',
-            fontFamily: 'Manrope, Inter, sans-serif'
-          }}>
-            Ready to Stop <span style={{
-              color: '#A78A43',
-              textShadow: '0 0 60px rgba(167, 138, 67, 0.4)'
-            }}>Guessing</span>?
-          </h2>
-          <p style={{
-            color: 'rgba(240, 240, 240, 0.55)',
-            fontSize: '17px',
-            lineHeight: 1.8,
-            maxWidth: '540px',
-            margin: '0 auto 32px'
-          }}>
-            Pick a time below for a free intro call. We look at your game, figure out where your win rate is leaking, and see if coaching makes sense for you.
-          </p>
-
-          {/* Paid-service note (also add this as a required checkbox in Calendly itself) */}
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'flex-start',
-            gap: '12px',
-            textAlign: 'left',
-            maxWidth: '560px',
-            padding: '16px 20px',
-            background: 'rgba(167, 138, 67, 0.06)',
-            border: '1px solid rgba(167, 138, 67, 0.25)',
-            borderRadius: '12px',
-            marginBottom: '40px'
-          }}>
-            <Check size={16} color="#A78A43" style={{ flexShrink: 0, marginTop: '3px' }} />
-            <span style={{
-              fontSize: '13px',
-              color: 'rgba(240, 240, 240, 0.6)',
-              lineHeight: 1.7
-            }}>
-              The intro call is free and there is no obligation. Coaching itself is a paid service, so book the call if you would be in a position to invest in your game should we both decide it is a fit.
-            </span>
-          </div>
-
-          {/* Calendly inline embed */}
-          <div
-            className="calendly-inline-widget calendly-embed-wrap"
-            data-url={`${calendlyUrl('embed')}&hide_gdpr_banner=1&background_color=0a0e1a&text_color=f0f0f0&primary_color=a88b46`}
-            style={{
-              minWidth: '320px',
-              height: '700px',
-              maxWidth: '1000px',
-              margin: '0 auto',
-              borderRadius: '16px',
-              overflow: 'hidden'
-            }}
-          />
-          <style>{`
-            @media (max-width: 680px) {
-              .calendly-embed-wrap {
-                height: 1000px !important;
-              }
-            }
-          `}</style>
         </div>
 
         {/* ==================== SAFETY NET SECTION ==================== */}
@@ -3867,7 +1949,7 @@ The 3-month program consists of:
               letterSpacing: '-0.025em',
               fontFamily: 'Manrope, Inter, sans-serif'
             }}>
-              Verify the <span style={{ 
+              Verify the <span style={{
                 color: '#a88b46',
                 textShadow: '0 0 60px rgba(168, 139, 70, 0.4)'
               }}>approach.</span>
@@ -3879,22 +1961,22 @@ The 3-month program consists of:
               margin: '0 auto',
               lineHeight: 1.8
             }}>
-              If you aren't ready for a full program, explore these professional tools and technical deep dives. See for yourself if this logic aligns with your game before we work together.
+              If you aren&apos;t ready for a full program, explore these professional tools and technical deep dives. See for yourself if this logic aligns with your game before we work together.
             </p>
           </div>
 
-          {/* Two-Card Grid */}
-          <div 
+          {/* Three-Card Grid */}
+          <div
             className="safety-net-grid"
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
+              gridTemplateColumns: 'repeat(3, 1fr)',
               gap: '28px',
-              maxWidth: '900px',
+              maxWidth: '1100px',
               margin: '0 auto'
             }}>
             {/* Card A - Strategy Vault (Articles) */}
-            <a 
+            <a
               href="/newsletters"
               className="safety-net-card"
               style={{
@@ -3924,7 +2006,7 @@ The 3-month program consists of:
                 transition: 'opacity 0.4s ease',
                 pointerEvents: 'none'
               }} className="safety-net-glow" />
-              
+
               {/* Gold-line icon */}
               <div style={{
                 width: '56px',
@@ -3939,7 +2021,7 @@ The 3-month program consists of:
               }}>
                 <BookOpen size={26} color="#a88b46" strokeWidth={1.5} />
               </div>
-              
+
               <h3 style={{
                 fontSize: '24px',
                 fontWeight: '700',
@@ -3949,7 +2031,7 @@ The 3-month program consists of:
               }}>
                 The Strategy Vault
               </h3>
-              
+
               <p style={{
                 fontSize: '15px',
                 color: 'rgba(240, 240, 240, 0.55)',
@@ -3959,7 +2041,7 @@ The 3-month program consists of:
               }}>
                 Technical deep dives into high-stakes theory and population exploits.
               </p>
-              
+
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -3974,7 +2056,7 @@ The 3-month program consists of:
             </a>
 
             {/* Card B - Performance Toolkit (Tools) */}
-            <a 
+            <a
               href="/tools"
               className="safety-net-card"
               style={{
@@ -4004,7 +2086,7 @@ The 3-month program consists of:
                 transition: 'opacity 0.4s ease',
                 pointerEvents: 'none'
               }} className="safety-net-glow" />
-              
+
               {/* Gold-line icon */}
               <div style={{
                 width: '56px',
@@ -4019,7 +2101,7 @@ The 3-month program consists of:
               }}>
                 <Calculator size={26} color="#a88b46" strokeWidth={1.5} />
               </div>
-              
+
               <h3 style={{
                 fontSize: '24px',
                 fontWeight: '700',
@@ -4029,7 +2111,7 @@ The 3-month program consists of:
               }}>
                 The Performance Toolkit
               </h3>
-              
+
               <p style={{
                 fontSize: '15px',
                 color: 'rgba(240, 240, 240, 0.55)',
@@ -4039,7 +2121,7 @@ The 3-month program consists of:
               }}>
                 Professional-grade bankroll, variance, and win-rate calculators.
               </p>
-              
+
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -4052,9 +2134,90 @@ The 3-month program consists of:
                 Access Tools <ArrowRight size={16} />
               </div>
             </a>
+
+            {/* Card C - Which Path (Coaching router) */}
+            <a
+              href="/coaching"
+              onClick={() => track('cta_click', { placement: 'safety_coaching' })}
+              className="safety-net-card"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                background: 'rgba(18, 18, 18, 0.4)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1px solid rgba(168, 139, 70, 0.25)',
+                borderRadius: '24px',
+                padding: '48px 40px',
+                textDecoration: 'none',
+                transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              {/* Hover glow */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'radial-gradient(circle at 50% 0%, rgba(168, 139, 70, 0.1) 0%, transparent 60%)',
+                opacity: 0,
+                transition: 'opacity 0.4s ease',
+                pointerEvents: 'none'
+              }} className="safety-net-glow" />
+
+              {/* Gold-line icon */}
+              <div style={{
+                width: '56px',
+                height: '56px',
+                borderRadius: '14px',
+                border: '1.5px solid rgba(168, 139, 70, 0.4)',
+                background: 'rgba(168, 139, 70, 0.08)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '28px'
+              }}>
+                <Compass size={26} color="#a88b46" strokeWidth={1.5} />
+              </div>
+
+              <h3 style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                color: '#FFFFFF',
+                marginBottom: '12px',
+                letterSpacing: '-0.01em'
+              }}>
+                Not sure which path?
+              </h3>
+
+              <p style={{
+                fontSize: '15px',
+                color: 'rgba(240, 240, 240, 0.55)',
+                lineHeight: 1.7,
+                marginBottom: '28px',
+                flex: 1
+              }}>
+                Compare the three ways to work with me — course, program, or CFP.
+              </p>
+
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                color: '#a88b46',
+                fontSize: '14px',
+                fontWeight: '600',
+                letterSpacing: '0.02em'
+              }}>
+                Compare Paths <ArrowRight size={16} />
+              </div>
+            </a>
           </div>
 
-          {/* Inline Newsletter Capture - catches visitors not ready to book */}
+          {/* Inline Newsletter Capture - catches visitors not ready to apply */}
           <div style={{
             maxWidth: '640px',
             margin: '72px auto 0',
@@ -4089,7 +2252,7 @@ The 3-month program consists of:
                 border: '1px solid rgba(167, 138, 67, 0.3)',
                 borderRadius: '12px'
               }}>
-                <Check size={18} /> You're in! Check your inbox.
+                <Check size={18} /> You&apos;re in! Check your inbox.
               </div>
             ) : (
               <>
@@ -4173,7 +2336,7 @@ The 3-month program consists of:
             .safety-net-card:hover .safety-net-glow {
               opacity: 1 !important;
             }
-            @media (max-width: 768px) {
+            @media (max-width: 1024px) {
               .safety-net-grid {
                 grid-template-columns: 1fr !important;
                 max-width: 420px !important;
@@ -4184,22 +2347,6 @@ The 3-month program consists of:
             }
           `}</style>
         </div>
-
-        <style>{`
-          .authority-vault-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(167, 138, 67, 0.35);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(167, 138, 67, 0.1);
-          }
-          .authority-vault-card:hover .vault-card-glow {
-            opacity: 1 !important;
-          }
-          @media (max-width: 860px) {
-            .authority-vault-card {
-              padding: 40px 32px !important;
-            }
-          }
-        `}</style>
 
         {/* Footer */}
         <Footer />
