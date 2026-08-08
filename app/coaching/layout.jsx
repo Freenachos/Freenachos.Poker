@@ -1,9 +1,11 @@
 export const metadata = {
-  title: "Poker Coaching | Private 1-on-1 & Coaching For Profits",
-  description: "Two paths to crushing poker: Private 1-on-1 mentorship with Patrick 'Freenachos' Gerritsen or join the NachosPoker CFP backed by 200M+ hands of data. $5.5M+ in student profits generated.",
+  title: "Which Path? Course, Program, or CFP",
+  description:
+    "Three ways to work with Patrick 'Freenachos' Gerritsen: the Dominate with Data course for self-study, the 6-Month Program for bankrolled 200NL–1KNL regs, or the Nachos CFP for backing.",
   openGraph: {
-    title: "Poker Coaching | Private 1-on-1 & Coaching For Profits",
-    description: "Two paths to crushing poker: Private mentorship or join the CFP backed by 200M+ hands of data.",
+    title: "Which Path? Course, Program, or CFP",
+    description:
+      "Self-study, private mentorship, or backing — the honest comparison of the three ways to work with Freenachos.",
     url: "https://freenachos.poker/coaching",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
