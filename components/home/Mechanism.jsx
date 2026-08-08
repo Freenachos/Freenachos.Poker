@@ -24,7 +24,7 @@ const STEPS = [
     ),
     asset: '/mechanism/diagnose.png',
     isVideo: false,
-    hasAsset: false, // TODO(patrick): screenshot pending (Phase 7 pipeline)
+    hasAsset: true, // BB Defense view, account chip redacted (2026-08-08)
     caption: 'Stat Checker: a student database vs GTO and vs winning-population benchmarks.'
   },
   {
