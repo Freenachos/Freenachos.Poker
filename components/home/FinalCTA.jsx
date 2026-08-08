@@ -42,7 +42,7 @@ const FinalCTA = () => (
       maxWidth: '580px',
       margin: '0 auto 40px'
     }}>
-      I&apos;ll show you, in priority order, with the estimated cost of each leak attached, measured against 200 million hands, not guesses. Then we fix them, and at the end we measure again.
+      I&apos;ll show you, in priority order, measured against 200 million hands, not guesses. Then we fix them, and at the end we measure again.
     </p>
 
     <a

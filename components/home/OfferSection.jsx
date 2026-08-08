@@ -18,7 +18,7 @@ const NAME_LAST = NAME_WORDS[NAME_WORDS.length - 1];
  * links and the old navbar pointed at /#pricing.
  */
 const DELIVERABLES = [
-  'A full database audit with a prioritized, costed leak list',
+  'A full database audit with a prioritized leak list',
   `${OFFER.calls} 1-on-1 sessions, biweekly: one call, one branch of the game tree`,
   'A tailored PDF after every call: summary, action points, study suggestions',
   'Monthly stat recalibration against your fresh sample',

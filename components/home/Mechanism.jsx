@@ -33,13 +33,13 @@ const STEPS = [
     icon: ListOrdered,
     body: (
       <>
-        An audit that finds 40 leaks is useless. Each deviation gets a cost estimate in bb/100, and we rank them. You leave the first month with a short, ordered list: the three to five deviations with the highest estimated cost, and roughly what each one runs you per 100k hands.
+        An audit that finds 40 leaks is useless. Every branch of your game tree gets scored against both baselines, and the gaps get ranked by two things you can verify: how far you are from the winning pool, and how often the spot comes up. You leave the first month with a short, ordered list: the three to five deviations that matter most.
       </>
     ),
     asset: '/mechanism/prioritize.png',
     isVideo: false,
     hasAsset: false, // TODO(patrick): screenshot pending (Phase 7 pipeline)
-    caption: 'The prioritized leak report, ranked by estimated bb/100 cost.'
+    caption: 'Every branch of the tree scored against both baselines, biggest gaps first.'
   },
   {
     n: 3,

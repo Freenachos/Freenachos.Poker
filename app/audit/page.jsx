@@ -27,7 +27,7 @@ const WHAT_YOU_GET = [
   },
   {
     icon: ScrollText,
-    text: "A written scorecard: stat table, leak ledger with estimated bb/100 costs, top-3 priorities, and an honest section on what your sample can't tell us."
+    text: "A written scorecard: stat table, ranked leak list, top-3 priorities, and an honest section on what your sample can't tell us."
   },
   {
     icon: Phone,
@@ -223,7 +223,7 @@ export default function AuditPage() {
               lineHeight: 1.85,
               margin: 0
             }}>
-              If the audit doesn&apos;t surface leaks whose combined estimated cost exceeds the {AUDIT.priceFormatted} fee, it&apos;s refunded in full.
+              If the audit doesn&apos;t surface clear, fixable leaks, it&apos;s refunded in full.
             </p>
           </div>
         </div>

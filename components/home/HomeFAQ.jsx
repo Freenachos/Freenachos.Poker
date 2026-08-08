@@ -13,7 +13,7 @@ import { OFFER, AUDIT, FIT, EXTENSION } from '@/lib/offer';
 export const faqItems = [
   {
     question: 'Why not just buy GTO Wizard and a course?',
-    answer: `You probably should. I sell a course myself, and a serious reg's software stack is worth every euro of the ~$2–4k/year it costs. But a solver tells you the equilibrium answer, and a course tells you the general answer. Neither one looks at your database and tells you which three deviations are costing you the most against your pool. That's a measurement problem, and it needs your data plus population benchmarks. That's the entire program.`
+    answer: `You probably should. I sell a course myself, and a serious reg's software stack is worth every euro of the ~$2–4k/year it costs. But a solver tells you the equilibrium answer, and a course tells you the general answer. Neither one looks at your database and tells you which three deviations matter most against your pool. That's a measurement problem, and it needs your data plus population benchmarks. That's the entire program.`
   },
   {
     question: 'Why is there an application?',
@@ -21,7 +21,7 @@ export const faqItems = [
   },
   {
     question: `${OFFER.priceFormatted} is a lot. How do I evaluate that?`,
-    answer: `Do the math you'd do on any spot. The audit gives you a costed leak list before you commit to anything beyond ${AUDIT.priceFormatted}. But the cost estimates are estimates, not a forecast: leaks overlap and they're pool-dependent. What they give you is priority order and rough magnitude. Run your own ROI math against your stakes and volume; if it doesn't clear, don't apply. For comparison: a CFP takes ~50% of your winnings for 12–15 months. I run one, I know exactly what that split is worth, and for a bankrolled winner it's a multiple of this fee. Top independent coaches charge $250–$990/hour for calls with no database work between them.`
+    answer: `Do the math you'd do on any spot. The audit gives you a ranked leak list before you commit to anything beyond ${AUDIT.priceFormatted}: where you deviate from the winning pool, and how often those spots come up. Priority order you can verify in your own database, not a forecast. Run your own ROI math against your stakes and volume; if it doesn't clear, don't apply. For comparison: a CFP takes ~50% of your winnings for 12–15 months. I run one, I know exactly what that split is worth, and for a bankrolled winner it's a multiple of this fee. Top independent coaches charge $250–$990/hour for calls with no database work between them.`
   },
   {
     question: 'What happens after the six months?',
@@ -33,7 +33,7 @@ export const faqItems = [
   },
   {
     question: 'Do you guarantee results?',
-    answer: `Not your winrate. You should run from anyone who does. What I guarantee is the process. If the audit doesn't surface leaks whose combined estimated cost exceeds the fee, it's refunded. At the month-${OFFER.checkpointMonth} recalibration we compare your targeted stats against the plan we wrote down in week 1. If you've done your side and they haven't moved toward benchmark, I extend the program free until they do, or you walk with the remaining months refunded pro-rata. And the final re-audit either shows your frequencies moved or it doesn't. It's measured, not asserted.`
+    answer: `Not your winrate. You should run from anyone who does. What I guarantee is the process. If the audit doesn't surface clear, fixable leaks, it's refunded. At the month-${OFFER.checkpointMonth} recalibration we compare your targeted stats against the plan we wrote down in week 1. If you've done your side and they haven't moved toward benchmark, I extend the program free until they do, or you walk with the remaining months refunded pro-rata. And the final re-audit either shows your frequencies moved or it doesn't. It's measured, not asserted.`
   },
   {
     question: 'What happens on the fit call?',
