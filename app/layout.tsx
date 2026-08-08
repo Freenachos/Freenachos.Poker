@@ -5,10 +5,10 @@ import { Analytics } from '@vercel/analytics/next';
 export const metadata: Metadata = {
   metadataBase: new URL('https://freenachos.poker'),
   title: {
-    default: 'Freenachos Poker | Elite Private Coaching & Data-Driven Strategies',
+    default: 'Freenachos Poker | Data-Driven Poker Coaching — 200M+ Hands of Pool Data',
     template: '%s | Freenachos Poker',
   },
-  description: 'Master high-stakes poker with Patrick "Freenachos" Gerritsen. Private 1-on-1 coaching, data-driven exploits backed by 200M+ hands, and proven strategies that have generated $5.5M+ in student profits.',
+  description: 'A 6-month, application-based program for 200NL–1KNL online cash regs: your database audited against winning-population benchmarks from 200M+ hands, leaks fixed in priority order, results re-measured. By Patrick "Freenachos" Gerritsen.',
   keywords: ['poker coaching', 'online poker', 'poker strategy', 'GTO poker', 'exploitative poker', 'high stakes poker', 'poker mentorship', 'NachosPoker', 'Freenachos', 'cash game poker'],
   authors: [{ name: 'Patrick Gerritsen', url: 'https://freenachos.poker' }],
   creator: 'Patrick Gerritsen',
@@ -17,14 +17,14 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://freenachos.poker',
     siteName: 'Freenachos Poker',
-    title: 'Freenachos Poker | Elite Private Coaching & Data-Driven Strategies',
-    description: 'Master high-stakes poker with Patrick "Freenachos" Gerritsen. Private coaching and data-driven exploits that have generated $5.5M+ in student profits.',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Freenachos Poker - Elite Coaching' }],
+    title: 'Freenachos Poker | Data-Driven Poker Coaching — 200M+ Hands of Pool Data',
+    description: 'A 6-month, application-based program for 200NL–1KNL online cash regs: your database audited against winning-population benchmarks from 200M+ hands, leaks fixed in priority order, results re-measured.',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Freenachos Poker - Data-Driven Coaching' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Freenachos Poker | Elite Private Coaching',
-    description: 'Master high-stakes poker with data-driven strategies backed by 200M+ hands.',
+    title: 'Freenachos Poker | Data-Driven Poker Coaching',
+    description: 'Your database audited against winning-population benchmarks from 200M+ hands — leaks fixed in priority order, results re-measured.',
     images: ['/og-image.png'],
   },
   robots: {

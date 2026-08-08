@@ -12,6 +12,9 @@ export default async function sitemap() {
 
   const staticPages = [
     { url: "https://freenachos.poker", lastModified: new Date(), changeFrequency: "weekly", priority: 1.0 },
+    { url: "https://freenachos.poker/apply", lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
+    { url: "https://freenachos.poker/audit", lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    // TODO(patrick): add /results (priority 0.8) when the page goes live and loses its noindex (P4)
     { url: "https://freenachos.poker/coaching", lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
     { url: "https://freenachos.poker/newsletters", lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
     { url: "https://freenachos.poker/newsletter", lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
