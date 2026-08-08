@@ -86,7 +86,7 @@ export default function PrivacyPage() {
           <h2 style={h2Style}>Contact</h2>
           <p style={pStyle}>
             {/* TODO(patrick): confirm preferred public contact email (currently personal gmail) */}
-            For any privacy-related questions or requests, contact: patrickgerritsen90@gmail.com
+            For any privacy-related questions or requests, contact: patrick@freenachos.poker
           </p>
         </div>
       </div>

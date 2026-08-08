@@ -80,7 +80,7 @@ export default function TermsPage() {
           <h2 style={h2Style}>Contact</h2>
           <p style={pStyle}>
             {/* TODO(patrick): confirm preferred public contact email (currently personal gmail) */}
-            Questions about these terms: patrickgerritsen90@gmail.com
+            Questions about these terms: patrick@freenachos.poker
           </p>
         </div>
       </div>
