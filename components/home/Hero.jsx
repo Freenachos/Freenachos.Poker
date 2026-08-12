@@ -101,27 +101,28 @@ const Hero = ({ sectionRef }) => (
           }}
         >
           {/* Deal chip: the entire offer stated before anything else (NN/g: attention
-              front-loads; the top of the page must carry the deal) */}
+              front-loads; the top of the page must carry the deal). White numerals on
+              a stronger pill so it reads as the deal, not decoration. */}
           <div
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '8px',
-              background: 'rgba(167, 138, 67, 0.1)',
-              border: '1px solid rgba(167, 138, 67, 0.3)',
+              background: 'rgba(167, 138, 67, 0.14)',
+              border: '1px solid rgba(167, 138, 67, 0.5)',
               borderRadius: '50px',
-              padding: '10px 20px',
+              padding: '12px 24px',
               marginBottom: '32px',
-              backdropFilter: 'blur(8px)'
+              backdropFilter: 'blur(8px)',
+              boxShadow: '0 0 28px rgba(167, 138, 67, 0.18)'
             }}
           >
             <span style={{
-              fontSize: '13px',
-              color: '#A78A43',
-              fontWeight: '600',
-              letterSpacing: '0.03em'
+              fontSize: '14.5px',
+              color: '#F0F0F0',
+              fontWeight: '700',
+              letterSpacing: '0.02em'
             }}>
-              {OFFER.priceFormatted} · {OFFER.months} months · {OFFER.calls} calls · By application
+              {OFFER.priceFormatted} <span style={{ color: '#A78A43' }}>·</span> {OFFER.months} months <span style={{ color: '#A78A43' }}>·</span> {OFFER.calls} calls <span style={{ color: '#A78A43' }}>·</span> By application
             </span>
           </div>
 
@@ -136,7 +137,7 @@ const Hero = ({ sectionRef }) => (
             letterSpacing: '-0.025em',
             fontFamily: 'Manrope, Inter, sans-serif'
           }}>
-            Stop guessing.<br />
+            Master high-stakes theory.<br />
             <span style={{
               color: '#A78A43',
               textShadow: '0 0 80px rgba(167, 138, 67, 0.4)'
