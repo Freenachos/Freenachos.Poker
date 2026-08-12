@@ -119,6 +119,32 @@ Superseded the plan's original €7,500 / 9-call structure:
   raw capture shows the account bar with name + gmail) at `public/mechanism/diagnose.png`
   and flip `hasAsset: true` for step 1 in `components/home/Mechanism.jsx`.
 
+## Research-driven conversion pass (2026-08-12)
+
+Grounded in NN/g eyetracking (attention front-loads; ~65% of time in the top 40%),
+CXL/B2B form research (qualifying friction filters, but perceived length drives
+abandonment), pricing-transparency surveys, and social-proof specificity findings:
+
+- Hero badge is now the deal chip: price, months, calls, by application. The top of
+  the page states the entire offer.
+- Testimonial carousel replaced by `components/home/Testimonials.jsx`: static grid of
+  the three strongest quantified results, one expander for the remaining four, same
+  graph-zoom modal. Display order is editorial (stake moves first).
+- Section order: hero, proof, mechanism, testimonials, offer, fit, FAQ, videos,
+  three paths, final CTA, newsletter. Videos moved to late-stage reassurance; the
+  page closes on Apply. Cinema spacer removed; paddings tightened. Page height
+  14.3k -> 12.4k px; the offer lands at ~43% depth (was ~55%).
+- /apply is a three-step wizard (Q1-4 game / Q5-7 plan / Q8-10 logistics) with
+  progress, back navigation, per-step validation, state persistence. All ten
+  questions and the API contract unchanged.
+- Verified: build green, wizard e2e against the live API (validation, back/forward,
+  graceful 500 without local Supabase), 375px no-overflow on / and /apply, grid
+  collapses to one column. Reveal-on-scroll verified structurally; IntersectionObserver
+  does not fire in a hidden browser pane (proven with a manual probe), so the visual
+  pass rode on the earlier visible-pane verification.
+- Still owed from the research findings: /results case-study data (highest-leverage
+  item; see Master list #5).
+
 ## Master TODO(patrick) list
 
 1. `patrick@freenachos.poker` before deploy (Footer.jsx:81, privacy:94, terms:82).
