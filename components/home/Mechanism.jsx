@@ -51,9 +51,9 @@ const STEPS = [
       </>
     ),
     asset: '/mechanism/install.png',
-    isVideo: false, // switches to install.webm loop when the capture lands
-    hasAsset: false, // TODO(patrick): screenshot pending (Phase 7 pipeline)
-    caption: 'The study queue and drill flow between sessions.'
+    isVideo: false,
+    hasAsset: true, // page from a real tailored PDF, owner-approved (2026-08-12)
+    caption: 'From the tailored PDF after a call: the leak, the direction to move, and what to drill.'
   },
   {
     n: 4,
@@ -66,8 +66,8 @@ const STEPS = [
     ),
     asset: '/mechanism/verify.png',
     isVideo: false,
-    hasAsset: false, // TODO(patrick): screenshot pending (Phase 7 pipeline)
-    caption: 'Before/after re-audit panel: same stats, month 1 vs month 6.'
+    hasAsset: true, // stat trend view, owner-supplied (2026-08-12)
+    caption: 'One stat, six months: fold to 3-bet from 68 to 54, month by month, into the PIO target band.'
   }
 ];
 

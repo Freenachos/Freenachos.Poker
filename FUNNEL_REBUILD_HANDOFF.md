@@ -115,9 +115,10 @@ Superseded the plan's original €7,500 / 9-call structure:
 - **Extension: €3,000** after the six months (drafted as another six months, mirroring
   the old 24-month program's loose-calls phase; TODO: confirm length + cadence). The
   retainer copy was replaced by the extension; RETAINER stays in lib/offer.js unsold.
-- Mechanism screenshot #1 (diagnose) supplied by owner; drop the CROPPED version (the
-  raw capture shows the account bar with name + gmail) at `public/mechanism/diagnose.png`
-  and flip `hasAsset: true` for step 1 in `components/home/Mechanism.jsx`.
+- Mechanism assets: ALL FOUR live as of 2026-08-12 (diagnose: BB Defense view;
+  prioritize: 3BP OOP PFC turn view; install: tailored-PDF page; verify: stat trend
+  view). Account chips redacted / admin nav cropped where needed. Phase 7 closed;
+  the capture script in NachosHQ remains for future refreshes.
 
 ## Research-driven conversion pass (2026-08-12)
 
