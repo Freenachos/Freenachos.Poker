@@ -33,13 +33,13 @@ const STEPS = [
     icon: ListOrdered,
     body: (
       <>
-        An audit that finds 40 leaks is useless. Every branch of your game tree gets scored against both baselines, and the gaps get ranked by two things you can verify: how far you are from the winning pool, and how often the spot comes up. You leave the first month with a short, ordered list: the three to five deviations that matter most.
+        An audit that finds 40 leaks is useless. Every action line in every branch gets scored: your frequency against the baseline, the gap flagged from minor to major, the sample size right next to it so you know what&apos;s signal and what&apos;s noise. You leave the first month with a short, ordered list: the three to five deviations that matter most.
       </>
     ),
     asset: '/mechanism/prioritize.png',
     isVideo: false,
-    hasAsset: false, // TODO(patrick): screenshot pending (Phase 7 pipeline)
-    caption: 'Every branch of the tree scored against both baselines, biggest gaps first.'
+    hasAsset: true, // 3BP OOP PFC turn view, admin nav cropped + account chip redacted (2026-08-12)
+    caption: 'A 3-bet pot, out of position, on the turn: every line scored vs PIO, gaps flagged from minor to major.'
   },
   {
     n: 3,
