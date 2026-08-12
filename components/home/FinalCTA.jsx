@@ -13,7 +13,7 @@ const FinalCTA = () => (
     id="book"
     className="reveal"
     style={{
-      marginBottom: '200px',
+      marginBottom: '140px',
       textAlign: 'center',
       scrollMarginTop: '90px'
     }}

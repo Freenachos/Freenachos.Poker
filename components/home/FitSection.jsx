@@ -56,8 +56,8 @@ const FitSection = () => {
       className="reveal"
       style={{
         paddingTop: '60px',
-        paddingBottom: '120px',
-        marginBottom: '200px'
+        paddingBottom: '80px',
+        marginBottom: '140px'
       }}
     >
       {/* Centered Header */}

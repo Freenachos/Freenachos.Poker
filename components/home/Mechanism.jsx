@@ -156,8 +156,8 @@ const Mechanism = () => (
     id="mentorship"
     className="reveal mechanism-section"
     style={{
-      paddingTop: '200px',
-      paddingBottom: '200px',
+      paddingTop: '140px',
+      paddingBottom: '140px',
       marginBottom: '0',
       scrollMarginTop: '90px'
     }}
@@ -165,7 +165,7 @@ const Mechanism = () => (
     {/* Header */}
     <div style={{
       textAlign: 'center',
-      marginBottom: '96px',
+      marginBottom: '72px',
       maxWidth: '720px',
       marginLeft: 'auto',
       marginRight: 'auto'
@@ -199,7 +199,7 @@ const Mechanism = () => (
     <div style={{
       display: 'flex',
       flexDirection: 'column',
-      gap: '120px',
+      gap: '96px',
       maxWidth: '1100px',
       margin: '0 auto'
     }}>
@@ -266,8 +266,8 @@ const Mechanism = () => (
           order: 2 !important;
         }
         .mechanism-section {
-          padding-top: 140px !important;
-          padding-bottom: 140px !important;
+          padding-top: 100px !important;
+          padding-bottom: 100px !important;
         }
       }
     ` }} />

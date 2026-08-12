@@ -32,8 +32,8 @@ const OfferSection = () => (
     className="reveal"
     style={{
       paddingTop: '60px',
-      paddingBottom: '120px',
-      marginBottom: '200px',
+      paddingBottom: '100px',
+      marginBottom: '140px',
       scrollMarginTop: '90px',
       position: 'relative'
     }}

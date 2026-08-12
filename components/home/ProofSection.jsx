@@ -22,8 +22,8 @@ const ProofSection = ({ sectionRef }) => {
       ref={sectionRef}
       className="reveal-first coach-authority-section"
       style={{
-        paddingTop: '256px',
-        paddingBottom: '256px',
+        paddingTop: '160px',
+        paddingBottom: '160px',
         marginBottom: '0',
         position: 'relative'
       }}
@@ -430,8 +430,8 @@ const ProofSection = ({ sectionRef }) => {
 
         @media (max-width: 768px) {
           .coach-authority-section {
-            padding-top: 160px !important;
-            padding-bottom: 160px !important;
+            padding-top: 110px !important;
+            padding-bottom: 110px !important;
           }
         }
 
