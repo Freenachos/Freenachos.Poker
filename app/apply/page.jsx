@@ -4,15 +4,17 @@ import React, { useEffect, useRef, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import NachosPokerNavBar from '@/components/NachosPokerNavBar';
 import Footer from '@/components/Footer';
-import { ArrowRight, Check } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { track } from '@vercel/analytics';
 import { FIT } from '@/lib/offer';
 import { RIO_COURSE_URL, COURSE, cfpUrl } from '@/lib/links';
 
 /**
- * /apply — the application form (P2.1). Questions in the exact order from the
- * build plan. No public booking link anywhere: the fit-call invite is sent
- * personally after review (see lib/links.js).
+ * /apply — the application form (P2.1), split into three steps (research pass,
+ * 2026-08-12): all ten questions stay, in the plan's exact order, but the
+ * perceived effort halves. The heavy form is the qualification filter; the
+ * steps just stop it reading as a wall. No public booking link anywhere: the
+ * fit-call invite is sent personally after review (see lib/links.js).
  */
 
 const GOLD = '#A78A43';
@@ -26,6 +28,8 @@ const BANKROLLS = [
 ];
 const INVESTMENT = ['Yes', 'Yes, with installments', 'No'];
 const CFP_INTEREST = ['Yes', 'No', 'Not sure'];
+
+const STEP_TITLES = ['Your game', 'Your plan', 'Logistics'];
 
 const labelStyle = {
   display: 'block',
@@ -68,7 +72,7 @@ const numberBadge = (n) => (
   </span>
 );
 
-const PillGroup = ({ options, value, onChange, name }) => (
+const PillGroup = ({ options, value, onChange }) => (
   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
     {options.map((opt) => {
       const optValue = typeof opt === 'string' ? opt : opt.value;
@@ -99,10 +103,46 @@ const PillGroup = ({ options, value, onChange, name }) => (
   </div>
 );
 
+const StepProgress = ({ step }) => (
+  <div style={{ marginBottom: '36px' }}>
+    <div style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'baseline',
+      marginBottom: '12px'
+    }}>
+      <span style={{
+        fontSize: '12px',
+        fontWeight: '700',
+        color: GOLD,
+        textTransform: 'uppercase',
+        letterSpacing: '0.12em'
+      }}>
+        Step {step + 1} of {STEP_TITLES.length}: {STEP_TITLES[step]}
+      </span>
+      <span style={{ fontSize: '12px', color: 'rgba(240, 240, 240, 0.4)' }}>
+        ~4 minutes total
+      </span>
+    </div>
+    <div style={{ display: 'flex', gap: '8px' }}>
+      {STEP_TITLES.map((_, i) => (
+        <div key={i} style={{
+          flex: 1,
+          height: '3px',
+          borderRadius: '2px',
+          background: i <= step ? GOLD : 'rgba(255, 255, 255, 0.12)',
+          transition: 'background 0.3s ease'
+        }} />
+      ))}
+    </div>
+  </div>
+);
+
 function ApplyForm() {
   const searchParams = useSearchParams();
   const intent = searchParams.get('intent') === 'audit' ? 'audit' : 'program';
 
+  const [step, setStep] = useState(0);
   const [form, setForm] = useState({
     site: '',
     stake: '',
@@ -124,6 +164,7 @@ function ApplyForm() {
   const [status, setStatus] = useState('idle'); // idle | submitting | success | error
   const [errorMsg, setErrorMsg] = useState('');
   const mountedAtRef = useRef(Date.now());
+  const formTopRef = useRef(null);
 
   useEffect(() => {
     mountedAtRef.current = Date.now();
@@ -131,27 +172,59 @@ function ApplyForm() {
 
   const set = (key) => (value) => setForm((f) => ({ ...f, [key]: value }));
 
-  const missing = () => {
-    if (!form.site) return 'Where do you play? (question 1)';
-    if (!form.stake) return 'Your main stake (question 1)';
-    if (!form.volume_bucket) return 'Your monthly volume (question 2)';
-    if (!form.no_database && !form.db_summary.trim()) return 'Your database summary, or tick the checkbox (question 3)';
-    if (!form.bankroll) return 'Your bankroll situation (question 4)';
-    if (form.bankroll === 'staked' && !form.staked_until.trim()) return 'Your staking contract end date (question 4)';
-    if (!form.study_process.trim()) return 'Your study process (question 5)';
-    if (!form.goal_12mo.trim()) return 'Where you want to be in 12 months (question 6)';
-    if (!form.biggest_obstacle.trim()) return 'Your biggest obstacle (question 7)';
-    if (!form.investment_viable) return 'Whether the investment is viable (question 8)';
-    if (!form.cfp_interest) return 'Whether you are interested in the CFP (question 9)';
-    if (!form.name.trim()) return 'Your name (question 10)';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) return 'A valid email (question 10)';
+  // Per-step validation; question numbering stays global (1-10).
+  const missingForStep = (s) => {
+    if (s === 0) {
+      if (!form.site) return 'Where do you play? (question 1)';
+      if (!form.stake) return 'Your main stake (question 1)';
+      if (!form.volume_bucket) return 'Your monthly volume (question 2)';
+      if (!form.no_database && !form.db_summary.trim()) return 'Your database summary, or tick the checkbox (question 3)';
+      if (!form.bankroll) return 'Your bankroll situation (question 4)';
+      if (form.bankroll === 'staked' && !form.staked_until.trim()) return 'Your staking contract end date (question 4)';
+    }
+    if (s === 1) {
+      if (!form.study_process.trim()) return 'Your study process (question 5)';
+      if (!form.goal_12mo.trim()) return 'Where you want to be in 12 months (question 6)';
+      if (!form.biggest_obstacle.trim()) return 'Your biggest obstacle (question 7)';
+    }
+    if (s === 2) {
+      if (!form.investment_viable) return 'Whether the investment is viable (question 8)';
+      if (!form.cfp_interest) return 'Whether you are interested in the CFP (question 9)';
+      if (!form.name.trim()) return 'Your name (question 10)';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) return 'A valid email (question 10)';
+    }
     return null;
+  };
+
+  const scrollToForm = () => {
+    formTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const advance = () => {
+    const miss = missingForStep(step);
+    if (miss) {
+      setErrorMsg(`Still needed: ${miss}`);
+      return;
+    }
+    setErrorMsg('');
+    setStep((s) => Math.min(s + 1, 2));
+    scrollToForm();
+  };
+
+  const goBack = () => {
+    setErrorMsg('');
+    setStep((s) => Math.max(s - 1, 0));
+    scrollToForm();
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (status === 'submitting') return;
-    const miss = missing();
+    if (step < 2) {
+      advance();
+      return;
+    }
+    const miss = missingForStep(2) || missingForStep(0) || missingForStep(1);
     if (miss) {
       setErrorMsg(`Still needed: ${miss}`);
       return;
@@ -232,7 +305,7 @@ function ApplyForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: '680px', margin: '0 auto' }}>
+    <form onSubmit={handleSubmit} style={{ maxWidth: '680px', margin: '0 auto' }} ref={formTopRef}>
       {intent === 'audit' && (
         <div style={{
           marginBottom: '28px',
@@ -248,157 +321,196 @@ function ApplyForm() {
         </div>
       )}
 
+      <StepProgress step={step} />
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
-        {/* 1 — site + stake */}
-        <div>
-          <label style={labelStyle}>{numberBadge(1)}Where do you play, and what&apos;s your main stake?</label>
-          <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-            <select
-              value={form.site}
-              onChange={(e) => set('site')(e.target.value)}
-              style={{ ...inputStyle, flex: '1 1 220px', cursor: 'pointer' }}
-            >
-              <option value="" disabled>Site / network…</option>
-              {SITES.map((s) => <option key={s} value={s}>{s}</option>)}
-            </select>
-            <select
-              value={form.stake}
-              onChange={(e) => set('stake')(e.target.value)}
-              style={{ ...inputStyle, flex: '1 1 180px', cursor: 'pointer' }}
-            >
-              <option value="" disabled>Main stake…</option>
-              {STAKES.map((s) => <option key={s} value={s}>{s}</option>)}
-            </select>
-          </div>
-        </div>
+        {/* ============ STEP 1: Your game (Q1-4) ============ */}
+        {step === 0 && (
+          <>
+            <div>
+              <label style={labelStyle}>{numberBadge(1)}Where do you play, and what&apos;s your main stake?</label>
+              <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+                <select
+                  value={form.site}
+                  onChange={(e) => set('site')(e.target.value)}
+                  style={{ ...inputStyle, flex: '1 1 220px', cursor: 'pointer' }}
+                >
+                  <option value="" disabled>Site / network…</option>
+                  {SITES.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+                <select
+                  value={form.stake}
+                  onChange={(e) => set('stake')(e.target.value)}
+                  style={{ ...inputStyle, flex: '1 1 180px', cursor: 'pointer' }}
+                >
+                  <option value="" disabled>Main stake…</option>
+                  {STAKES.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+            </div>
 
-        {/* 2 — volume */}
-        <div>
-          <label style={labelStyle}>{numberBadge(2)}Monthly volume, in hands?</label>
-          <PillGroup options={VOLUMES} value={form.volume_bucket} onChange={set('volume_bucket')} />
-        </div>
+            <div>
+              <label style={labelStyle}>{numberBadge(2)}Monthly volume, in hands?</label>
+              <PillGroup options={VOLUMES} value={form.volume_bucket} onChange={set('volume_bucket')} />
+            </div>
 
-        {/* 3 — database */}
-        <div>
-          <label style={labelStyle}>{numberBadge(3)}What does your database say? Sample size and winrate (bb/100) over your last 12 months.</label>
-          <textarea
-            value={form.db_summary}
-            onChange={(e) => set('db_summary')(e.target.value)}
-            disabled={form.no_database}
-            rows={3}
-            placeholder="e.g. 180k hands at NL200, 1.8bb/100, plus 60k at NL500 roughly breakeven"
-            style={{ ...inputStyle, resize: 'vertical', opacity: form.no_database ? 0.45 : 1 }}
-          />
-          <label style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '10px',
-            marginTop: '12px',
-            color: 'rgba(240, 240, 240, 0.6)',
-            fontSize: '14px',
-            cursor: 'pointer'
-          }}>
-            <input
-              type="checkbox"
-              checked={form.no_database}
-              onChange={(e) => set('no_database')(e.target.checked)}
-              style={{ accentColor: GOLD, width: '16px', height: '16px' }}
-            />
-            I don&apos;t track a database
-          </label>
-        </div>
+            <div>
+              <label style={labelStyle}>{numberBadge(3)}What does your database say? Sample size and winrate (bb/100) over your last 12 months.</label>
+              <textarea
+                value={form.db_summary}
+                onChange={(e) => set('db_summary')(e.target.value)}
+                disabled={form.no_database}
+                rows={3}
+                placeholder="e.g. 180k hands at NL200, 1.8bb/100, plus 60k at NL500 roughly breakeven"
+                style={{ ...inputStyle, resize: 'vertical', opacity: form.no_database ? 0.45 : 1 }}
+              />
+              <label style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '10px',
+                marginTop: '12px',
+                color: 'rgba(240, 240, 240, 0.6)',
+                fontSize: '14px',
+                cursor: 'pointer'
+              }}>
+                <input
+                  type="checkbox"
+                  checked={form.no_database}
+                  onChange={(e) => set('no_database')(e.target.checked)}
+                  style={{ accentColor: GOLD, width: '16px', height: '16px' }}
+                />
+                I don&apos;t track a database
+              </label>
+            </div>
 
-        {/* 4 — bankroll */}
-        <div>
-          <label style={labelStyle}>{numberBadge(4)}Bankroll situation</label>
-          <PillGroup options={BANKROLLS} value={form.bankroll} onChange={set('bankroll')} />
-          {form.bankroll === 'staked' && (
-            <input
-              type="text"
-              value={form.staked_until}
-              onChange={(e) => set('staked_until')(e.target.value)}
-              placeholder="When does your staking contract end?"
-              style={{ ...inputStyle, marginTop: '14px' }}
-            />
-          )}
-        </div>
+            <div>
+              <label style={labelStyle}>{numberBadge(4)}Bankroll situation</label>
+              <PillGroup options={BANKROLLS} value={form.bankroll} onChange={set('bankroll')} />
+              {form.bankroll === 'staked' && (
+                <input
+                  type="text"
+                  value={form.staked_until}
+                  onChange={(e) => set('staked_until')(e.target.value)}
+                  placeholder="When does your staking contract end?"
+                  style={{ ...inputStyle, marginTop: '14px' }}
+                />
+              )}
+            </div>
+          </>
+        )}
 
-        {/* 5 — study process */}
-        <div>
-          <label style={labelStyle}>{numberBadge(5)}What does your current study process look like in a normal week?</label>
-          <textarea
-            value={form.study_process}
-            onChange={(e) => set('study_process')(e.target.value)}
-            rows={3}
-            style={{ ...inputStyle, resize: 'vertical' }}
-          />
-        </div>
+        {/* ============ STEP 2: Your plan (Q5-7) ============ */}
+        {step === 1 && (
+          <>
+            <div>
+              <label style={labelStyle}>{numberBadge(5)}What does your current study process look like in a normal week?</label>
+              <textarea
+                value={form.study_process}
+                onChange={(e) => set('study_process')(e.target.value)}
+                rows={3}
+                style={{ ...inputStyle, resize: 'vertical' }}
+              />
+            </div>
 
-        {/* 6 — 12-month goal */}
-        <div>
-          <label style={labelStyle}>{numberBadge(6)}Where do you want your game to be in 12 months, in concrete terms?</label>
-          <textarea
-            value={form.goal_12mo}
-            onChange={(e) => set('goal_12mo')(e.target.value)}
-            rows={3}
-            style={{ ...inputStyle, resize: 'vertical' }}
-          />
-        </div>
+            <div>
+              <label style={labelStyle}>{numberBadge(6)}Where do you want your game to be in 12 months, in concrete terms?</label>
+              <textarea
+                value={form.goal_12mo}
+                onChange={(e) => set('goal_12mo')(e.target.value)}
+                rows={3}
+                style={{ ...inputStyle, resize: 'vertical' }}
+              />
+            </div>
 
-        {/* 7 — biggest obstacle */}
-        <div>
-          <label style={labelStyle}>{numberBadge(7)}What do you believe is the single biggest thing holding your winrate back right now?</label>
-          <textarea
-            value={form.biggest_obstacle}
-            onChange={(e) => set('biggest_obstacle')(e.target.value)}
-            rows={3}
-            style={{ ...inputStyle, resize: 'vertical' }}
-          />
-        </div>
+            <div>
+              <label style={labelStyle}>{numberBadge(7)}What do you believe is the single biggest thing holding your winrate back right now?</label>
+              <textarea
+                value={form.biggest_obstacle}
+                onChange={(e) => set('biggest_obstacle')(e.target.value)}
+                rows={3}
+                style={{ ...inputStyle, resize: 'vertical' }}
+              />
+            </div>
+          </>
+        )}
 
-        {/* 8 — investment viability */}
-        <div>
-          <label style={labelStyle}>{numberBadge(8)}The mentorship is a 6-month program with a four-figure investment, paid from your own funds. Is that viable for you right now?</label>
-          <PillGroup options={INVESTMENT} value={form.investment_viable} onChange={set('investment_viable')} />
-        </div>
+        {/* ============ STEP 3: Logistics (Q8-10) ============ */}
+        {step === 2 && (
+          <>
+            <div>
+              <label style={labelStyle}>{numberBadge(8)}The mentorship is a 6-month program with a four-figure investment, paid from your own funds. Is that viable for you right now?</label>
+              <PillGroup options={INVESTMENT} value={form.investment_viable} onChange={set('investment_viable')} />
+            </div>
 
-        {/* 9 — CFP interest */}
-        <div>
-          <label style={labelStyle}>{numberBadge(9)}Are you also interested in staking/CFP instead of paying for coaching?</label>
-          <PillGroup options={CFP_INTEREST} value={form.cfp_interest} onChange={set('cfp_interest')} />
-        </div>
+            <div>
+              <label style={labelStyle}>{numberBadge(9)}Are you also interested in staking/CFP instead of paying for coaching?</label>
+              <PillGroup options={CFP_INTEREST} value={form.cfp_interest} onChange={set('cfp_interest')} />
+            </div>
 
-        {/* 10 — contact */}
-        <div>
-          <label style={labelStyle}>{numberBadge(10)}Name, email, Discord handle.</label>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            <input
-              type="text"
-              value={form.name}
-              onChange={(e) => set('name')(e.target.value)}
-              placeholder="Name"
-              style={inputStyle}
-              autoComplete="name"
-            />
-            <input
-              type="email"
-              value={form.email}
-              onChange={(e) => set('email')(e.target.value)}
-              placeholder="Email"
-              style={inputStyle}
-              autoComplete="email"
-            />
-            <input
-              type="text"
-              value={form.discord}
-              onChange={(e) => set('discord')(e.target.value)}
-              placeholder="Discord handle (optional)"
-              style={inputStyle}
-            />
-          </div>
-        </div>
+            <div>
+              <label style={labelStyle}>{numberBadge(10)}Name, email, Discord handle.</label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <input
+                  type="text"
+                  value={form.name}
+                  onChange={(e) => set('name')(e.target.value)}
+                  placeholder="Name"
+                  style={inputStyle}
+                  autoComplete="name"
+                />
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => set('email')(e.target.value)}
+                  placeholder="Email"
+                  style={inputStyle}
+                  autoComplete="email"
+                />
+                <input
+                  type="text"
+                  value={form.discord}
+                  onChange={(e) => set('discord')(e.target.value)}
+                  placeholder="Discord handle (optional)"
+                  style={inputStyle}
+                />
+              </div>
+            </div>
 
-        {/* Honeypot — hidden from humans, tabIndex removed */}
+            {/* Routing note (P2.4) — informational only, never blocks submission */}
+            <div style={{
+              padding: '16px 20px',
+              borderRadius: '12px',
+              background: 'rgba(255, 255, 255, 0.03)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              color: 'rgba(240, 240, 240, 0.55)',
+              fontSize: '13.5px',
+              lineHeight: 1.8
+            }}>
+              Below {FIT.stakesFloor} or no database yet? The honest answer is{' '}
+              <a
+                href={RIO_COURSE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => track('outbound', { target: 'rio_course_apply' })}
+                style={{ color: GOLD, textDecoration: 'none', borderBottom: '1px solid rgba(167, 138, 67, 0.4)' }}
+              >
+                the {COURSE.priceFormatted} course
+              </a>{' '}
+              first: most of the theory at a tenth of the price. Want backing instead of paying flat? That&apos;s{' '}
+              <a
+                href={cfpUrl('apply_page')}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => track('outbound', { target: 'cfp_apply' })}
+                style={{ color: GOLD, textDecoration: 'none', borderBottom: '1px solid rgba(167, 138, 67, 0.4)' }}
+              >
+                the CFP
+              </a>.
+            </div>
+          </>
+        )}
+
+        {/* Honeypot — hidden from humans, rendered on every step */}
         <div style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' }} aria-hidden="true">
           <label>
             Your website
@@ -410,38 +522,6 @@ function ApplyForm() {
               onChange={(e) => set('website')(e.target.value)}
             />
           </label>
-        </div>
-
-        {/* Routing note (P2.4) — informational only, never blocks submission */}
-        <div style={{
-          padding: '16px 20px',
-          borderRadius: '12px',
-          background: 'rgba(255, 255, 255, 0.03)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          color: 'rgba(240, 240, 240, 0.55)',
-          fontSize: '13.5px',
-          lineHeight: 1.8
-        }}>
-          Below {FIT.stakesFloor} or no database yet? The honest answer is{' '}
-          <a
-            href={RIO_COURSE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => track('outbound', { target: 'rio_course_apply' })}
-            style={{ color: GOLD, textDecoration: 'none', borderBottom: '1px solid rgba(167, 138, 67, 0.4)' }}
-          >
-            the {COURSE.priceFormatted} course
-          </a>{' '}
-          first: most of the theory at a tenth of the price. Want backing instead of paying flat? That&apos;s{' '}
-          <a
-            href={cfpUrl('apply_page')}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => track('outbound', { target: 'cfp_apply' })}
-            style={{ color: GOLD, textDecoration: 'none', borderBottom: '1px solid rgba(167, 138, 67, 0.4)' }}
-          >
-            the CFP
-          </a>.
         </div>
 
         {errorMsg && (
@@ -458,29 +538,80 @@ function ApplyForm() {
           </div>
         )}
 
-        <button
-          type="submit"
-          disabled={status === 'submitting'}
-          className="btn-hover cta-primary"
-          style={{
-            background: GOLD,
-            color: '#0a0a0a',
-            padding: '18px 40px',
-            borderRadius: '14px',
-            fontWeight: '700',
-            fontSize: '16px',
-            border: 'none',
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '12px',
-            boxShadow: '0 4px 30px rgba(167, 138, 67, 0.4)',
-            opacity: status === 'submitting' ? 0.7 : 1
-          }}
-        >
-          {status === 'submitting' ? 'Submitting…' : 'Submit application'} <ArrowRight size={18} />
-        </button>
+        {/* Step navigation */}
+        <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
+          {step > 0 && (
+            <button
+              type="button"
+              onClick={goBack}
+              style={{
+                background: 'transparent',
+                color: 'rgba(240, 240, 240, 0.6)',
+                border: '1px solid rgba(255, 255, 255, 0.18)',
+                borderRadius: '14px',
+                padding: '17px 24px',
+                fontSize: '15px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <ArrowLeft size={16} /> Back
+            </button>
+          )}
+          {step < 2 ? (
+            <button
+              type="button"
+              onClick={advance}
+              className="btn-hover cta-primary"
+              style={{
+                flex: 1,
+                background: GOLD,
+                color: '#0a0a0a',
+                padding: '18px 40px',
+                borderRadius: '14px',
+                fontWeight: '700',
+                fontSize: '16px',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+                boxShadow: '0 4px 30px rgba(167, 138, 67, 0.4)'
+              }}
+            >
+              Continue <ArrowRight size={18} />
+            </button>
+          ) : (
+            <button
+              type="submit"
+              disabled={status === 'submitting'}
+              className="btn-hover cta-primary"
+              style={{
+                flex: 1,
+                background: GOLD,
+                color: '#0a0a0a',
+                padding: '18px 40px',
+                borderRadius: '14px',
+                fontWeight: '700',
+                fontSize: '16px',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+                boxShadow: '0 4px 30px rgba(167, 138, 67, 0.4)',
+                opacity: status === 'submitting' ? 0.7 : 1
+              }}
+            >
+              {status === 'submitting' ? 'Submitting…' : 'Submit application'} <ArrowRight size={18} />
+            </button>
+          )}
+        </div>
       </div>
     </form>
   );
