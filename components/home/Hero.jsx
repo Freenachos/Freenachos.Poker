@@ -1,8 +1,8 @@
 'use client';
 
-import { ArrowRight, Users } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { track } from '@vercel/analytics';
-import { PROOF, FIT } from '@/lib/offer';
+import { OFFER, PROOF, FIT } from '@/lib/offer';
 
 /**
  * Cinematic hero — layout, coach image, and badge structure kept from the
@@ -100,7 +100,8 @@ const Hero = ({ sectionRef }) => (
             animation: 'heroFadeIn 1s ease-out 0.2s both'
           }}
         >
-          {/* Badge */}
+          {/* Deal chip: the entire offer stated before anything else (NN/g: attention
+              front-loads; the top of the page must carry the deal) */}
           <div
             style={{
               display: 'inline-flex',
@@ -114,14 +115,13 @@ const Hero = ({ sectionRef }) => (
               backdropFilter: 'blur(8px)'
             }}
           >
-            <Users size={16} color="#A78A43" />
             <span style={{
               fontSize: '13px',
               color: '#A78A43',
               fontWeight: '600',
               letterSpacing: '0.03em'
             }}>
-              {PROOF.students}
+              {OFFER.priceFormatted} · {OFFER.months} months · {OFFER.calls} calls · By application
             </span>
           </div>
 
@@ -171,7 +171,7 @@ const Hero = ({ sectionRef }) => (
             letterSpacing: '0.01em',
             marginBottom: '36px'
           }}>
-            For bankrolled online cash regs, {FIT.stakesRange}. By application.
+            For bankrolled online cash regs, {FIT.stakesRange}.
           </div>
 
           {/* Primary CTA */}
