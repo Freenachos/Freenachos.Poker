@@ -10,11 +10,12 @@ import OfferSection from '@/components/home/OfferSection';
 import FitSection from '@/components/home/FitSection';
 import HomeFAQ from '@/components/home/HomeFAQ';
 import FinalCTA from '@/components/home/FinalCTA';
+import Testimonials from '@/components/home/Testimonials';
 import ThreePaths from '@/components/home/ThreePaths';
 import { track } from '@vercel/analytics';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ExternalLink, ChevronLeft, ChevronRight, Youtube, ArrowRight, Check, X } from 'lucide-react';
+import { ExternalLink, ChevronLeft, ChevronRight, Youtube, ArrowRight, Check } from 'lucide-react';
 
 /**
  * Freenachos Poker Homepage — premium application funnel.
@@ -36,10 +37,7 @@ const PokerToolboxHome = () => {
   // STATE
   // ============================================
 
-  const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
-  const [slideDirection, setSlideDirection] = useState('right');
   const [showStickyCta, setShowStickyCta] = useState(false);
-  const [showTestimonialGraphModal, setShowTestimonialGraphModal] = useState(null);
   const [inlineEmail, setInlineEmail] = useState('');
   const [inlineStatus, setInlineStatus] = useState('idle');
   const heroSectionRef = useRef(null);
@@ -55,59 +53,6 @@ const PokerToolboxHome = () => {
     { id: 3, title: 'Exploiting NL200 Rush & Cash on GGPoker (Live Analysis)', thumbnail: 'https://img.youtube.com/vi/LJMAnZq5GmE/maxresdefault.jpg', duration: '', views: '', link: 'https://www.youtube.com/watch?v=LJMAnZq5GmE' },
     { id: 4, title: '5 Data Exploits to Crush Low Stakes', thumbnail: 'https://img.youtube.com/vi/L5IBgpt6xjk/maxresdefault.jpg', duration: '', views: '', link: 'https://www.youtube.com/watch?v=L5IBgpt6xjk' },
     { id: 5, title: 'NL1000 Hand Gets Spicy: Slow Roll Incoming?', thumbnail: 'https://img.youtube.com/vi/wM_QUPDUL44/maxresdefault.jpg', duration: '', views: '', link: 'https://www.youtube.com/watch?v=wM_QUPDUL44' },
-  ];
-
-  const testimonials = [
-    {
-      id: 1,
-      name: 'Gary Chappell',
-      quote: "My time working with Patrick at Nachos Poker has been amazing. He genuinely cares about your progress and puts a lot of thought into how everything is structured. The coaching and resources are clear, practical, and easy to apply. I've already recommended the program to a friend who's seeing great results as well. If you're willing to put in the work, Patrick will help you take your game to the next level.",
-      image: '/proof/testimonial-gary.png'
-    },
-    {
-      id: 2,
-      name: 'Keven Li',
-      subtitle: 'Poker Made Simple',
-      result: 'NL100 → crushing NL1000',
-      quote: "In 2021, I turned pro with a $10k bankroll, struggling through a breakeven stretch until Patrick's data-driven coaching changed everything. My results skyrocketed. His guidance, combined with NachosPoker's training, took me from 100nl to crushing 1000nl. Working with Patrick was the best decision I've made in poker.",
-      image: '/proof/testimonial-keven.png'
-    },
-    {
-      id: 3,
-      name: 'Marcelo',
-      quote: "Patrick's blog posts and videos on Run It Once were what convinced me to join Nachos Poker, and I haven't looked back since. His approach is very data-driven and practical, and the way he breaks down spots makes complex ideas easy to apply. On top of that, the community he's built is supportive and focused on improving. Whether you're playing 200nl or aiming to move up, working with Patrick is a great place to be.",
-      image: '/proof/testimonial-marcelo.png'
-    },
-    {
-      id: 4,
-      name: 'Andrea',
-      result: 'Breakeven NL50 → beating NL200 in 13 months',
-      quote: "I just finished my learning path with Patrick and I wanted to share my experience working with him. It was my first experience with a coach and I've always been very skeptical about coaching in general, but after working with him I completely changed my mind. What impressed me the most was his empathy. One day I came to a lesson during a downswing and without me saying a word about it, he sensed something and said 'How about we have a mindset talk instead?' To me, that's an innate and truly essential quality in a coach. In about 13 months I went from being breakeven at NL50 to beating NL200, almost ready for NL500.",
-      hasBeforeAfter: true,
-      imageBefore: '/proof/testimonial-andrea-before.png',
-      imageAfter: '/proof/testimonial-andrea-after.png'
-    },
-    {
-      id: 5,
-      name: 'Davide',
-      result: 'NL100 → dominating NL1000 in under a year',
-      quote: "Thanks to NachosPoker, I went from struggling at 100nl to dominating at 1k in under a year! They helped me improve in every aspect of the game, not only strategical, but also mental and logistical. Patrick is always patient, humble, and delivers more than expected. Plus, the community is awesome!",
-      image: '/proof/testimonial-davide.png'
-    },
-    {
-      id: 6,
-      name: 'Brendon',
-      result: 'Breakeven NL100 → dominating NL1000',
-      quote: "The strategy will anchor you in spots where you typically feel lost. Patrick's methodology elevated my game from a breakeven 100nl reg to dominating 1000nl. The supportive community offers in-depth discussions that have been crucial to my development.",
-      image: '/proof/testimonial-brendon.png'
-    },
-    {
-      id: 7,
-      name: 'Peter',
-      result: 'Back from a downswing, now playing NL2000',
-      quote: "After a tough downswing in late 2023 dropped me from 1knl to 200/500nl, I feared my high-stakes dream was over. A friend suggested Freenachos CFP, and it may have been the best decision of my career. Their resources and Patrick's support helped me excel, and I've since skyrocketed back on track, now competing at 2K and aiming higher soon.",
-      image: '/proof/testimonial-peter.png'
-    },
   ];
 
   // Scroll Reveal Animation Observer
@@ -166,16 +111,6 @@ const PokerToolboxHome = () => {
     if (cinemaCarouselRef.current) {
       cinemaCarouselRef.current.scrollBy({ left: -412, behavior: 'smooth' });
     }
-  };
-
-  const nextTestimonial = () => {
-    setSlideDirection('right');
-    setCurrentTestimonialIndex((prev) => (prev >= testimonials.length - 1 ? 0 : prev + 1));
-  };
-
-  const prevTestimonial = () => {
-    setSlideDirection('left');
-    setCurrentTestimonialIndex((prev) => (prev <= 0 ? testimonials.length - 1 : prev - 1));
   };
 
   // Inline newsletter capture (Safety Net section)
@@ -1039,7 +974,7 @@ const PokerToolboxHome = () => {
       {/* ==================== MUSEUM SPACER: Fade Zone (halved per audit) ==================== */}
       <div
         style={{
-          height: '150px',
+          height: '80px',
           position: 'relative',
           zIndex: 0
         }}
@@ -1054,464 +989,17 @@ const PokerToolboxHome = () => {
         {/* ==================== MECHANISM - Diagnose / Prioritize / Install / Verify ==================== */}
         <Mechanism />
 
-        {/* ==================== TESTIMONIALS - Individual Cards Only ==================== */}
-        <div
-          id="testimonials"
-          className="reveal"
-          style={{
-            paddingTop: '60px',
-            paddingBottom: '120px',
-            marginBottom: '200px',
-            overflow: 'visible',
-            scrollMarginTop: '90px'
-          }}
-        >
-          {/* Centered Header */}
-          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
-            <h2 style={{
-              fontSize: 'clamp(38px, 5vw, 56px)',
-              fontWeight: '800',
-              color: '#FFFFFF',
-              marginBottom: '16px',
-              lineHeight: 1.08,
-              letterSpacing: '-0.025em',
-              fontFamily: 'Manrope, Inter, sans-serif'
-            }}>
-              What My Students <span style={{
-                color: '#A78A43',
-                textShadow: '0 0 60px rgba(167, 138, 67, 0.4)'
-              }}>Say</span>
-            </h2>
-            <p style={{
-              fontSize: '17px',
-              color: '#8A8A8A',
-              maxWidth: '480px',
-              margin: '0 auto',
-              lineHeight: 1.7
-            }}>
-              Results and testimonials from players I&apos;ve worked with.
-            </p>
-            {/* TODO(patrick): enable once /results has 2+ complete case studies (P4)
-            <a href="/results" style={{ color: '#a88b46', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
-              Full case studies →
-            </a>
-            */}
-          </div>
+        {/* ==================== TESTIMONIALS ==================== */}
+        <Testimonials />
 
-          {/* Testimonial Carousel with Side Previews */}
-          <div style={{
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '20px',
-            padding: '0 20px'
-          }}>
-            {/* Left Preview Card */}
-            <div
-              onClick={prevTestimonial}
-              className="testimonial-preview-card"
-              style={{
-                flex: '0 0 200px',
-                height: '280px',
-                background: 'rgba(15, 15, 15, 0.6)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                borderRadius: '20px',
-                padding: '20px',
-                opacity: 0.5,
-                transform: 'scale(0.9)',
-                cursor: 'pointer',
-                transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden'
-              }}
-            >
-              <div style={{
-                background: 'rgba(15, 15, 15, 0.8)',
-                borderRadius: '8px',
-                padding: '8px',
-                marginBottom: '12px',
-                border: '1px solid rgba(255, 179, 71, 0.1)',
-                overflow: 'hidden',
-                height: '80px',
-                flexShrink: 0
-              }}>
-                <img
-                  src={testimonials[(currentTestimonialIndex - 1 + testimonials.length) % testimonials.length].image || testimonials[(currentTestimonialIndex - 1 + testimonials.length) % testimonials.length].imageAfter}
-                  alt="Results"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
-                />
-              </div>
-              <div style={{
-                color: 'rgba(255,255,255,0.6)',
-                fontSize: '12px',
-                fontStyle: 'italic',
-                flex: 1,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                display: '-webkit-box',
-                WebkitLineClamp: 4,
-                WebkitBoxOrient: 'vertical'
-              }}>
-                &quot;{testimonials[(currentTestimonialIndex - 1 + testimonials.length) % testimonials.length].quote.substring(0, 100)}...&quot;
-              </div>
-            </div>
+        {/* ==================== OFFER - The 6-Month Program ==================== */}
+        <OfferSection />
 
-            {/* Main Testimonial Card */}
-            <div
-              key={currentTestimonialIndex}
-              className="main-testimonial-card"
-              style={{
-                flex: '0 0 550px',
-                minHeight: '420px',
-                background: 'rgba(18, 18, 18, 0.5)',
-                backdropFilter: 'blur(16px)',
-                WebkitBackdropFilter: 'blur(16px)',
-                border: '1px solid rgba(167, 138, 67, 0.2)',
-                borderRadius: '24px',
-                padding: '40px',
-                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(167, 138, 67, 0.1)',
-                animation: slideDirection === 'right' ? 'slideInRight 0.4s ease-out' : 'slideInLeft 0.4s ease-out',
-                display: 'flex',
-                flexDirection: 'column'
-              }}
-            >
-              {/* Quote */}
-              <p style={{
-                color: 'rgba(255, 255, 255, 0.9)',
-                fontSize: '16px',
-                lineHeight: 1.8,
-                fontStyle: 'italic',
-                marginBottom: '24px'
-              }}>
-                &quot;{testimonials[currentTestimonialIndex].quote}&quot;
-              </p>
+        {/* ==================== FIT SECTION ==================== */}
+        <FitSection />
 
-              {/* Results Image - Clickable */}
-              {(testimonials[currentTestimonialIndex].image || testimonials[currentTestimonialIndex].imageAfter) && (
-                <div
-                  onClick={() => setShowTestimonialGraphModal(testimonials[currentTestimonialIndex].image || testimonials[currentTestimonialIndex].imageAfter)}
-                  className="testimonial-graph-clickable"
-                  style={{
-                    borderRadius: '12px',
-                    overflow: 'hidden',
-                    marginBottom: '24px',
-                    border: '1px solid rgba(167, 138, 67, 0.2)',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    position: 'relative'
-                  }}>
-                  <img
-                    src={testimonials[currentTestimonialIndex].image || testimonials[currentTestimonialIndex].imageAfter}
-                    alt="Results graph"
-                    style={{ width: '100%', height: 'auto', display: 'block' }}
-                  />
-                  {/* Hover overlay */}
-                  <div className="testimonial-graph-overlay" style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'rgba(168, 139, 70, 0.08)',
-                    opacity: 0,
-                    transition: 'opacity 0.3s ease',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    pointerEvents: 'none'
-                  }}>
-                    <span style={{
-                      color: '#a88b46',
-                      fontSize: '12px',
-                      fontWeight: '600',
-                      letterSpacing: '0.05em',
-                      textTransform: 'uppercase'
-                    }}>Click to expand</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Author Info */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: 'auto' }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #A78A43, #A78A43)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '18px',
-                  fontWeight: '700',
-                  color: '#0a0a0a'
-                }}>
-                  {testimonials[currentTestimonialIndex].name.charAt(0)}
-                </div>
-                <div>
-                  <div style={{ color: '#fff', fontWeight: '600', fontSize: '15px' }}>
-                    {testimonials[currentTestimonialIndex].name}
-                  </div>
-                  {testimonials[currentTestimonialIndex].result && (
-                    <div style={{ color: 'rgba(167, 138, 67, 0.8)', fontSize: '13px' }}>
-                      {testimonials[currentTestimonialIndex].result}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Right Preview Card */}
-            <div
-              onClick={nextTestimonial}
-              className="testimonial-preview-card"
-              style={{
-                flex: '0 0 200px',
-                height: '280px',
-                background: 'rgba(15, 15, 15, 0.6)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                borderRadius: '20px',
-                padding: '20px',
-                opacity: 0.5,
-                transform: 'scale(0.9)',
-                cursor: 'pointer',
-                transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden'
-              }}
-            >
-              <div style={{
-                background: 'rgba(15, 15, 15, 0.8)',
-                borderRadius: '8px',
-                padding: '8px',
-                marginBottom: '12px',
-                border: '1px solid rgba(255, 179, 71, 0.1)',
-                overflow: 'hidden',
-                height: '80px',
-                flexShrink: 0
-              }}>
-                <img
-                  src={testimonials[(currentTestimonialIndex + 1) % testimonials.length].image || testimonials[(currentTestimonialIndex + 1) % testimonials.length].imageAfter}
-                  alt="Results"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
-                />
-              </div>
-              <div style={{
-                color: 'rgba(255,255,255,0.6)',
-                fontSize: '12px',
-                fontStyle: 'italic',
-                flex: 1,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                display: '-webkit-box',
-                WebkitLineClamp: 4,
-                WebkitBoxOrient: 'vertical'
-              }}>
-                &quot;{testimonials[(currentTestimonialIndex + 1) % testimonials.length].quote.substring(0, 100)}...&quot;
-              </div>
-            </div>
-          </div>
-
-          {/* Carousel Controls */}
-          <div style={{
-            display: 'flex',
-            gap: '16px',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginTop: '40px'
-          }}>
-            <button
-              className="cinema-nav-btn"
-              onClick={prevTestimonial}
-              style={{
-                width: '52px',
-                height: '52px',
-                borderRadius: '50%',
-                background: 'rgba(167, 138, 67, 0.1)',
-                border: '1px solid rgba(167, 138, 67, 0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease'
-              }}
-            >
-              <ChevronLeft size={22} color="#A78A43" />
-            </button>
-
-            {/* Counter */}
-            <div style={{
-              color: 'rgba(240, 240, 240, 0.6)',
-              fontSize: '14px',
-              fontWeight: '500',
-              minWidth: '60px',
-              textAlign: 'center'
-            }}>
-              {currentTestimonialIndex + 1} / {testimonials.length}
-            </div>
-
-            <button
-              className="cinema-nav-btn"
-              onClick={nextTestimonial}
-              style={{
-                width: '52px',
-                height: '52px',
-                borderRadius: '50%',
-                background: 'rgba(167, 138, 67, 0.1)',
-                border: '1px solid rgba(167, 138, 67, 0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease'
-              }}
-            >
-              <ChevronRight size={22} color="#A78A43" />
-            </button>
-          </div>
-
-          {/* Testimonial Graph Modal */}
-          {showTestimonialGraphModal && (
-            <div
-              onClick={() => setShowTestimonialGraphModal(null)}
-              style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'rgba(0, 0, 0, 0.85)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                zIndex: 10000,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '40px',
-                animation: 'modalFadeIn 0.3s ease'
-              }}
-            >
-              <div
-                onClick={(e) => e.stopPropagation()}
-                style={{
-                  position: 'relative',
-                  maxWidth: '900px',
-                  width: '100%',
-                  background: 'rgba(18, 18, 18, 0.6)',
-                  backdropFilter: 'blur(40px)',
-                  WebkitBackdropFilter: 'blur(40px)',
-                  border: '1px solid rgba(168, 139, 70, 0.25)',
-                  borderRadius: '24px',
-                  padding: '24px',
-                  boxShadow: '0 40px 100px rgba(0, 0, 0, 0.6), 0 0 80px rgba(168, 139, 70, 0.1)',
-                  animation: 'modalScaleIn 0.3s ease'
-                }}
-              >
-                {/* Close Button */}
-                <button
-                  onClick={() => setShowTestimonialGraphModal(null)}
-                  style={{
-                    position: 'absolute',
-                    top: '16px',
-                    right: '16px',
-                    width: '40px',
-                    height: '40px',
-                    background: 'rgba(168, 139, 70, 0.1)',
-                    border: '1px solid rgba(168, 139, 70, 0.3)',
-                    borderRadius: '10px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'all 0.2s ease',
-                    zIndex: 10
-                  }}
-                  className="modal-close-btn"
-                >
-                  <X size={20} color="#a88b46" />
-                </button>
-
-                {/* Graph Image */}
-                <div style={{
-                  borderRadius: '16px',
-                  overflow: 'hidden'
-                }}>
-                  <img
-                    src={showTestimonialGraphModal}
-                    alt="Results graph"
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                      display: 'block'
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Testimonial styles */}
-          <style dangerouslySetInnerHTML={{ __html: `
-            @keyframes slideInRight {
-              0% {
-                opacity: 0;
-                transform: translateX(40px);
-              }
-              100% {
-                opacity: 1;
-                transform: translateX(0);
-              }
-            }
-
-            @keyframes slideInLeft {
-              0% {
-                opacity: 0;
-                transform: translateX(-40px);
-              }
-              100% {
-                opacity: 1;
-                transform: translateX(0);
-              }
-            }
-
-            .testimonial-preview-card:hover {
-              opacity: 0.8 !important;
-              transform: scale(0.95) !important;
-              border-color: rgba(167, 138, 67, 0.2) !important;
-            }
-            .testimonial-graph-clickable:hover {
-              border-color: rgba(168, 139, 70, 0.4) !important;
-              transform: translateY(-2px);
-              box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-            }
-            .testimonial-graph-clickable:hover .testimonial-graph-overlay {
-              opacity: 1 !important;
-            }
-            @media (max-width: 1024px) {
-              .testimonial-preview-card {
-                display: none !important;
-              }
-              .main-testimonial-card {
-                flex: 1 !important;
-                max-width: 600px !important;
-              }
-            }
-            @media (max-width: 600px) {
-              .main-testimonial-card {
-                padding: 28px !important;
-              }
-            }
-          ` }} />
-        </div>
-
-        {/* ==================== DEAD SPACE: Cinema Transition Zone (halved per audit) ==================== */}
-        <div style={{ height: '20vh', position: 'relative', zIndex: 0 }} />
+        {/* ==================== FAQ ==================== */}
+        <HomeFAQ />
 
         {/* ==================== YOUTUBE CINEMA SECTION ==================== */}
         {/* Premium Masterclass Library - Warm Gold Cinema */}
@@ -1521,9 +1009,9 @@ const PokerToolboxHome = () => {
           style={{
             position: 'relative',
             zIndex: 30,
-            paddingTop: '100px',
-            paddingBottom: '160px',
-            marginBottom: '200px',
+            paddingTop: '60px',
+            paddingBottom: '100px',
+            marginBottom: '140px',
             scrollMarginTop: '90px'
           }}
         >
@@ -1869,22 +1357,10 @@ const PokerToolboxHome = () => {
           ` }} />
         </div>
 
-        {/* ==================== OFFER - The 6-Month Program ==================== */}
-        <OfferSection />
-
-        {/* ==================== FIT SECTION ==================== */}
-        <FitSection />
-
-        {/* ==================== FAQ ==================== */}
-        <HomeFAQ />
-
-        {/* ==================== FINAL CTA ==================== */}
-        <FinalCTA />
-
         {/* ==================== THREE PATHS STRIP ==================== */}
         <div
           className="reveal"
-          style={{ marginBottom: '200px' }}
+          style={{ marginBottom: '140px' }}
         >
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <h2 style={{
@@ -1931,11 +1407,14 @@ const PokerToolboxHome = () => {
           </div>
         </div>
 
+        {/* ==================== FINAL CTA ==================== */}
+        <FinalCTA />
+
         {/* ==================== NEWSLETTER CAPTURE ==================== */}
         <div
           className="reveal"
           style={{
-            marginBottom: '200px'
+            marginBottom: '120px'
           }}
         >
           {/* Inline Newsletter Capture - catches visitors not ready to apply */}
