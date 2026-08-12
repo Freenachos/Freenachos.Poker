@@ -125,7 +125,8 @@ const Hero = ({ sectionRef }) => (
             </span>
           </div>
 
-          {/* Headline */}
+          {/* Headline: the promised outcome leads (owner's line); the counted-pool
+              claim moves to the subhead as its proof */}
           <h1 style={{
             fontSize: 'clamp(38px, 4.6vw, 56px)',
             fontWeight: '800',
@@ -135,11 +136,11 @@ const Hero = ({ sectionRef }) => (
             letterSpacing: '-0.025em',
             fontFamily: 'Manrope, Inter, sans-serif'
           }}>
-            I don&apos;t guess what the pool does.<br />
+            Stop guessing.<br />
             <span style={{
               color: '#A78A43',
               textShadow: '0 0 80px rgba(167, 138, 67, 0.4)'
-            }}>I&apos;ve counted it.</span>
+            }}>Exploit the population.</span>
           </h1>
 
           {/* Subhead */}
@@ -151,7 +152,7 @@ const Hero = ({ sectionRef }) => (
             marginBottom: '20px',
             fontWeight: '400'
           }}>
-            Over 200 million hands of pool data. 6.2bb/100 lifetime at 1KNL+ over 700k+ hands of my own. A 6-month program that audits your database against winning-population benchmarks, fixes the leaks in priority order, and re-audits at the end to verify your stats actually moved.
+            I don&apos;t guess what the pool does. I&apos;ve counted it: 200 million hands of pool data, and 6.2bb/100 lifetime at 1KNL+ over 700k+ hands of my own. A 6-month program that audits your database against winning-population benchmarks, fixes the leaks in priority order, and re-audits at the end to verify your stats actually moved.
           </p>
 
           {/* Trust line */}
