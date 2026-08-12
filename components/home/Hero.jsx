@@ -152,7 +152,7 @@ const Hero = ({ sectionRef }) => (
             marginBottom: '20px',
             fontWeight: '400'
           }}>
-            I don&apos;t guess what the pool does. I&apos;ve counted it: 200 million hands of pool data, and 6.2bb/100 lifetime at 1KNL+ over 700k+ hands of my own. A 6-month program that audits your database against winning-population benchmarks, fixes the leaks in priority order, and re-audits at the end to verify your stats actually moved.
+            I don&apos;t guess what the pool does. I&apos;ve counted it: 200 million hands of pool data, and 6.2bb/100 lifetime over 700k+ hands of my own, at stakes up to 2KNL. A 6-month program that audits your database against winning-population benchmarks, fixes the leaks in priority order, and re-audits at the end to verify your stats actually moved.
           </p>
 
           {/* Trust line */}
