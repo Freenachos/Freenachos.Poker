@@ -52,6 +52,7 @@ const STEPS = [
     ),
     asset: '/mechanism/install.png',
     isVideo: false,
+    cropAspect: '1.4', // tall PDF page: match sibling frames, crop the bottom
     hasAsset: true, // page from a real tailored PDF, owner-approved (2026-08-12)
     caption: 'From the tailored PDF after a call: the leak, the direction to move, and what to drill.'
   },
@@ -98,7 +99,12 @@ const MechanismFigure = ({ step }) => (
             display: 'block',
             borderRadius: '16px',
             border: '1px solid rgba(168, 139, 70, 0.2)',
-            boxShadow: '0 24px 64px rgba(0, 0, 0, 0.4)'
+            boxShadow: '0 24px 64px rgba(0, 0, 0, 0.4)',
+            ...(step.cropAspect ? {
+              aspectRatio: step.cropAspect,
+              objectFit: 'cover',
+              objectPosition: 'top'
+            } : {})
           }}
         />
       )
