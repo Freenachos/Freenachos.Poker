@@ -167,7 +167,7 @@ const ProofSection = ({ sectionRef }) => {
                 transition: 'all 0.3s ease'
               }}>
               <img
-                src="/proof/results-graph-1knl.jpg"
+                src="/proof/results-graph.png"
                 alt={`Freenachos results graph - ${PROOF.winrate}`}
                 style={{
                   width: '100%',
@@ -348,7 +348,7 @@ const ProofSection = ({ sectionRef }) => {
               overflow: 'hidden'
             }}>
               <img
-                src="/proof/results-graph-1knl.jpg"
+                src="/proof/results-graph.png"
                 alt={`Freenachos results graph - ${PROOF.winrate}`}
                 style={{
                   width: '100%',
