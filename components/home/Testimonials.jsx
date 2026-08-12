@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, X } from 'lucide-react';
 
 /**
@@ -66,7 +66,26 @@ const TESTIMONIALS = [
 
 const VISIBLE_BY_DEFAULT = 3;
 
-const TestimonialCard = ({ t, onImageClick }) => (
+const TestimonialCard = ({ t, onImageClick }) => {
+  // Quotes are the students' real words and vary a lot in length. The clamp
+  // keeps cards even; when a quote actually overflows it, the tail fades and
+  // a per-card Read more appears. Nothing is ever silently cut.
+  const quoteRef = useRef(null);
+  const [clampable, setClampable] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    if (expanded) return;
+    const el = quoteRef.current;
+    if (!el) return;
+    const check = () => setClampable(el.scrollHeight > el.clientHeight + 2);
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [expanded]);
+
+  return (
   <div
     className="testimonial-grid-card"
     style={{
@@ -124,20 +143,42 @@ const TestimonialCard = ({ t, onImageClick }) => (
       </div>
     )}
 
-    {/* Quote (clamped; the strongest lines lead in the students' own words) */}
-    <p
-      className="testimonial-grid-quote"
-      style={{
-        color: 'rgba(255, 255, 255, 0.88)',
-        fontSize: '14.5px',
-        lineHeight: 1.75,
-        fontStyle: 'italic',
-        margin: 0,
-        flex: 1
-      }}
-    >
-      &quot;{t.quote}&quot;
-    </p>
+    {/* Quote: clamped for even cards, faded tail + Read more when it overflows */}
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <p
+        ref={quoteRef}
+        className={`testimonial-grid-quote${expanded ? ' expanded' : clampable ? ' clamped-fade' : ''}`}
+        style={{
+          color: 'rgba(255, 255, 255, 0.88)',
+          fontSize: '14.5px',
+          lineHeight: 1.75,
+          fontStyle: 'italic',
+          margin: 0
+        }}
+      >
+        &quot;{t.quote}&quot;
+      </p>
+      {(clampable || expanded) && (
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="testimonial-readmore-btn"
+          style={{
+            alignSelf: 'flex-start',
+            background: 'none',
+            border: 'none',
+            padding: 0,
+            color: GOLD,
+            fontSize: '13px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            letterSpacing: '0.02em'
+          }}
+        >
+          {expanded ? 'Show less' : 'Read more'}
+        </button>
+      )}
+    </div>
 
     {/* Author */}
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -168,7 +209,8 @@ const TestimonialCard = ({ t, onImageClick }) => (
       </div>
     </div>
   </div>
-);
+  );
+};
 
 const Testimonials = () => {
   const [showAll, setShowAll] = useState(false);
@@ -351,6 +393,20 @@ const Testimonials = () => {
           -webkit-line-clamp: 8;
           -webkit-box-orient: vertical;
           overflow: hidden;
+        }
+        .testimonial-grid-quote.clamped-fade {
+          -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent 98%);
+          mask-image: linear-gradient(180deg, #000 62%, transparent 98%);
+        }
+        .testimonial-grid-quote.expanded {
+          display: block;
+          -webkit-line-clamp: unset;
+          overflow: visible;
+          -webkit-mask-image: none;
+          mask-image: none;
+        }
+        .testimonial-readmore-btn:hover {
+          text-decoration: underline;
         }
         .testimonial-graph-clickable:hover {
           border-color: rgba(168, 139, 70, 0.4) !important;
