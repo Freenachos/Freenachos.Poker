@@ -81,12 +81,18 @@ hyphens too. Code comments were not treated as copy.
 from the site-wide `<style>{...}</style>`-in-JSX pattern (fires identically on untouched
 pages like `/privacy`); missing favicon.ico (404 in console).
 
-## Deploy prerequisites (in order)
+## Deploy status (2026-08-26: LIVE and verified end to end)
 
-1. Run `supabase/migrations/20260808120000_applications.sql` against the production project.
-2. Vercel env: `SUPABASE_SERVICE_ROLE_KEY`, `APPLY_WEBHOOK_URL` (private Discord webhook).
-3. Create `patrick@freenachos.poker` forwarding.
-4. Submit a dummy application on production → confirm row + Discord message + confirmation state.
+- Pushed to `main`; Vercel auto-deploys from it.
+- Applications migration applied to the production Supabase project (owner, via SQL editor).
+- Vercel production env: `SUPABASE_SERVICE_ROLE_KEY` (pre-existing), `RESEND_API_KEY`,
+  `APPLY_NOTIFY_EMAIL`, `APPLY_FROM_EMAIL` (set via CLI). Notification is EMAIL via
+  Resend (full application, reply-to applicant); the Discord webhook was dropped.
+- End-to-end verified on production: test submission -> Supabase row -> email received
+  by owner; test row deleted afterward.
+- Still open: `patrick@freenachos.poker` forwarding (live footer contact link), and the
+  Supabase project is free-tier with auto-pause: a paused project fails submissions.
+  Recommend Pro tier.
 
 ## Manual screenshot checklist (P7.4 — until the script gets credentials)
 
