@@ -153,7 +153,7 @@ const OfferSection = () => (
         lineHeight: 1.8,
         marginBottom: '36px'
       }}>
-        After the six months you can extend for another six at {EXTENSION.priceFormatted}. Details at your exit review.
+        After the first six months, staying on is {EXTENSION.priceFormatted} per six months. We set each block&apos;s plan at your exit review.
       </p>
 
       {/* CTA */}

@@ -25,7 +25,7 @@ export const faqItems = [
   },
   {
     question: 'What happens after the six months?',
-    answer: `You leave with the re-audit, the full recorded vault, and the alumni Discord. If you want to keep going, you can extend for another six months at ${EXTENSION.priceFormatted}; we set the plan at your exit review. No obligation either way.`
+    answer: `You leave with the re-audit, the full recorded vault, and the alumni Discord. If you want to keep going, renewals are ${EXTENSION.priceFormatted} per six months; we set each block's plan at your exit review. No obligation either way.`
   },
   {
     question: `What's the time commitment?`,

@@ -496,7 +496,7 @@ function ApplyForm() {
               >
                 the {COURSE.priceFormatted} course
               </a>{' '}
-              first: most of the theory at a tenth of the price. Want backing instead of paying flat? That&apos;s{' '}
+              first: most of the theory at a fraction of the price. Want backing instead of paying flat? That&apos;s{' '}
               <a
                 href={cfpUrl('apply_page')}
                 target="_blank"
