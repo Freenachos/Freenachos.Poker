@@ -86,7 +86,7 @@ const FinalCTA = () => (
           paddingBottom: '2px'
         }}
       >
-        Run the free Win Rate Dashboard
+        Check out the free Win Rate Dashboard
       </a>
       {/* TODO(patrick): point this at the exact Greed Tax slug under /newsletters/[slug] */}
       <a

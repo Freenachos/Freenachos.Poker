@@ -216,7 +216,7 @@ const Hero = ({ sectionRef }) => (
               onMouseEnter={(e) => { e.currentTarget.style.color = '#A78A43'; e.currentTarget.style.borderColor = '#A78A43'; }}
               onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(240, 240, 240, 0.6)'; e.currentTarget.style.borderColor = 'rgba(167, 138, 67, 0.35)'; }}
             >
-              Not ready? Run your sample through the free Win Rate Dashboard →
+              Not ready? Check out the free Win Rate Dashboard →
             </a>
           </div>
         </div>
