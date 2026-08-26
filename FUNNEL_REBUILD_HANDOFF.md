@@ -111,7 +111,9 @@ Superseded the plan's original €7,500 / 9-call structure:
   3 × €2,100 (TODO: confirm amount).
 - **12 calls, biweekly**: one call per branch of the game tree (Stat Checker taxonomy),
   each followed by a tailored PDF (summary, action points, study suggestions). Roadmap
-  rows drafted from the Stat Checker sidebar order; TODO: confirm order + per-call jobs.
+  order owner-confirmed 2026-08-12: Theory of Exploitation, 4 SRP formations, full SRP
+  audit (guarantee gate), 4 3BP formations, full 3BP audit, exit re-audit. Per-call job
+  blurbs remain drafted wording.
 - **Extension: €3,000** after the six months (drafted as another six months, mirroring
   the old 24-month program's loose-calls phase; TODO: confirm length + cadence). The
   retainer copy was replaced by the extension; RETAINER stays in lib/offer.js unsold.
