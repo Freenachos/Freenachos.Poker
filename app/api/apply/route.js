@@ -76,32 +76,56 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Failed to save application' }, { status: 500 });
     }
 
-    // Discord notification — best-effort. The Supabase row is the source of
-    // truth; a missing/broken webhook must never fail the submission.
-    // TODO(patrick): create a private Discord channel webhook and add
-    // APPLY_WEBHOOK_URL to the Vercel env.
-    const webhookUrl = process.env.APPLY_WEBHOOK_URL;
-    if (webhookUrl) {
-      const summary = [
-        `**New ${row.intent === 'audit' ? 'AUDIT request' : 'application'}**: ${row.name}`,
-        `Site/stake: ${row.site} · ${row.stake} · ${row.volume_bucket} hands/mo`,
-        `Database: ${row.no_database ? 'not tracked' : row.db_summary.slice(0, 300)}`,
-        `Bankroll: ${row.bankroll}${row.staked_until ? ` (staked until ${row.staked_until})` : ''}`,
-        `Investment viable: ${row.investment_viable} · CFP interest: ${row.cfp_interest}`,
-        `Biggest obstacle: ${row.biggest_obstacle.slice(0, 300)}`,
-        `Contact: ${row.email}${row.discord ? ` · ${row.discord}` : ''}`
-      ].join('\n');
+    // Email notification via Resend — best-effort. The Supabase row is the
+    // source of truth; a missing key or failed send must never fail the
+    // submission. Env: RESEND_API_KEY, APPLY_NOTIFY_EMAIL (recipient), and
+    // optionally APPLY_FROM_EMAIL (must be a Resend-verified sender).
+    const resendKey = process.env.RESEND_API_KEY;
+    const notifyTo = process.env.APPLY_NOTIFY_EMAIL;
+    if (resendKey && notifyTo) {
+      const esc = (v) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const fields = [
+        ['Site / stake / volume', `${row.site} · ${row.stake} · ${row.volume_bucket} hands per month`],
+        ['Database', row.no_database ? 'not tracked' : row.db_summary],
+        ['Bankroll', `${row.bankroll}${row.staked_until ? ` (staked until ${row.staked_until})` : ''}`],
+        ['Study process', row.study_process],
+        ['12-month goal', row.goal_12mo],
+        ['Biggest obstacle', row.biggest_obstacle],
+        ['Investment viable', row.investment_viable],
+        ['CFP interest', row.cfp_interest],
+        ['Email', row.email],
+        ['Discord', row.discord || 'not given'],
+        ['UTM', row.source_utm ? JSON.stringify(row.source_utm) : 'none']
+      ];
+      const html =
+        `<h2 style="margin:0 0 4px">${esc(row.name)}</h2>` +
+        `<p style="margin:0 0 16px;color:#666">${row.intent === 'audit' ? 'Audit request' : 'Program application'} · id ${esc(data?.id)}</p>` +
+        fields.map(([label, value]) =>
+          `<p style="margin:0 0 10px"><strong>${esc(label)}:</strong><br/>${esc(value)}</p>`
+        ).join('');
       try {
-        await fetch(webhookUrl, {
+        const emailRes = await fetch('https://api.resend.com/emails', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content: summary.slice(0, 1990) })
+          headers: {
+            Authorization: `Bearer ${resendKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            from: process.env.APPLY_FROM_EMAIL || 'Freenachos Applications <onboarding@resend.dev>',
+            to: [notifyTo],
+            reply_to: row.email,
+            subject: `New ${row.intent === 'audit' ? 'audit request' : 'application'}: ${row.name} (${row.stake}, ${row.site})`,
+            html
+          })
         });
-      } catch (webhookError) {
-        console.error('Application webhook failed (row saved):', webhookError);
+        if (!emailRes.ok) {
+          console.error('Application email failed (row saved):', emailRes.status, await emailRes.text());
+        }
+      } catch (emailError) {
+        console.error('Application email failed (row saved):', emailError);
       }
     } else {
-      console.log('APPLY_WEBHOOK_URL not set; application saved without Discord notification:', data?.id);
+      console.log('RESEND_API_KEY / APPLY_NOTIFY_EMAIL not set; application saved without email:', data?.id);
     }
 
     return NextResponse.json({ success: true });
