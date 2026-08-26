@@ -153,7 +153,7 @@ const Hero = ({ sectionRef }) => (
             marginBottom: '20px',
             fontWeight: '400'
           }}>
-            I don&apos;t guess what the pool does. I&apos;ve counted it: 200 million hands of pool data, and 6.2bb/100 of my own over 700k+ hands. The program audits your database against the winning population, fixes the leaks in priority order, and re-audits to prove your stats moved.
+            I don&apos;t guess what the pool does. I&apos;ve counted it: 200 million hands of pool data, and 6.2bb/100 of my own over 1.5M+ hands. The program audits your database against the winning population, fixes the leaks in priority order, and re-audits to prove your stats moved.
           </p>
 
           {/* Trust line */}
