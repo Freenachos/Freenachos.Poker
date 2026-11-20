@@ -11,9 +11,10 @@ import { track } from '@vercel/analytics';
 const FinalCTA = () => (
   <div
     id="book"
-    className="reveal"
+    data-reveal
     style={{
-      marginBottom: '140px',
+      padding: '40px 0',
+      marginBottom: '160px',
       textAlign: 'center',
       scrollMarginTop: '90px'
     }}
@@ -24,6 +25,7 @@ const FinalCTA = () => (
       color: '#FFFFFF',
       marginBottom: '20px',
       lineHeight: 1.12,
+      textWrap: 'balance',
       letterSpacing: '-0.025em',
       fontFamily: 'Manrope, Inter, sans-serif',
       maxWidth: '820px',
@@ -36,11 +38,11 @@ const FinalCTA = () => (
       }}>win rate is leaking.</span>
     </h2>
     <p style={{
-      color: 'rgba(240, 240, 240, 0.55)',
-      fontSize: '17px',
-      lineHeight: 1.8,
-      maxWidth: '580px',
-      margin: '0 auto 40px'
+      color: 'rgba(240, 240, 240, 0.7)',
+      fontSize: '18px',
+      lineHeight: 1.7,
+      maxWidth: '560px',
+      margin: '0 auto 44px'
     }}>
       I&apos;ll show you, in priority order, measured against 200 million hands, not guesses. Then we fix them, and at the end we measure again.
     </p>
@@ -80,7 +82,7 @@ const FinalCTA = () => (
         href="/winrate"
         onClick={() => track('cta_click', { placement: 'final_winrate' })}
         style={{
-          color: 'rgba(240, 240, 240, 0.55)',
+          color: 'rgba(240, 240, 240, 0.68)',
           textDecoration: 'none',
           borderBottom: '1px solid rgba(167, 138, 67, 0.3)',
           paddingBottom: '2px'
@@ -93,7 +95,7 @@ const FinalCTA = () => (
         href="/newsletters"
         onClick={() => track('cta_click', { placement: 'final_greed_tax' })}
         style={{
-          color: 'rgba(240, 240, 240, 0.55)',
+          color: 'rgba(240, 240, 240, 0.68)',
           textDecoration: 'none',
           borderBottom: '1px solid rgba(167, 138, 67, 0.3)',
           paddingBottom: '2px'

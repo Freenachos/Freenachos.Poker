@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ArrowRight, X } from 'lucide-react';
 import { track } from '@vercel/analytics';
 import { PROOF } from '@/lib/offer';
+import CountUp from '@/components/motion/CountUp';
 
 // P0.3: '$5.5M+' is the approved shorthand of PROOF.studentProfits for tight
 // layouts (headline, stat tiles). The exact figure + attribution render below.
@@ -20,7 +21,7 @@ const ProofSection = ({ sectionRef }) => {
   return (
     <div
       ref={sectionRef}
-      className="reveal-first coach-authority-section"
+      className="coach-authority-section"
       style={{
         paddingTop: '160px',
         paddingBottom: '160px',
@@ -30,11 +31,13 @@ const ProofSection = ({ sectionRef }) => {
     >
       {/* Centered Headline */}
       <h2
+        data-reveal
         style={{
+          textWrap: 'balance',
           fontSize: 'clamp(36px, 4.5vw, 56px)',
           fontWeight: '800',
           color: '#FFFFFF',
-          marginBottom: '72px',
+          marginBottom: '88px',
           lineHeight: 1.08,
           letterSpacing: '-0.025em',
           fontFamily: 'Manrope, Inter, sans-serif',
@@ -60,7 +63,7 @@ const ProofSection = ({ sectionRef }) => {
             pointerEvents: 'none',
             zIndex: -1
           }} />
-          {PROFITS_SHORT}
+          <CountUp value={PROFITS_SHORT} duration={1800} />
         </span> in Student Profits
       </h2>
 
@@ -70,32 +73,33 @@ const ProofSection = ({ sectionRef }) => {
         style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
-          gap: '80px',
-          alignItems: 'start',
-          maxWidth: '1200px',
+          gap: '96px',
+          alignItems: 'center',
+          maxWidth: '1160px',
           margin: '0 auto'
         }}
       >
         {/* LEFT COLUMN - Copy */}
-        <div style={{
+        <div data-reveal style={{
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
           paddingRight: '24px'
         }}>
           <div style={{
-            color: 'rgba(240, 240, 240, 0.8)',
-            fontSize: '17px',
-            lineHeight: 1.9,
-            fontWeight: '400'
+            color: 'rgba(240, 240, 240, 0.72)',
+            fontSize: '16.5px',
+            lineHeight: 1.8,
+            fontWeight: '400',
+            maxWidth: '500px'
           }}>
-            <p style={{ marginBottom: '24px' }}>
+            <p style={{ marginBottom: '28px', fontSize: '20px', lineHeight: 1.55, color: 'rgba(240, 240, 240, 0.94)', fontWeight: '500' }}>
               I didn&apos;t start out winning. I went through long breakeven stretches and downswings, even while studying and putting in serious volume. The problem wasn&apos;t a lack of effort. It was that I lacked a system that worked against real opponents.
             </p>
-            <p style={{ marginBottom: '24px', color: 'rgba(240, 240, 240, 0.7)' }}>
+            <p style={{ marginBottom: '24px' }}>
               Everything changed when I stopped memorizing solver outputs and started using <span style={{ color: '#a88b46', fontWeight: '500' }}>GTO as a diagnostic tool</span>. By comparing equilibrium to actual population behavior, I learned how to identify recurring imbalances and build strategies that exploit them in a repeatable way.
             </p>
-            <p style={{ color: 'rgba(240, 240, 240, 0.6)' }}>
+            <p>
               I teach you to translate data into profit. The goal is not theoretical perfection. It is a <span style={{ color: '#a88b46', fontWeight: '500' }}>consistent, repeatable system</span> that wins over large samples.
             </p>
           </div>
@@ -104,7 +108,7 @@ const ProofSection = ({ sectionRef }) => {
           <a
             href="/apply"
             onClick={() => track('cta_click', { placement: 'about' })}
-            className="btn-hover authority-cta-btn"
+            className="authority-cta-btn cta-arrow"
             style={{
               marginTop: '48px',
               background: 'transparent',
@@ -118,7 +122,7 @@ const ProofSection = ({ sectionRef }) => {
               alignItems: 'center',
               gap: '10px',
               border: '1.5px solid #a88b46',
-              transition: 'all 0.3s ease',
+              transition: 'background 0.3s ease, box-shadow 0.3s ease',
               width: 'fit-content'
             }}
           >
@@ -127,7 +131,8 @@ const ProofSection = ({ sectionRef }) => {
         </div>
 
         {/* RIGHT COLUMN - Visual Proof */}
-        <div style={{
+        <div data-reveal style={{
+          '--i': 1,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center'
@@ -164,7 +169,7 @@ const ProofSection = ({ sectionRef }) => {
                 overflow: 'hidden',
                 boxShadow: '0 24px 64px rgba(0, 0, 0, 0.4)',
                 cursor: 'pointer',
-                transition: 'all 0.3s ease'
+                transition: 'border-color 0.3s ease, box-shadow 0.3s ease'
               }}>
               <img
                 src="/proof/results-graph.png"
@@ -204,7 +209,7 @@ const ProofSection = ({ sectionRef }) => {
             <div style={{
               textAlign: 'center',
               fontSize: '12px',
-              color: 'rgba(240, 240, 240, 0.45)',
+              color: 'rgba(240, 240, 240, 0.6)',
               fontStyle: 'italic',
               marginTop: '16px',
               letterSpacing: '0.02em'
@@ -219,7 +224,7 @@ const ProofSection = ({ sectionRef }) => {
             maxWidth: '480px',
             height: '1px',
             background: 'rgba(168, 139, 70, 0.15)',
-            margin: '32px 0'
+            margin: '36px 0 32px'
           }} />
 
           {/* Stats Row - 4 in a single row */}
@@ -251,7 +256,7 @@ const ProofSection = ({ sectionRef }) => {
                   letterSpacing: '-0.02em',
                   lineHeight: 1
                 }}>
-                  {stat.value}
+                  <CountUp value={stat.value} delay={idx * 120} />
                 </div>
                 <div style={{
                   fontSize: '12px',
@@ -271,9 +276,9 @@ const ProofSection = ({ sectionRef }) => {
           <div style={{
             width: '100%',
             maxWidth: '480px',
-            marginTop: '20px',
-            fontSize: '12px',
-            color: 'rgba(240, 240, 240, 0.4)',
+            marginTop: '24px',
+            fontSize: '12.5px',
+            color: 'rgba(240, 240, 240, 0.55)',
             lineHeight: 1.6
           }}>
             {PROOF.studentProfits}: {PROOF.studentProfitsAttribution}. {PROOF.handsPlayed} of my own; benchmarks drawn from {PROOF.poolHands}.
@@ -377,13 +382,11 @@ const ProofSection = ({ sectionRef }) => {
         .authority-cta-btn:hover {
           background: rgba(168, 139, 70, 0.08) !important;
           border-color: #a88b46 !important;
-          transform: translateY(-2px);
           box-shadow: 0 8px 24px rgba(168, 139, 70, 0.15);
         }
 
         .graph-frame-clickable:hover {
           border-color: rgba(168, 139, 70, 0.4) !important;
-          transform: translateY(-2px);
           box-shadow: 0 28px 72px rgba(0, 0, 0, 0.5), 0 0 30px rgba(168, 139, 70, 0.1) !important;
         }
 

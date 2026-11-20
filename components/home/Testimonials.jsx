@@ -89,6 +89,7 @@ const TestimonialCard = ({ t, onImageClick }) => {
   <div
     className="testimonial-grid-card"
     style={{
+      width: '100%',
       background: 'rgba(18, 18, 18, 0.5)',
       backdropFilter: 'blur(16px)',
       WebkitBackdropFilter: 'blur(16px)',
@@ -111,7 +112,7 @@ const TestimonialCard = ({ t, onImageClick }) => {
           overflow: 'hidden',
           border: '1px solid rgba(167, 138, 67, 0.2)',
           cursor: 'pointer',
-          transition: 'all 0.3s ease',
+          transition: 'border-color 0.3s ease',
           position: 'relative',
           flexShrink: 0
         }}
@@ -221,16 +222,15 @@ const Testimonials = () => {
   return (
     <div
       id="testimonials"
-      className="reveal"
       style={{
         paddingTop: '60px',
         paddingBottom: '80px',
-        marginBottom: '140px',
+        marginBottom: '160px',
         scrollMarginTop: '90px'
       }}
     >
       {/* Centered Header */}
-      <div style={{ textAlign: 'center', marginBottom: '56px' }}>
+      <div data-reveal style={{ textAlign: 'center', marginBottom: '64px' }}>
         <h2 style={{
           fontSize: 'clamp(38px, 5vw, 56px)',
           fontWeight: '800',
@@ -247,7 +247,7 @@ const Testimonials = () => {
         </h2>
         <p style={{
           fontSize: '17px',
-          color: '#8A8A8A',
+          color: 'rgba(240, 240, 240, 0.62)',
           maxWidth: '480px',
           margin: '0 auto',
           lineHeight: 1.7
@@ -267,14 +267,16 @@ const Testimonials = () => {
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '24px',
+          gap: '28px',
           maxWidth: '1200px',
           margin: '0 auto',
           alignItems: 'stretch'
         }}
       >
-        {visible.map((t) => (
-          <TestimonialCard key={t.id} t={t} onImageClick={setModalImage} />
+        {visible.map((t, idx) => (
+          <div key={t.id} data-reveal style={{ '--i': idx % 3, display: 'flex' }}>
+            <TestimonialCard t={t} onImageClick={setModalImage} />
+          </div>
         ))}
       </div>
 
@@ -410,17 +412,20 @@ const Testimonials = () => {
         }
         .testimonial-graph-clickable:hover {
           border-color: rgba(168, 139, 70, 0.4) !important;
-          transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        .testimonial-graph-clickable img {
+          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .testimonial-graph-clickable:hover img {
+          transform: scale(1.04);
         }
         .testimonial-graph-clickable:hover .testimonial-graph-overlay {
           opacity: 1 !important;
         }
         .testimonial-grid-card {
-          transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+          transition: border-color 0.4s ease, box-shadow 0.4s ease;
         }
         .testimonial-grid-card:hover {
-          transform: translateY(-4px);
           border-color: rgba(167, 138, 67, 0.4) !important;
           box-shadow: 0 24px 56px rgba(0, 0, 0, 0.45), 0 0 32px rgba(167, 138, 67, 0.08);
         }

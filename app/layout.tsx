@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Analytics } from '@vercel/analytics/next';
+import MotionRoot from '@/components/motion/MotionRoot';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://freenachos.poker'),
@@ -49,9 +50,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Set before first paint so reveal styles never flash; without JS the
+            class is absent and every section renders in its final state. */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('motion-ok')" }} />
+      </head>
       <body>
         {children}
+        <MotionRoot />
         <Analytics />
       </body>
     </html>

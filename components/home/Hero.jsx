@@ -45,11 +45,11 @@ const Hero = ({ sectionRef }) => (
         height: '88vh',
         maxHeight: '920px',
         zIndex: 20,
-        animation: 'imageReveal 1.2s ease-out 0.5s both',
         pointerEvents: 'none'
       }}
     >
       <img
+        className="hero-focus"
         src="/proof/coach-hero.png"
         alt="Patrick 'Freenachos' Gerritsen - Data-Driven Poker Coach"
         style={{
@@ -95,23 +95,22 @@ const Hero = ({ sectionRef }) => (
         }}
       >
         <div
-          style={{
-            maxWidth: '620px',
-            animation: 'heroFadeIn 1s ease-out 0.2s both'
-          }}
+          style={{ maxWidth: '620px' }}
         >
           {/* Deal chip: the entire offer stated before anything else (NN/g: attention
               front-loads; the top of the page must carry the deal). White numerals on
               a stronger pill so it reads as the deal, not decoration. */}
           <div
+            className="hero-in"
             style={{
+              '--d': '0.05s',
               display: 'inline-flex',
               alignItems: 'center',
               background: 'rgba(167, 138, 67, 0.14)',
               border: '1px solid rgba(167, 138, 67, 0.5)',
               borderRadius: '50px',
               padding: '12px 24px',
-              marginBottom: '32px',
+              marginBottom: '36px',
               backdropFilter: 'blur(8px)',
               boxShadow: '0 0 28px rgba(167, 138, 67, 0.18)'
             }}
@@ -129,59 +128,56 @@ const Hero = ({ sectionRef }) => (
           {/* Headline: the promised outcome leads (owner's line); the counted-pool
               claim moves to the subhead as its proof */}
           <h1 style={{
-            fontSize: 'clamp(38px, 4.6vw, 56px)',
+            fontSize: 'clamp(34px, 3.7vw, 52px)',
             fontWeight: '800',
             color: '#FFFFFF',
-            marginBottom: '28px',
+            marginBottom: '32px',
             lineHeight: 1.1,
+            width: 'max-content',
+            maxWidth: 'calc(100vw - 96px)',
             letterSpacing: '-0.025em',
             fontFamily: 'Manrope, Inter, sans-serif'
           }}>
-            Master high-stakes theory.<br />
-            <span style={{
+            <span className="hero-line" style={{ '--d': '0.15s' }}>Master high-stakes theory.</span>
+            <span className="hero-line" style={{
+              '--d': '0.27s',
               color: '#A78A43',
               textShadow: '0 0 80px rgba(167, 138, 67, 0.4)'
             }}>Exploit the population.</span>
           </h1>
 
           {/* Subhead */}
-          <p style={{
-            fontSize: '17px',
-            color: '#B0B0B8',
-            maxWidth: '540px',
-            lineHeight: 1.8,
-            marginBottom: '20px',
+          <p className="hero-in" style={{
+            '--d': '0.42s',
+            fontSize: '20px',
+            color: '#F0F0F0',
+            maxWidth: '520px',
+            lineHeight: 1.5,
+            marginBottom: '14px',
+            fontWeight: '500',
+            letterSpacing: '-0.005em'
+          }}>
+            I don&apos;t guess what the pool does. I&apos;ve counted it: 200 million hands of pool data, and 6.2bb/100 of my own over 1.5M+ hands.
+          </p>
+          <p className="hero-in" style={{
+            '--d': '0.5s',
+            fontSize: '16px',
+            color: '#A9ABB6',
+            maxWidth: '500px',
+            lineHeight: 1.7,
+            marginBottom: '40px',
             fontWeight: '400'
           }}>
-            I don&apos;t guess what the pool does. I&apos;ve counted it: 200 million hands of pool data, and 6.2bb/100 of my own over 1.5M+ hands. The program audits your database against the winning population, fixes the leaks in priority order, and re-audits to prove your stats moved.
+            The program audits your database against the winning population, fixes the leaks in priority order, and re-audits to prove your stats moved.
           </p>
-
-          {/* Trust line */}
-          <div style={{
-            fontSize: '13px',
-            color: 'rgba(240, 240, 240, 0.55)',
-            letterSpacing: '0.01em',
-            marginBottom: '8px'
-          }}>
-            {PROOF.rioStatus} · Students include Davide, 100NL to 1KNL in under a year
-          </div>
-
-          {/* Qualifier line */}
-          <div style={{
-            fontSize: '13px',
-            color: 'rgba(240, 240, 240, 0.45)',
-            letterSpacing: '0.01em',
-            marginBottom: '36px'
-          }}>
-            For bankrolled online cash regs, {FIT.stakesRange}.
-          </div>
 
           {/* Primary CTA */}
           <a
             href="/apply"
             onClick={() => track('cta_click', { placement: 'hero' })}
-            className="btn-hover cta-primary"
+            className="btn-hover cta-primary hero-in"
             style={{
+              '--d': '0.6s',
               background: '#A78A43',
               color: '#0a0a0a',
               padding: '20px 44px',
@@ -200,7 +196,7 @@ const Hero = ({ sectionRef }) => (
           </a>
 
           {/* Secondary ghost CTA */}
-          <div style={{ marginTop: '18px' }}>
+          <div className="hero-in" style={{ '--d': '0.68s', marginTop: '18px' }}>
             <a
               href="/winrate"
               onClick={() => track('cta_click', { placement: 'hero_secondary' })}
@@ -218,6 +214,22 @@ const Hero = ({ sectionRef }) => (
             >
               Not ready? Check out the free Win Rate Dashboard →
             </a>
+          </div>
+
+          {/* Trust + qualifier: one quiet block under the actions */}
+          <div className="hero-in" style={{
+            '--d': '0.8s',
+            marginTop: '44px',
+            paddingTop: '20px',
+            borderTop: '1px solid rgba(167, 138, 67, 0.18)',
+            maxWidth: '500px',
+            fontSize: '13.5px',
+            lineHeight: 1.7,
+            color: 'rgba(240, 240, 240, 0.62)'
+          }}>
+            {PROOF.rioStatus} · Students include Davide, 100NL to 1KNL in under a year
+            <br />
+            For bankrolled online cash regs, {FIT.stakesRange}.
           </div>
         </div>
       </div>

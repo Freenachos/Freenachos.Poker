@@ -61,14 +61,15 @@ const ThreePaths = ({ compact = false, context = 'home' }) => {
         {paths.map((path, idx) => {
           const Icon = path.icon;
           return (
+            <div key={idx} data-reveal style={{ '--i': idx, display: 'flex' }}>
             <a
-              key={idx}
               href={path.href}
               target={path.external ? '_blank' : undefined}
               rel={path.external ? 'noopener noreferrer' : undefined}
               onClick={path.onClick}
-              className="threepaths-card"
+              className="threepaths-card cta-arrow"
               style={{
+                width: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 background: 'rgba(18, 18, 18, 0.4)',
@@ -78,7 +79,7 @@ const ThreePaths = ({ compact = false, context = 'home' }) => {
                 borderRadius: '20px',
                 padding: compact ? '32px 28px' : '44px 36px',
                 textDecoration: 'none',
-                transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
+                transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
                 position: 'relative',
                 overflow: 'hidden'
               }}
@@ -127,7 +128,7 @@ const ThreePaths = ({ compact = false, context = 'home' }) => {
               </h3>
               <p style={{
                 fontSize: compact ? '13.5px' : '14.5px',
-                color: 'rgba(240, 240, 240, 0.6)',
+                color: 'rgba(240, 240, 240, 0.68)',
                 lineHeight: 1.75,
                 marginBottom: '24px',
                 flex: 1,
@@ -148,13 +149,13 @@ const ThreePaths = ({ compact = false, context = 'home' }) => {
                 {path.ctaLabel} <ArrowRight size={15} />
               </div>
             </a>
+            </div>
           );
         })}
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
         .threepaths-card:hover {
-          transform: translateY(-6px);
           border-color: rgba(168, 139, 70, 0.5) !important;
           box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4), 0 0 40px rgba(168, 139, 70, 0.1);
         }

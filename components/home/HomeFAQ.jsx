@@ -60,14 +60,16 @@ const FAQItem = ({ item, index, isExpanded, onToggle }) => (
       border: '1px solid rgba(167, 138, 67, 0.2)',
       borderRadius: '12px',
       overflow: 'hidden',
-      transition: 'all 0.3s ease'
+      transition: 'border-color 0.3s ease, background 0.3s ease'
     }}
   >
     <button
       onClick={() => onToggle(index)}
+      aria-expanded={isExpanded}
       style={{
         width: '100%',
-        padding: '20px 24px',
+        fontFamily: 'inherit',
+        padding: '24px 28px',
         background: 'transparent',
         border: 'none',
         display: 'flex',
@@ -79,8 +81,9 @@ const FAQItem = ({ item, index, isExpanded, onToggle }) => (
     >
       <span style={{
         color: '#F0F0F0',
-        fontSize: '15px',
+        fontSize: '16.5px',
         fontWeight: '600',
+        lineHeight: 1.45,
         flex: 1,
         paddingRight: '16px'
       }}>
@@ -90,40 +93,46 @@ const FAQItem = ({ item, index, isExpanded, onToggle }) => (
         size={20}
         color="#A78A43"
         style={{
-          transition: 'transform 0.3s ease',
+          transition: 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)',
           transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
           flexShrink: 0
         }}
       />
     </button>
-    <div style={{
-      maxHeight: isExpanded ? '800px' : '0',
-      overflow: 'hidden',
-      transition: 'max-height 0.4s ease'
-    }}>
-      <div style={{
-        padding: '0 24px 20px',
-        color: 'rgba(240, 240, 240, 0.7)',
-        fontSize: '14px',
-        lineHeight: 1.8,
-        whiteSpace: 'pre-line'
-      }}>
-        {item.answer}
+    {/* grid 0fr -> 1fr: the panel opens to its own height, no max-height guess */}
+    <div
+      className="faq-panel"
+      style={{ gridTemplateRows: isExpanded ? '1fr' : '0fr' }}
+    >
+      <div style={{ overflow: 'hidden', minHeight: 0 }}>
+        <div
+          className="faq-answer"
+          style={{
+            padding: '0 28px 26px',
+            color: 'rgba(240, 240, 240, 0.72)',
+            fontSize: '15.5px',
+            lineHeight: 1.8,
+            maxWidth: '68ch',
+            whiteSpace: 'pre-line',
+            opacity: isExpanded ? 1 : 0
+          }}
+        >
+          {item.answer}
+        </div>
       </div>
     </div>
   </div>
 );
 
 const HomeFAQ = () => {
-  const [expandedFAQ, setExpandedFAQ] = useState(0);
+  const [expandedFAQ, setExpandedFAQ] = useState(-1);
 
   return (
     <div
-      className="reveal"
       style={{
         paddingTop: '60px',
         paddingBottom: '80px',
-        marginBottom: '140px'
+        marginBottom: '160px'
       }}
     >
       {/* FAQ structured data */}
@@ -133,7 +142,7 @@ const HomeFAQ = () => {
       />
 
       {/* Centered Header */}
-      <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+      <div data-reveal style={{ textAlign: 'center', marginBottom: '64px' }}>
         <h2 style={{
           fontSize: 'clamp(36px, 4.5vw, 52px)',
           fontWeight: '800',
@@ -149,7 +158,7 @@ const HomeFAQ = () => {
           }}>Answers</span>
         </h2>
         <p style={{
-          color: '#8A8A8A',
+          color: 'rgba(240, 240, 240, 0.62)',
           fontSize: '17px',
           lineHeight: 1.7,
           maxWidth: '480px',
@@ -165,7 +174,7 @@ const HomeFAQ = () => {
         margin: '0 auto',
         display: 'flex',
         flexDirection: 'column',
-        gap: '12px'
+        gap: '14px'
       }}>
         {faqItems.map((item, idx) => (
           <FAQItem
@@ -177,6 +186,19 @@ const HomeFAQ = () => {
           />
         ))}
       </div>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        .faq-panel {
+          display: grid;
+          transition: grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .faq-answer {
+          transition: opacity 0.35s ease;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .faq-panel { transition: none; }
+        }
+      ` }} />
     </div>
   );
 };

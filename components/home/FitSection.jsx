@@ -53,15 +53,14 @@ const FitSection = () => {
 
   return (
     <div
-      className="reveal"
       style={{
         paddingTop: '60px',
         paddingBottom: '80px',
-        marginBottom: '140px'
+        marginBottom: '160px'
       }}
     >
       {/* Centered Header */}
-      <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+      <div data-reveal style={{ textAlign: 'center', marginBottom: '72px' }}>
         <h2 style={{
           fontSize: 'clamp(36px, 4.5vw, 52px)',
           fontWeight: '800',
@@ -81,12 +80,12 @@ const FitSection = () => {
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-        gap: '64px',
-        maxWidth: '950px',
+        gap: '64px 96px',
+        maxWidth: '980px',
         margin: '0 auto'
       }}>
         {/* Good Fit Column */}
-        <div>
+        <div data-reveal>
           <h3 style={{
             fontSize: '22px',
             fontWeight: '700',
@@ -98,7 +97,7 @@ const FitSection = () => {
           <div style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '16px'
+            gap: '20px'
           }}>
             {goodFit.map((reason, idx) => (
               <div key={idx} style={{
@@ -120,8 +119,8 @@ const FitSection = () => {
                   <Check size={14} color="#A78A43" />
                 </div>
                 <span style={{
-                  color: 'rgba(240, 240, 240, 0.8)',
-                  fontSize: '15px',
+                  color: 'rgba(240, 240, 240, 0.88)',
+                  fontSize: '16px',
                   lineHeight: 1.6
                 }}>
                   {reason}
@@ -132,7 +131,7 @@ const FitSection = () => {
         </div>
 
         {/* Not a Fit Column */}
-        <div>
+        <div data-reveal style={{ '--i': 1 }}>
           <h3 style={{
             fontSize: '22px',
             fontWeight: '700',
@@ -144,7 +143,7 @@ const FitSection = () => {
           <div style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '16px'
+            gap: '20px'
           }}>
             {notFit.map((reason, idx) => (
               <div key={idx} style={{
@@ -166,8 +165,8 @@ const FitSection = () => {
                   <X size={14} color="#ef4444" />
                 </div>
                 <span style={{
-                  color: 'rgba(240, 240, 240, 0.55)',
-                  fontSize: '15px',
+                  color: 'rgba(240, 240, 240, 0.68)',
+                  fontSize: '16px',
                   lineHeight: 1.6
                 }}>
                   {reason}

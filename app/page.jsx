@@ -55,29 +55,6 @@ const PokerToolboxHome = () => {
     { id: 5, title: 'NL1000 Hand Gets Spicy: Slow Roll Incoming?', thumbnail: 'https://img.youtube.com/vi/wM_QUPDUL44/maxresdefault.jpg', duration: '', views: '', link: 'https://www.youtube.com/watch?v=wM_QUPDUL44' },
   ];
 
-  // Scroll Reveal Animation Observer
-  useEffect(() => {
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px 0px -100px 0px',
-      threshold: 0.15
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, observerOptions);
-
-    // Observe all elements with 'reveal' or 'reveal-first' class
-    const revealElements = document.querySelectorAll('.reveal, .reveal-first');
-    revealElements.forEach(el => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, []);
-
   // Show sticky CTA when Hero section is mostly scrolled out (only 20% visible)
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -146,16 +123,16 @@ const PokerToolboxHome = () => {
       <NewsletterPopup />
 
       {/* Sticky CTA Button - Apply for the Program - Only visible after scrolling past hero */}
-      {showStickyCta && (
-        <a
-          href="/apply"
-          onClick={() => track('cta_click', { placement: 'sticky' })}
-          className="sticky-cta-btn"
-        >
-          Apply for the Program
-          <ArrowRight size={18} />
-        </a>
-      )}
+      <a
+        href="/apply"
+        onClick={() => track('cta_click', { placement: 'sticky' })}
+        className={`sticky-cta-btn cta-arrow${showStickyCta ? ' is-shown' : ''}`}
+        aria-hidden={!showStickyCta}
+        tabIndex={showStickyCta ? 0 : -1}
+      >
+        Apply for the Program
+        <ArrowRight size={18} />
+      </a>
 
       <style dangerouslySetInnerHTML={{ __html: `
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
@@ -164,30 +141,6 @@ const PokerToolboxHome = () => {
         html, body {
           scroll-behavior: smooth;
           overflow-x: hidden;
-        }
-
-        /* Scroll Reveal Animation - Museum Float (Buttery Momentum) */
-        .reveal {
-          opacity: 0;
-          transform: translateY(60px);
-          transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .reveal.visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        /* First Section - Extra Dramatic Entrance */
-        .reveal-first {
-          opacity: 0;
-          transform: translateY(80px);
-          transition: opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1), transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .reveal-first.visible {
-          opacity: 1;
-          transform: translateY(0);
         }
 
         @keyframes fadeInUp {
@@ -209,11 +162,8 @@ const PokerToolboxHome = () => {
         .btn-hover {
           transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
         }
-        .btn-hover:hover:not(:disabled) {
-          transform: translateY(-4px);
-        }
         .btn-hover:active:not(:disabled) {
-          transform: translateY(-2px);
+          transform: scale(0.985);
         }
 
         .cta-primary {
@@ -238,7 +188,7 @@ const PokerToolboxHome = () => {
 
         .cta-primary:hover {
           box-shadow: 0 0 20px rgba(167, 138, 67, 0.4), 0 10px 40px rgba(167, 138, 67, 0.3);
-          background: #FFa31a;
+          background: #bfa050 !important;
         }
 
         /* Sticky Apply Button */
@@ -260,30 +210,33 @@ const PokerToolboxHome = () => {
           box-shadow: 0 4px 30px rgba(167, 138, 67, 0.4);
           border: none;
           cursor: pointer;
-          transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-          animation: stickyCtaEnter 0.4s ease-out;
+          opacity: 0;
+          visibility: hidden;
+          transform: translateY(16px);
+          pointer-events: none;
+          transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s, background 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .sticky-cta-btn.is-shown {
+          opacity: 1;
+          visibility: visible;
+          transform: none;
+          pointer-events: auto;
+          transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s, background 0.2s ease, box-shadow 0.2s ease;
         }
 
         .sticky-cta-btn:hover {
           background: #bfa050;
           box-shadow: 0 6px 24px rgba(167, 138, 67, 0.5);
-          transform: translateY(-2px);
         }
 
-        .sticky-cta-btn:active {
-          transform: translateY(0);
+        @media (prefers-reduced-motion: reduce) {
+          .sticky-cta-btn,
+          .sticky-cta-btn.is-shown {
+            transform: none;
+          }
         }
 
-        @keyframes stickyCtaEnter {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
 
         .faq-item:hover {
           border-color: rgba(167, 138, 67, 0.4);
@@ -394,27 +347,7 @@ const PokerToolboxHome = () => {
           100% { transform: translate(0, 0) rotate(360deg); }
         }
 
-        @keyframes heroFadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(40px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
 
-        @keyframes imageReveal {
-          from {
-            opacity: 0;
-            transform: translateX(60px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
 
         /* Ghost Fade Mask - Solid Torso, Quick Bottom Fade */
         .hero-image-mask {
@@ -477,7 +410,7 @@ const PokerToolboxHome = () => {
 
       {/* === LAYER 0: PERIPHERAL BOKEH - Ultra-Large, Extreme Blur, Edge Framing === */}
       {/* Simulates objects very close to the camera lens in peripheral vision */}
-      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
+      <div className="bokeh-field" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
 
         {/* Peripheral Left - Top */}
         <div style={{
@@ -582,7 +515,7 @@ const PokerToolboxHome = () => {
       </div>
 
       {/* === LAYER 1: FOREGROUND - Large, Very Blurry, Slow Heavy Drift === */}
-      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 1, overflow: 'hidden' }}>
+      <div className="bokeh-field" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 1, overflow: 'hidden' }}>
 
         {/* Foreground Nacho 1 - Top Left */}
         <div className="bokeh-foreground" style={{
@@ -653,7 +586,7 @@ const PokerToolboxHome = () => {
       </div>
 
       {/* === LAYER 2: MIDGROUND - Medium, Soft Blur, Moderate Drift === */}
-      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 2, overflow: 'hidden' }}>
+      <div className="bokeh-field" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 2, overflow: 'hidden' }}>
 
         {/* Midground Nacho 1 */}
         <div className="bokeh-midground" style={{
@@ -758,7 +691,7 @@ const PokerToolboxHome = () => {
       </div>
 
       {/* === LAYER 3: BACKGROUND (FOCAL POINT) - Small, Sharp, Fast Darting === */}
-      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 3, overflow: 'hidden' }}>
+      <div className="bokeh-field" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 3, overflow: 'hidden' }}>
 
         {/* Background Nacho 1 - Sharp, Fast */}
         <div className="bokeh-background" style={{
@@ -826,108 +759,6 @@ const PokerToolboxHome = () => {
             <polygon points="50,5 95,95 5,95" fill="#A78A43" />
           </svg>
         </div>
-
-        {/* Background Nacho 5 */}
-        <div className="bokeh-background" style={{
-          position: 'absolute',
-          top: '70%',
-          left: '12%',
-          width: '11px',
-          height: '11px',
-          opacity: 0.38,
-          filter: 'blur(0px) drop-shadow(0 0 3px rgba(167, 138, 67, 0.6))',
-          animation: 'backgroundDart2 16s ease-in-out infinite',
-          animationDelay: '-12s'
-        }}>
-          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
-          </svg>
-        </div>
-
-        {/* Background Nacho 6 */}
-        <div className="bokeh-background" style={{
-          position: 'absolute',
-          top: '42%',
-          left: '45%',
-          width: '9px',
-          height: '9px',
-          opacity: 0.42,
-          filter: 'blur(0px) drop-shadow(0 0 2px rgba(167, 138, 67, 0.6))',
-          animation: 'backgroundDart3 13s ease-in-out infinite',
-          animationDelay: '-6s'
-        }}>
-          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
-          </svg>
-        </div>
-
-        {/* Background Nacho 7 */}
-        <div className="bokeh-background" style={{
-          position: 'absolute',
-          bottom: '40%',
-          right: '8%',
-          width: '13px',
-          height: '13px',
-          opacity: 0.36,
-          filter: 'blur(0px) drop-shadow(0 0 3px rgba(167, 138, 67, 0.5))',
-          animation: 'backgroundDart1 17s ease-in-out infinite',
-          animationDelay: '-9s'
-        }}>
-          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
-          </svg>
-        </div>
-
-        {/* Background Nacho 8 */}
-        <div className="bokeh-background" style={{
-          position: 'absolute',
-          top: '85%',
-          left: '60%',
-          width: '10px',
-          height: '10px',
-          opacity: 0.40,
-          filter: 'blur(0px) drop-shadow(0 0 2px rgba(167, 138, 67, 0.6))',
-          animation: 'backgroundDart2 12s ease-in-out infinite',
-          animationDelay: '-4s'
-        }}>
-          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
-          </svg>
-        </div>
-
-        {/* Background Nacho 9 - Tiny, very fast */}
-        <div className="bokeh-background" style={{
-          position: 'absolute',
-          top: '25%',
-          left: '70%',
-          width: '6px',
-          height: '6px',
-          opacity: 0.50,
-          filter: 'blur(0px) drop-shadow(0 0 2px rgba(167, 138, 67, 0.8))',
-          animation: 'backgroundDart3 10s ease-in-out infinite',
-          animationDelay: '-2s'
-        }}>
-          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
-          </svg>
-        </div>
-
-        {/* Background Nacho 10 - Tiny, very fast */}
-        <div className="bokeh-background" style={{
-          position: 'absolute',
-          bottom: '15%',
-          right: '45%',
-          width: '7px',
-          height: '7px',
-          opacity: 0.48,
-          filter: 'blur(0px) drop-shadow(0 0 2px rgba(167, 138, 67, 0.7))',
-          animation: 'backgroundDart1 11s ease-in-out infinite',
-          animationDelay: '-7s'
-        }}>
-          <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-            <polygon points="50,5 95,95 5,95" fill="#A78A43" />
-          </svg>
-        </div>
       </div>
 
       {/* ==================== FIXED NAVBAR (z-9999) ==================== */}
@@ -984,7 +815,7 @@ const PokerToolboxHome = () => {
         {/* ==================== YOUTUBE CINEMA SECTION ==================== */}
         {/* Premium Masterclass Library - Warm Gold Cinema */}
         <div
-          className="reveal"
+          data-reveal
           id="videos"
           style={{
             position: 'relative',
@@ -1339,10 +1170,9 @@ const PokerToolboxHome = () => {
 
         {/* ==================== THREE PATHS STRIP ==================== */}
         <div
-          className="reveal"
-          style={{ marginBottom: '140px' }}
+          style={{ marginBottom: '160px' }}
         >
-          <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+          <div data-reveal style={{ textAlign: 'center', marginBottom: '56px' }}>
             <h2 style={{
               fontSize: 'clamp(30px, 3.6vw, 42px)',
               fontWeight: '800',
@@ -1392,7 +1222,7 @@ const PokerToolboxHome = () => {
 
         {/* ==================== NEWSLETTER CAPTURE ==================== */}
         <div
-          className="reveal"
+          data-reveal
           style={{
             marginBottom: '120px'
           }}

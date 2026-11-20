@@ -52,3 +52,185 @@ body {
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 179, 71, 0.5);
 }
+
+/* ============================================================
+   BROWSER SURFACES (selection, focus, scrollbar, numerals)
+   ============================================================ */
+
+:root {
+  --gold: #A78A43;
+  --gold-bright: #C9A85A;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+::selection {
+  background: rgba(167, 138, 67, 0.38);
+  color: #FFFFFF;
+}
+
+html {
+  scrollbar-color: rgba(167, 138, 67, 0.35) #0A0E1A;
+  caret-color: var(--gold-bright);
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   MOTION SYSTEM
+   Content is visible by default. The `motion-ok` class is set on
+   <html> by an inline script before first paint, so a failed
+   script never hides the page. components/motion/MotionRoot.jsx
+   adds `.is-in` when an element scrolls into view.
+
+   data-reveal            rise + fade (default)
+   data-reveal="fade"     opacity only
+   data-reveal="scan"     left-to-right wipe behind a gold scan line
+   --i                    stagger index for siblings in a list
+   ============================================================ */
+
+.motion-ok [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s var(--ease-out-expo),
+    transform 0.7s var(--ease-out-expo);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+
+.motion-ok [data-reveal="fade"] {
+  transform: none;
+}
+
+.motion-ok [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Scan: the audit running across a screenshot.
+   The wipe sits on the child: a fully clipped element never reports as
+   intersecting, so the observed wrapper itself must keep its box. */
+.motion-ok [data-reveal="scan"] {
+  transform: none;
+  position: relative;
+  overflow: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.motion-ok [data-reveal="scan"] > * {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1.1s var(--ease-out-expo);
+}
+
+.motion-ok [data-reveal="scan"].is-in > * {
+  clip-path: inset(0 0 0 0);
+}
+
+.motion-ok [data-reveal="scan"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-right: 2px solid var(--gold-bright);
+  background: linear-gradient(90deg, transparent 82%, rgba(201, 168, 90, 0.16) 100%);
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.motion-ok [data-reveal="scan"].is-in::after {
+  animation: scanLine 1.1s var(--ease-out-expo) both;
+}
+
+@keyframes scanLine {
+  0%   { transform: translateX(-100%); opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateX(0); opacity: 0; }
+}
+
+/* Hero entrance: one rehearsed sequence, driven by --d (delay) */
+.motion-ok .hero-in {
+  animation: heroRise 0.8s var(--ease-out-expo) both;
+  animation-delay: var(--d, 0s);
+}
+
+.motion-ok .hero-line {
+  display: block;
+  animation: heroLine 0.95s var(--ease-out-expo) both;
+  animation-delay: var(--d, 0s);
+}
+
+/* Focus pull: the coach comes into focus out of the bokeh field */
+.motion-ok .hero-focus {
+  animation: heroFocus 1.5s var(--ease-out-expo) 0.25s both;
+}
+
+@keyframes heroRise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes heroLine {
+  from { opacity: 0; clip-path: inset(0 -10% 100% -10%); transform: translateY(0.4em); }
+  to   { opacity: 1; clip-path: inset(-30% -10% -30% -10%); transform: none; }
+}
+
+@keyframes heroFocus {
+  from { opacity: 0; filter: blur(16px); transform: scale(1.035); }
+  to   { opacity: 1; filter: blur(0); transform: none; }
+}
+
+/* Primary CTA: the arrow carries the hover, the button stays put */
+.cta-primary svg,
+.cta-arrow svg {
+  transition: transform 0.3s var(--ease-out-expo);
+}
+
+.cta-primary:hover svg,
+.cta-arrow:hover svg {
+  transform: translateX(4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-ok [data-reveal],
+  .motion-ok [data-reveal="scan"] {
+    transform: none;
+    clip-path: none;
+    transition: opacity 0.4s ease;
+    transition-delay: 0s;
+  }
+  .motion-ok [data-reveal="scan"] > * { clip-path: none; transition: none; }
+  .motion-ok [data-reveal="scan"]::after { display: none; }
+
+  .motion-ok .hero-in,
+  .motion-ok .hero-line,
+  .motion-ok .hero-focus {
+    animation: heroFadeOnly 0.5s ease both;
+    animation-delay: 0s;
+  }
+
+  .cta-primary:hover svg,
+  .cta-arrow:hover svg {
+    transform: none;
+  }
+
+  /* Ambient loops stop; the field stays as a still */
+  .bokeh-field * {
+    animation: none !important;
+  }
+
+  html {
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes heroFadeOnly {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

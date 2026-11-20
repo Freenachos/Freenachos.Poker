@@ -29,11 +29,10 @@ const DELIVERABLES = [
 const OfferSection = () => (
   <div
     id="program"
-    className="reveal"
     style={{
       paddingTop: '60px',
       paddingBottom: '100px',
-      marginBottom: '140px',
+      marginBottom: '160px',
       scrollMarginTop: '90px',
       position: 'relative'
     }}
@@ -48,7 +47,7 @@ const OfferSection = () => (
     }} aria-hidden="true" />
 
     {/* Centered Header */}
-    <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+    <div data-reveal style={{ textAlign: 'center', marginBottom: '72px' }}>
       <h2 style={{
         fontSize: 'clamp(38px, 5vw, 56px)',
         fontWeight: '800',
@@ -64,8 +63,8 @@ const OfferSection = () => (
         }}>{NAME_LAST}</span>
       </h2>
       <p style={{
-        color: 'rgba(240, 240, 240, 0.5)',
-        fontSize: '17px',
+        color: 'rgba(240, 240, 240, 0.68)',
+        fontSize: '18px',
         lineHeight: 1.7,
         maxWidth: '480px',
         margin: '0 auto'
@@ -76,12 +75,10 @@ const OfferSection = () => (
 
     {/* Deliverables */}
     <div
-      className="glass-card offer-deliverables"
+      className="offer-deliverables"
       style={{
-        maxWidth: '900px',
-        margin: '0 auto 72px',
-        borderRadius: '24px',
-        padding: '48px 44px'
+        maxWidth: '860px',
+        margin: '0 auto 112px'
       }}
     >
       <div
@@ -89,20 +86,23 @@ const OfferSection = () => (
         style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
-          gap: '20px 40px'
+          gap: '0 64px'
         }}
       >
         {DELIVERABLES.map((item, idx) => (
-          <div key={idx} style={{
+          <div key={idx} data-reveal style={{
+            '--i': Math.floor(idx / 2),
             display: 'flex',
             alignItems: 'flex-start',
-            gap: '12px'
+            gap: '14px',
+            padding: '22px 0',
+            borderTop: '1px solid rgba(167, 138, 67, 0.16)'
           }}>
-            <Check size={16} color="#a88b46" style={{ flexShrink: 0, marginTop: '3px' }} strokeWidth={2.5} />
+            <Check size={17} color="#a88b46" style={{ flexShrink: 0, marginTop: '4px' }} strokeWidth={2.5} />
             <span style={{
-              color: 'rgba(240, 240, 240, 0.78)',
-              fontSize: '15px',
-              lineHeight: 1.7
+              color: 'rgba(240, 240, 240, 0.88)',
+              fontSize: '16px',
+              lineHeight: 1.6
             }}>
               {item}
             </span>
@@ -112,48 +112,53 @@ const OfferSection = () => (
     </div>
 
     {/* Roadmap */}
-    <p style={{
+    <h3 data-reveal style={{
       textAlign: 'center',
-      color: 'rgba(240, 240, 240, 0.65)',
-      fontSize: '16px',
-      marginBottom: '28px'
+      color: '#FFFFFF',
+      fontSize: 'clamp(22px, 2.4vw, 28px)',
+      fontWeight: '700',
+      letterSpacing: '-0.015em',
+      fontFamily: 'Manrope, Inter, sans-serif',
+      margin: '0 0 36px',
+      textWrap: 'balance'
     }}>
       Every call has a job. This is the plan you&apos;re buying:
-    </p>
+    </h3>
     <RoadmapTable />
 
-    {/* Price block */}
-    <div style={{
+    {/* Price block: the figure, then one fact per line */}
+    <div data-reveal style={{
       textAlign: 'center',
-      maxWidth: '640px',
-      margin: '72px auto 0'
+      maxWidth: '560px',
+      margin: '120px auto 0'
     }}>
-      <div style={{
-        fontSize: '52px',
+      <div className="tnum" style={{
+        fontSize: 'clamp(56px, 7vw, 76px)',
         fontWeight: '800',
         color: '#FFFFFF',
-        letterSpacing: '-0.02em',
+        letterSpacing: '-0.03em',
         lineHeight: 1,
-        marginBottom: '14px'
+        marginBottom: '20px',
+        fontFamily: 'Manrope, Inter, sans-serif'
       }}>
         {OFFER.priceFormatted}
       </div>
       <p style={{
-        color: 'rgba(240, 240, 240, 0.7)',
-        fontSize: '15.5px',
-        lineHeight: 1.85,
-        marginBottom: '10px'
+        color: 'rgba(240, 240, 240, 0.72)',
+        fontSize: '17px',
+        lineHeight: 1.6,
+        marginBottom: '8px'
       }}>
-        {OFFER.priceFormatted} for the six months, or {OFFER.plan.installments} payments of {euro(OFFER.plan.amount)}. Paying in full adds {OFFER.pifBonus}. I don&apos;t discount, I add. The {AUDIT.priceFormatted} {AUDIT.name} is available standalone first and is credited in full if you continue within {AUDIT.creditDays} days.
+        {OFFER.priceFormatted} for the six months, or {OFFER.plan.installments} payments of {euro(OFFER.plan.amount)}.
       </p>
-      {/* Continuation line */}
       <p style={{
-        color: 'rgba(240, 240, 240, 0.45)',
-        fontSize: '13px',
-        lineHeight: 1.8,
-        marginBottom: '36px'
+        color: 'rgba(240, 240, 240, 0.94)',
+        fontSize: '17px',
+        fontWeight: '600',
+        lineHeight: 1.6,
+        marginBottom: '40px'
       }}>
-        After the first six months, staying on is {EXTENSION.priceFormatted} per six months. We set each block&apos;s plan at your exit review.
+        Paying in full adds {OFFER.pifBonus}. I don&apos;t discount, I add.
       </p>
 
       {/* CTA */}
@@ -178,7 +183,20 @@ const OfferSection = () => (
       >
         Apply for the Program <ArrowRight size={20} />
       </a>
-      <div style={{ marginTop: '18px' }}>
+
+      {/* Audit path + continuation: the two secondary facts, grouped under the action */}
+      <p style={{
+        color: 'rgba(240, 240, 240, 0.62)',
+        fontSize: '14.5px',
+        lineHeight: 1.75,
+        margin: '56px auto 12px',
+        paddingTop: '32px',
+        borderTop: '1px solid rgba(167, 138, 67, 0.16)',
+        maxWidth: '500px'
+      }}>
+        The {AUDIT.priceFormatted} {AUDIT.name} is available standalone first and is credited in full if you continue within {AUDIT.creditDays} days.
+      </p>
+      <div style={{ marginBottom: '28px' }}>
         <a
           href="/audit"
           onClick={() => track('cta_click', { placement: 'offer_audit' })}
@@ -194,12 +212,21 @@ const OfferSection = () => (
           Or start with the {AUDIT.priceFormatted} {AUDIT.name} →
         </a>
       </div>
+      <p style={{
+        color: 'rgba(240, 240, 240, 0.55)',
+        fontSize: '13.5px',
+        lineHeight: 1.75,
+        maxWidth: '500px',
+        margin: '0 auto'
+      }}>
+        After the first six months, staying on is {EXTENSION.priceFormatted} per six months. We set each block&apos;s plan at your exit review.
+      </p>
     </div>
 
     <style dangerouslySetInnerHTML={{ __html: `
       @media (max-width: 768px) {
         .offer-deliverables {
-          padding: 36px 28px !important;
+          margin-bottom: 80px !important;
         }
         .offer-deliverables-grid {
           grid-template-columns: 1fr !important;

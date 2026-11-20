@@ -17,9 +17,10 @@ const STEPS = [
     n: 1,
     title: 'Diagnose',
     icon: Crosshair,
+    lead: <>We start with a full audit of your database: {fmtK(AUDIT.dbMinHands)} hands minimum, {fmtK(FIT.dbPreferredHands)} preferred.</>,
     body: (
       <>
-        We start with a full audit of your database: {fmtK(AUDIT.dbMinHands)} hands minimum, {fmtK(FIT.dbPreferredHands)} preferred. My Stat Checker compares every meaningful stat you have against two baselines: GTO, and the winning population at your stakes, drawn from {PROOF.poolHands}. I built the Stat Checker myself, on a pool database I maintain, including tracking {BOTS} so the benchmarks aren&apos;t poisoned. Not what a coach thinks looks off. What the numbers say is off.
+        My Stat Checker compares every meaningful stat you have against two baselines: GTO, and the winning population at your stakes, drawn from {PROOF.poolHands}. I built the Stat Checker myself, on a pool database I maintain, including tracking {BOTS} so the benchmarks aren&apos;t poisoned. Not what a coach thinks looks off. What the numbers say is off.
       </>
     ),
     asset: '/mechanism/diagnose.png',
@@ -31,9 +32,10 @@ const STEPS = [
     n: 2,
     title: 'Prioritize',
     icon: ListOrdered,
+    lead: <>An audit that finds 40 leaks is useless.</>,
     body: (
       <>
-        An audit that finds 40 leaks is useless. Every action line in every branch gets scored: your frequency against the baseline, the gap flagged from minor to major, the sample size right next to it so you know what&apos;s signal and what&apos;s noise. You leave the first month with a short, ordered list: the three to five deviations that matter most.
+        Every action line in every branch gets scored: your frequency against the baseline, the gap flagged from minor to major, the sample size right next to it so you know what&apos;s signal and what&apos;s noise. You leave the first month with a short, ordered list: the three to five deviations that matter most.
       </>
     ),
     asset: '/mechanism/prioritize.png',
@@ -45,9 +47,10 @@ const STEPS = [
     n: 3,
     title: 'Install',
     icon: Wrench,
+    lead: <>Knowing a leak exists doesn&apos;t close it.</>,
     body: (
       <>
-        Knowing a leak exists doesn&apos;t close it. The fixes get installed through biweekly 1-on-1 sessions, one call per branch of the game tree, each followed by a tailored PDF: summary, action points, study suggestions. You don&apos;t just watch. You implement. The goal is not theoretical perfection; the goal is to translate data into profit.
+        The fixes get installed through biweekly 1-on-1 sessions, one call per branch of the game tree, each followed by a tailored PDF: summary, action points, study suggestions. You don&apos;t just watch. You implement. The goal is not theoretical perfection; the goal is to translate data into profit.
       </>
     ),
     asset: '/mechanism/install.png',
@@ -60,9 +63,10 @@ const STEPS = [
     n: 4,
     title: 'Verify',
     icon: LineChart,
+    lead: <>Every month we recalibrate against your fresh sample.</>,
     body: (
       <>
-        Every month we recalibrate against your fresh sample. At month six, a full re-audit: same stats, same benchmarks, before and after. Win rate over six months is mostly noise. Your frequencies aren&apos;t. If your fold-to-3bet moved from 68% to 54%, that&apos;s not variance. That&apos;s the deliverable.
+        At month six, a full re-audit: same stats, same benchmarks, before and after. Win rate over six months is mostly noise. Your frequencies aren&apos;t. If your fold-to-3bet moved from 68% to 54%, that&apos;s not variance. That&apos;s the deliverable.
       </>
     ),
     asset: '/mechanism/verify.png',
@@ -74,6 +78,15 @@ const STEPS = [
 
 const MechanismFigure = ({ step }) => (
   <figure style={{ margin: 0, width: '100%' }}>
+    <div
+      data-reveal={step.hasAsset ? 'scan' : undefined}
+      style={step.hasAsset ? {
+        borderRadius: '16px',
+        border: '1px solid rgba(168, 139, 70, 0.2)',
+        boxShadow: '0 24px 64px rgba(0, 0, 0, 0.4)',
+        overflow: 'hidden'
+      } : undefined}
+    >
     {step.hasAsset ? (
       step.isVideo ? (
         <video
@@ -84,10 +97,7 @@ const MechanismFigure = ({ step }) => (
           playsInline
           style={{
             width: '100%',
-            display: 'block',
-            borderRadius: '16px',
-            border: '1px solid rgba(168, 139, 70, 0.2)',
-            boxShadow: '0 24px 64px rgba(0, 0, 0, 0.4)'
+            display: 'block'
           }}
         />
       ) : (
@@ -97,9 +107,6 @@ const MechanismFigure = ({ step }) => (
           style={{
             width: '100%',
             display: 'block',
-            borderRadius: '16px',
-            border: '1px solid rgba(168, 139, 70, 0.2)',
-            boxShadow: '0 24px 64px rgba(0, 0, 0, 0.4)',
             ...(step.cropAspect ? {
               aspectRatio: step.cropAspect,
               objectFit: 'cover',
@@ -144,10 +151,11 @@ const MechanismFigure = ({ step }) => (
         </span>
       </div>
     )}
+    </div>
     <figcaption style={{
-      marginTop: '14px',
-      fontSize: '12.5px',
-      color: 'rgba(240, 240, 240, 0.45)',
+      marginTop: '16px',
+      fontSize: '13px',
+      color: 'rgba(240, 240, 240, 0.6)',
       fontStyle: 'italic',
       letterSpacing: '0.02em',
       lineHeight: 1.6
@@ -160,7 +168,7 @@ const MechanismFigure = ({ step }) => (
 const Mechanism = () => (
   <div
     id="mentorship"
-    className="reveal mechanism-section"
+    className="mechanism-section"
     style={{
       paddingTop: '140px',
       paddingBottom: '140px',
@@ -169,9 +177,9 @@ const Mechanism = () => (
     }}
   >
     {/* Header */}
-    <div style={{
+    <div data-reveal style={{
       textAlign: 'center',
-      marginBottom: '72px',
+      marginBottom: '120px',
       maxWidth: '720px',
       marginLeft: 'auto',
       marginRight: 'auto'
@@ -181,6 +189,7 @@ const Mechanism = () => (
         fontWeight: '800',
         color: '#FFFFFF',
         marginBottom: '24px',
+        textWrap: 'balance',
         lineHeight: 1.08,
         letterSpacing: '-0.025em',
         fontFamily: 'Manrope, Inter, sans-serif'
@@ -192,9 +201,9 @@ const Mechanism = () => (
       </h2>
       <p style={{
         fontSize: '18px',
-        color: 'rgba(240, 240, 240, 0.6)',
-        lineHeight: 1.85,
-        maxWidth: '560px',
+        color: 'rgba(240, 240, 240, 0.68)',
+        lineHeight: 1.7,
+        maxWidth: '520px',
         margin: '0 auto'
       }}>
         Most coaching is a series of conversations. This is four steps, run over six months, against your own database.
@@ -202,11 +211,11 @@ const Mechanism = () => (
     </div>
 
     {/* Alternating step rows */}
-    <div style={{
+    <div className="mechanism-rows" style={{
       display: 'flex',
       flexDirection: 'column',
-      gap: '96px',
-      maxWidth: '1100px',
+      gap: '160px',
+      maxWidth: '1180px',
       margin: '0 auto'
     }}>
       {STEPS.map((step, idx) => (
@@ -215,38 +224,41 @@ const Mechanism = () => (
           className={`mechanism-row ${idx % 2 === 1 ? 'mechanism-row-flipped' : ''}`}
           style={{
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '72px',
+            gridTemplateColumns: idx % 2 === 1 ? '7fr 5fr' : '5fr 7fr',
+            gap: '80px',
             alignItems: 'center'
           }}
         >
-          <div style={{ order: idx % 2 === 1 ? 2 : 1 }} className="mechanism-copy">
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '10px',
-              marginBottom: '18px'
+          <div data-reveal style={{ order: idx % 2 === 1 ? 2 : 1 }} className="mechanism-copy">
+            {/* The numeral stays: the four steps are a sequence, run in this order */}
+            <h3 style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              gap: '14px',
+              margin: '0 0 22px',
+              fontSize: 'clamp(28px, 3vw, 36px)',
+              fontWeight: '800',
+              color: '#FFFFFF',
+              lineHeight: 1.1,
+              letterSpacing: '-0.02em',
+              fontFamily: 'Manrope, Inter, sans-serif'
             }}>
-              <span style={{
-                fontSize: '13px',
-                fontWeight: '700',
-                color: '#A78A43',
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase'
-              }}>
-                {step.n} · {step.title}
-              </span>
-              <span style={{
-                flexShrink: 0,
-                width: '48px',
-                height: '1px',
-                background: 'linear-gradient(90deg, rgba(167, 138, 67, 0.5), transparent)'
-              }} />
-            </div>
+              <span className="tnum" style={{ color: '#A78A43' }}>{step.n}</span>
+              {step.title}
+            </h3>
             <p style={{
-              color: 'rgba(240, 240, 240, 0.75)',
-              fontSize: '16px',
-              lineHeight: 1.9,
+              color: 'rgba(240, 240, 240, 0.94)',
+              fontSize: '19px',
+              fontWeight: '500',
+              lineHeight: 1.55,
+              margin: '0 0 16px'
+            }}>
+              {step.lead}
+            </p>
+            <p style={{
+              color: 'rgba(240, 240, 240, 0.68)',
+              fontSize: '15.5px',
+              lineHeight: 1.8,
               margin: 0
             }}>
               {step.body}
@@ -260,10 +272,23 @@ const Mechanism = () => (
     </div>
 
     <style dangerouslySetInnerHTML={{ __html: `
+      .mechanism-copy {
+        max-width: 440px;
+      }
+      .mechanism-row-flipped .mechanism-copy {
+        justify-self: end;
+      }
       @media (max-width: 900px) {
         .mechanism-row {
           grid-template-columns: 1fr !important;
           gap: 32px !important;
+        }
+        .mechanism-copy {
+          max-width: none;
+          justify-self: stretch !important;
+        }
+        .mechanism-rows {
+          gap: 96px !important;
         }
         .mechanism-row .mechanism-copy {
           order: 1 !important;
